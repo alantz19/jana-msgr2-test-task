@@ -11,13 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('teams', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->foreignUuid('user_id')->index();
-            $table->string('name');
-            $table->boolean('personal_team');
-            $table->timestamps();
-        });
+        Artisan::call('db:seed --class=WorldSeeder');
     }
 
     /**
@@ -25,6 +19,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('teams');
+        //
     }
 };

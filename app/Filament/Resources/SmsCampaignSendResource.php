@@ -4,12 +4,16 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\SmsCampaignSendResource\Pages;
 use App\Models\SmsCampaignSend;
+use Filament\Forms\Components\Card;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Group;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables\Columns\TextColumn;
+use Livewire\Features\Placeholder;
 
 class SmsCampaignSendResource extends Resource
 {
@@ -23,15 +27,31 @@ class SmsCampaignSendResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('campaign_id'),
+//                Group::make()
+//                    ->schema([
+//                        Card::make()
+//                            ->schema(static::getFormSchema('aa'))
+//                            ->columns(2),
+//
+//                        Section::make('Order items')
+//                            ->schema(static::getFormSchema('items')),
+//                    ])
+//                    ->columnSpan(['lg' => fn (?SmsCampaignSend $record) => $record === null ? 3 : 2]),
 
-                TextInput::make('country_id'),
-
-                TextInput::make('status')
-                    ->integer(),
-
-                DatePicker::make('date_created'),
-            ]);
+//                Card::make()
+//                    ->schema([
+//                        \Filament\Forms\Components\Placeholder::class::make('created_at')
+//                            ->label('Created at')
+//                            ->content(fn (SmsCampaignSend $record): ?string => $record->created_at?->diffForHumans()),
+//
+//                        \Filament\Forms\Components\Placeholder::make('updated_at')
+//                            ->label('Last modified at')
+//                            ->content(fn (SmsCampaignSend $record): ?string => $record->updated_at?->diffForHumans()),
+//                    ])
+//                    ->columnSpan(['lg' => 1])
+//                    ->hidden(fn (?SmsCampaignSend $record) => $record === null),
+            ])
+            ->columns(3);
     }
 
     public static function table(Table $table): Table
@@ -64,4 +84,9 @@ class SmsCampaignSendResource extends Resource
     {
         return [];
     }
+
+//    private static function getFormSchema(string $string)
+//    {
+//        return [];
+//    }
 }

@@ -5,20 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3867b5cc-60eb-4b48-827a-b48c974ddffa" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/app/Http/Livewire/CreateCampaignSmsList.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Http/Livewire/CreateSmsTexts.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/css/filament.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/livewire/create-campaign-sms-list.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/livewire/create-sms-texts.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Controllers/SmsCampaignTextsController.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Requests/SmsCampaignTextCreateRequest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Models/SmsCampaignText.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Filament/Resources/SmsCampaignSendResource/Pages/CreateSmsCampaignSend.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Filament/Resources/SmsCampaignSendResource/Pages/CreateSmsCampaignSend.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Forms/Components/CreateSmsText.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Forms/Components/CreateSmsText.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Providers/AppServiceProvider.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Providers/AppServiceProvider.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Forms/Components/CreateSmsText.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Forms/Components/CreateSmsTextField.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Livewire/CreateCampaignSmsList.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Livewire/CreateCampaignSmsList.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Livewire/CreateSmsTexts.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Livewire/CreateSmsTexts.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/migrations/2023_05_15_093546_create_campaigns_structure.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2023_05_15_093546_create_campaigns_structure.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/schema/pgsql-schema.sql" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/forms/components/create-sms-text.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/forms/components/create-sms-text.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tailwind.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/tailwind.config.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vite.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/vite.config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/livewire/create-sms-texts.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/livewire/create-sms-texts.blade.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -266,7 +264,7 @@
       <option name="presentableId" value="Default" />
       <updated>1684150411716</updated>
       <workItem from="1684150412685" duration="11895000" />
-      <workItem from="1684164344993" duration="15648000" />
+      <workItem from="1684164344993" duration="18871000" />
     </task>
     <servers />
   </component>

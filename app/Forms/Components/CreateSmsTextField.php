@@ -11,7 +11,7 @@ use Filament\Forms\Components\Concerns\HasPlaceholder;
 use Filament\Forms\Components\Field;
 use Filament\Support\Concerns\HasExtraAlpineAttributes;
 
-class CreateSmsText extends Field
+class CreateSmsTextField extends Field
 {
     use CanBeAutocapitalized;
     use CanBeAutocompleted;
@@ -20,16 +20,14 @@ class CreateSmsText extends Field
     use HasPlaceholder;
     use HasExtraAlpineAttributes;
 
+    protected $campaignId;
+
     protected string $view = 'forms.components.create-sms-text';
 
-    public $sms_text = 'class_text';
-    public $colour = 'class_text';
-
-    public function getSmsText()
+    public function campaignId($campaignId)
     {
-        if (empty($this->getState())) {
-            $this->state('default');
-            return;
-        }
+        $this->campaignId = $campaignId;
+
+        return $this;
     }
 }

@@ -15,6 +15,6 @@
         :state-path="$getStatePath()"
 >
     <div x-data="{ state: $wire.entangle('{{ $getStatePath() }}').reactive }">
-        @livewire('create-sms-texts');
+        @livewire('create-sms-texts', ['campaign_id' => $campaignId]);
     </div>
 </x-dynamic-component>

@@ -1,9 +1,16 @@
 <div>
     <div>
+        <div class="@error('text') filament-forms-input choices--error @enderror"></div>
 
-    <textarea name="sms_text" id="" cols="30" rows="5"
-              class="filament-forms-textarea-component filament-forms-input block w-full transition duration-75 rounded-lg shadow-sm outline-none focus:border-primary-500 focus:ring-1 focus:ring-inset focus:ring-primary-500 disabled:opacity-70 border-gray-300"
+
+    <textarea wire:model.debounce="text" name="text" id="" cols="30" rows="5"
+              @class([
+    'filament-forms-textarea-component filament-forms-input block w-full transition duration-75 rounded-lg shadow-sm outline-none focus:border-primary-500 focus:ring-1 focus:ring-inset focus:ring-primary-500 disabled:opacity-70',
+    'border-gray-300' => ! $errors->has('text'),
+    'border-danger-600 ring-danger-600' => $errors->has('text'),
+])
     ></textarea>
+        @error('text') <span class="filament-forms-field-wrapper-error-message text-sm text-danger-600">{{ $message }}</span> @enderror
 
         <div class="mt-4 flow-root">
             <div class="float-left">
@@ -39,7 +46,7 @@
         <div class="">
             <div class="text-right mt-3">
                 <div class="filament-button filament-button-size-sm inline-flex items-center justify-center py-1 gap-1 font-medium rounded-lg border transition-colors outline-none focus:ring-offset-2 focus:ring-2 focus:ring-inset min-h-[2rem] px-3 text-sm text-white shadow focus:ring-white border-transparent bg-primary-600 hover:bg-primary-500 focus:bg-primary-700 focus:ring-offset-primary-700">
-                    <a href="#">
+                    <a href="#" wire:click="save">
                         <span class="">Save</span>
                     </a>
                 </div>
@@ -49,7 +56,14 @@
 
 
     <div class="mt-6">
-        @livewire('create-campaign-sms-list', ['list' => []])
+        @livewire('create-campaign-sms-list', ['list' => [
+    [
+        'text' => 'hello world'
+],
+[
+    'text' => 'hello world 2',
+],
+]])
     </div>
 
 </div>

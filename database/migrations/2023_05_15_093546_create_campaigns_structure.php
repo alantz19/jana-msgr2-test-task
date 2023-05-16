@@ -24,6 +24,7 @@ return new class extends Migration
             $table->json('send_vars')->nullable();
             $table->integer('status')->nullable();
             $table->timestamp('date_created')->useCurrent();
+            $table->softDeletes();
         });
         Schema::create('sms_campaign_logs', function (Blueprint $table) {
             $table->uuid('id')->primary();
@@ -39,6 +40,7 @@ return new class extends Migration
             $table->boolean('is_active')->nullable();
             $table->integer('parts')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('offers', function (Blueprint $table) {
@@ -48,6 +50,7 @@ return new class extends Migration
             $table->string('url');
             $table->integer('profit')->nullable();
             $table->timestamp('date_created')->useCurrent();
+            $table->softDeletes();
         });
 
         Schema::create('offer_campaigns', function (Blueprint $table) {

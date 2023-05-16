@@ -55,6 +55,20 @@ ALTER SEQUENCE public.failed_jobs_id_seq OWNED BY public.failed_jobs.id;
 
 
 --
+-- Name: lists; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.lists (
+    id uuid NOT NULL,
+    team_id uuid NOT NULL,
+    name character varying(255) NOT NULL,
+    created_at timestamp(0) without time zone,
+    updated_at timestamp(0) without time zone,
+    deleted_at timestamp(0) without time zone
+);
+
+
+--
 -- Name: migrations; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -108,7 +122,8 @@ CREATE TABLE public.offers (
     name character varying(255),
     url character varying(255) NOT NULL,
     profit integer,
-    date_created timestamp(0) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    date_created timestamp(0) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    deleted_at timestamp(0) without time zone
 );
 
 
@@ -199,7 +214,8 @@ CREATE TABLE public.sms_campaign_sends (
     country_id uuid,
     send_vars json,
     status integer,
-    date_created timestamp(0) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    date_created timestamp(0) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    deleted_at timestamp(0) without time zone
 );
 
 
@@ -214,7 +230,8 @@ CREATE TABLE public.sms_campaign_texts (
     is_active boolean,
     parts integer,
     created_at timestamp(0) without time zone,
-    updated_at timestamp(0) without time zone
+    updated_at timestamp(0) without time zone,
+    deleted_at timestamp(0) without time zone
 );
 
 
@@ -795,6 +812,14 @@ ALTER TABLE ONLY public.failed_jobs
 
 
 --
+-- Name: lists lists_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.lists
+    ADD CONSTRAINT lists_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: migrations migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1177,6 +1202,14 @@ CREATE INDEX world_mobile_networks_world_country_id_index ON public.world_mobile
 
 
 --
+-- Name: lists lists_team_id_foreign; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.lists
+    ADD CONSTRAINT lists_team_id_foreign FOREIGN KEY (team_id) REFERENCES public.teams(id);
+
+
+--
 -- Name: offer_campaigns offer_campaigns_campaign_id_foreign; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1270,6 +1303,7 @@ COPY public.migrations (id, migration, batch) FROM stdin;
 17	2023_05_15_090851_create_sessions_table	1
 18	2023_05_15_093546_create_campaigns_structure	1
 19	2023_05_15_093554_create_routes_structure	1
+20	2023_05_15_131232_create_lists	1
 \.
 
 
@@ -1277,7 +1311,7 @@ COPY public.migrations (id, migration, batch) FROM stdin;
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 19, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 20, true);
 
 
 --

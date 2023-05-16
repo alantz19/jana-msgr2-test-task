@@ -3,10 +3,12 @@
 namespace App\Http\Livewire;
 
 use App\Models\SmsCampaign;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Component;
+use Symfony\Component\DomCrawler\Field\TextareaFormField;
 
 class CreateCampaignSmsList extends Component  implements HasTable
 {
@@ -26,7 +28,9 @@ class CreateCampaignSmsList extends Component  implements HasTable
 
     protected function getTableColumns(): array
     {
-        return [];
+        return [
+            TextColumn::make('text')
+        ];
     }
 
     protected function getTableFilters(): array
@@ -42,6 +46,11 @@ class CreateCampaignSmsList extends Component  implements HasTable
     protected function getTableBulkActions(): array
     {
         return [];
+    }
+
+    protected function getTableEmptyStateHeading(): ?string
+    {
+        return 'No texts yet';
     }
 
     protected function getTableQuery(): Builder

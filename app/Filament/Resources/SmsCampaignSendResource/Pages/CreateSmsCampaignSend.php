@@ -3,7 +3,7 @@
 namespace App\Filament\Resources\SmsCampaignSendResource\Pages;
 
 use App\Filament\Resources\SmsCampaignSendResource;
-use App\Forms\Components\CreateSmsText;
+use App\Forms\Components\CreateSmsTextField;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -25,8 +25,9 @@ class CreateSmsCampaignSend extends CreateRecord
             Step::make('Audience')
                 ->schema([
                     Card::make([
-                        CreateSmsText::make('sms_text')
+                        CreateSmsTextField::make('sms_text')
                             ->required()
+                            ->campaignId(1)
                             ->reactive()
                             ->label('SMS Text'),
 //                            ->applyStateBindingModifiers('sms_text')

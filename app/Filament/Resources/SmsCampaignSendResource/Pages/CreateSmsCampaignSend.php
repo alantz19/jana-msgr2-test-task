@@ -5,11 +5,15 @@ namespace App\Filament\Resources\SmsCampaignSendResource\Pages;
 use App\Filament\Resources\SmsCampaignSendResource;
 use App\Forms\Components\CreateSmsTextField;
 use Filament\Forms\Components\Card;
+use Filament\Forms\Components\Fieldset;
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\View;
 use Filament\Forms\Components\Wizard\Step;
 use Filament\Resources\Pages\CreateRecord;
 use Filament\Resources\Pages\CreateRecord\Concerns\HasWizard;
+use send\CreateCampaignSmsList;
 
 class CreateSmsCampaignSend extends CreateRecord
 {
@@ -17,27 +21,29 @@ class CreateSmsCampaignSend extends CreateRecord
 
     protected static string $resource = SmsCampaignSendResource::class;
 
-    public $sms_text;
-
     protected function getSteps(): array
     {
         return [
             Step::make('Audience')
                 ->schema([
                     Card::make([
-                        CreateSmsTextField::make('sms_text')
-                            ->required()
-                            ->campaignId(1)
-                            ->reactive()
-                            ->label('SMS Text'),
-//                            ->applyStateBindingModifiers('sms_text')
                         Select::make('list_id')
                             ->options(\Auth::user()->currentTeam->lists->pluck('name', 'id')->toArray())
                             ->label('Lists')
                             ->multiple()
                             ->required(),
-
                     ])->columns(),
+
+
+                    Grid::make(3)
+                        ->schema([
+                            Card::make([
+                                View::make('livewire.campaign-send.new-text-form')
+                            ])->columnSpan(2),
+                            Card::make([
+                                View::make('livewire.campaign-send.new-text-components.right-sidebar'),
+                            ])->columnSpan(1),
+                        ]),
                 ]),
 
             Step::make('Text')

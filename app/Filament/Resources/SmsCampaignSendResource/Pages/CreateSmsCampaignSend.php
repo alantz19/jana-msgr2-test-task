@@ -17,6 +17,7 @@ class CreateSmsCampaignSend extends CreateRecord
 
     protected static string $resource = SmsCampaignSendResource::class;
 
+    public $sms_text;
 
     protected function getSteps(): array
     {
@@ -24,6 +25,11 @@ class CreateSmsCampaignSend extends CreateRecord
             Step::make('Audience')
                 ->schema([
                     Card::make([
+                        CreateSmsText::make('sms_text')
+                            ->required()
+                            ->reactive()
+                            ->label('SMS Text'),
+//                            ->applyStateBindingModifiers('sms_text')
                         Select::make('list_id')
                             ->options(\Auth::user()->currentTeam->lists->pluck('name', 'id')->toArray())
                             ->label('Lists')
@@ -36,9 +42,6 @@ class CreateSmsCampaignSend extends CreateRecord
             Step::make('Text')
                 ->schema([
                     Card::make([
-                        CreateSmsText::make('sms_text')
-                            ->label('SMS Text')
-                            ->required(),
 
                     ]),
                 ]),

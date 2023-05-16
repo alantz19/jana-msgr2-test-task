@@ -5,555 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3867b5cc-60eb-4b48-827a-b48c974ddffa" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/.editorconfig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/.env.example" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/.gitattributes" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/.styleci.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/CHANGELOG.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/app/Actions/Fortify/CreateNewUser.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/app/Actions/Fortify/PasswordValidationRules.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/app/Actions/Fortify/ResetUserPassword.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/app/Actions/Fortify/UpdateUserPassword.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/app/Actions/Fortify/UpdateUserProfileInformation.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/app/Actions/Jetstream/DeleteUser.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/app/Console/Kernel.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/app/Exceptions/Handler.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/app/Http/Controllers/ApiController.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/app/Http/Controllers/CampaignController.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/app/Http/Controllers/Controller.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/app/Http/Controllers/CustomerController.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/app/Http/Controllers/DashboardController.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/app/Http/Controllers/DataFeedController.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/app/Http/Controllers/InvoiceController.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/app/Http/Controllers/JobController.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/app/Http/Controllers/MemberController.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/app/Http/Controllers/OrderController.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/app/Http/Controllers/TransactionController.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/app/Http/Kernel.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/app/Http/Middleware/Authenticate.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/app/Http/Middleware/EncryptCookies.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/app/Http/Middleware/PreventRequestsDuringMaintenance.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/app/Http/Middleware/RedirectIfAuthenticated.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/app/Http/Middleware/TrimStrings.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/app/Http/Middleware/TrustHosts.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/app/Http/Middleware/TrustProxies.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/app/Http/Middleware/VerifyCsrfToken.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/app/Models/Campaign.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/app/Models/Customer.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/app/Models/DataFeed.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/app/Models/Invoice.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/app/Models/Job.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/app/Models/Marketer.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/app/Models/Member.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/app/Models/Order.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/app/Models/Transaction.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/app/Models/User.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/app/Providers/AppServiceProvider.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/app/Providers/AuthServiceProvider.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/app/Providers/BroadcastServiceProvider.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/app/Providers/EventServiceProvider.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/app/Providers/FortifyServiceProvider.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/app/Providers/JetstreamServiceProvider.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/app/Providers/RouteServiceProvider.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/app/View/Components/AppLayout.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/app/View/Components/AuthenticationLayout.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/app/View/Components/EmptyLayout.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/app/View/Components/GuestLayout.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/artisan" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/bootstrap/app.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/bootstrap/cache/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/composer.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/composer.lock" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/config/app.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/config/auth.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/config/broadcasting.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/config/cache.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/config/cors.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/config/database.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/config/filesystems.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/config/fortify.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/config/hashing.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/config/jetstream.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/config/logging.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/config/mail.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/config/queue.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/config/sanctum.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/config/services.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/config/session.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/config/view.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/database/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/database/factories/UserFactory.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/database/migrations/2014_10_12_000000_create_users_table.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/database/migrations/2014_10_12_100000_create_password_resets_table.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/database/migrations/2014_10_12_200000_add_two_factor_columns_to_users_table.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/database/migrations/2019_08_19_000000_create_failed_jobs_table.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/database/migrations/2019_12_14_000001_create_personal_access_tokens_table.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/database/migrations/2022_03_23_163443_create_sessions_table.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/database/migrations/2022_05_11_154250_create_datafeeds_table.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/database/migrations/2022_07_04_131100_create_customers_table.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/database/migrations/2022_07_04_151619_create_orders_table.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/database/migrations/2022_07_06_104457_create_invoices_table.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/database/migrations/2022_07_06_132214_create_members_table.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/database/migrations/2022_07_07_125834_create_transactions_table.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/database/migrations/2022_07_07_134715_create_jobs_table.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/database/migrations/2022_07_08_143725_create_campaigns_table.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/database/migrations/2022_07_08_151254_create_marketers_table.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/database/migrations/2022_07_08_153041_create_campaign_marketer_table.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/database/seeders/AnalyticsTableSeeder.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/database/seeders/CampaignMarketerSeeder.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/database/seeders/CampaignSeeder.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/database/seeders/CustomerSeeder.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/database/seeders/DashboardTableSeeder.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/database/seeders/DatabaseSeeder.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/database/seeders/FintechTableSeeder.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/database/seeders/InvoiceSeeder.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/database/seeders/JobSeeder.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/database/seeders/MarketerSeeder.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/database/seeders/MemberSeeder.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/database/seeders/OrderSeeder.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/database/seeders/TransactionSeeder.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/lang/en/auth.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/lang/en/pagination.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/lang/en/passwords.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/lang/en/validation.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/package.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/phpunit.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/postcss.config.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/.htaccess" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/favicon.ico" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/404-illustration.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/announcement-icon.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/applications-image-01.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/applications-image-02.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/applications-image-03.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/applications-image-04.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/applications-image-05.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/applications-image-06.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/applications-image-07.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/applications-image-08.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/applications-image-09.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/applications-image-10.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/applications-image-11.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/applications-image-12.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/applications-image-13.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/applications-image-14.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/applications-image-15.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/applications-image-16.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/applications-image-17.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/applications-image-18.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/applications-image-19.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/applications-image-20.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/applications-image-21.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/applications-image-22.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/applications-image-23.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/applications-image-24.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/applications-image-25.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/applications-image-26.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/applications-image-27.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/applications-image-28.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/applications-image-29.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/applications-image-30.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/applications-image-31.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/applications-image-32.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/auth-decoration.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/auth-image.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/avatar-01.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/avatar-02.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/avatar-03.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/avatar-04.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/avatar-05.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/avatar-06.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/channel-01.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/channel-02.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/channel-03.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/chat-image.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/company-bg.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/company-icon-01.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/company-icon-02.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/company-icon-03.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/company-icon-04.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/company-icon-05.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/company-icon-06.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/company-icon-07.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/company-icon-08.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/favicon.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/feed-image-01.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/feed-image-02.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/group-avatar-01.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/group-avatar-02.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/group-avatar-03.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/group-avatar-04.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/icon-01.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/icon-02.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/icon-03.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/inbox-image.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/meetup-image.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/meetup-photo-01.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/meetup-photo-02.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/meetup-photo-03.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/meetups-thumb-01.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/meetups-thumb-02.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/meetups-thumb-03.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/meetups-thumb-04.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/meetups-thumb-05.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/meetups-thumb-06.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/meetups-thumb-07.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/meetups-thumb-08.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/modal-image.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/onboarding-image.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/pay-bg.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/product-image.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/profile-bg.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/related-product-01.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/related-product-02.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/related-product-03.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/task-image-01.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/task-image-02.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/transactions-image-01.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/transactions-image-02.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/transactions-image-03.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/transactions-image-04.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/transactions-image-05.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/transactions-image-06.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/transactions-image-07.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/transactions-image-08.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/user-128-01.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/user-28-01.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/user-28-02.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/user-28-03.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/user-28-04.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/user-28-05.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/user-28-06.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/user-28-07.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/user-28-08.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/user-28-09.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/user-28-10.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/user-28-11.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/user-28-12.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/user-32-01.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/user-32-02.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/user-32-03.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/user-32-04.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/user-32-05.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/user-32-06.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/user-32-07.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/user-32-08.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/user-36-01.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/user-36-02.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/user-36-03.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/user-36-04.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/user-36-05.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/user-40-01.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/user-40-02.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/user-40-03.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/user-40-04.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/user-40-05.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/user-40-06.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/user-40-07.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/user-40-08.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/user-40-09.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/user-40-10.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/user-40-11.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/user-40-12.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/user-64-01.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/user-64-02.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/user-64-03.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/user-64-04.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/user-64-05.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/user-64-06.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/user-64-07.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/user-64-08.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/user-64-09.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/user-64-10.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/user-64-11.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/user-64-12.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/user-64-13.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/user-64-14.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/user-avatar-32.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/images/user-avatar-80.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/index.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/public/robots.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/css/additional-styles/flatpickr.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/css/additional-styles/range-slider.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/css/additional-styles/theme.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/css/additional-styles/toggle-switch.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/css/additional-styles/utility-patterns.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/css/app.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/js/app.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/js/bootstrap.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/js/components/analytics-card-01.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/js/components/analytics-card-02.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/js/components/analytics-card-03.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/js/components/analytics-card-04.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/js/components/analytics-card-08.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/js/components/analytics-card-09.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/js/components/analytics-card-10.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/js/components/dashboard-card-01.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/js/components/dashboard-card-02.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/js/components/dashboard-card-03.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/js/components/dashboard-card-04.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/js/components/dashboard-card-05.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/js/components/dashboard-card-06.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/js/components/dashboard-card-08.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/js/components/dashboard-card-09.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/js/components/fintech-card-01.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/js/components/fintech-card-03.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/js/components/fintech-card-04.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/js/components/fintech-card-07.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/js/components/fintech-card-08.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/js/components/fintech-card-09.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/js/components/fintech-card-10.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/js/components/fintech-card-11.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/js/components/fintech-card-12.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/js/components/fintech-card-13.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/js/components/fintech-card-14.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/js/utils.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/markdown/policy.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/markdown/terms.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/api/api-token-manager.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/api/index.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/auth/confirm-password.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/auth/forgot-password.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/auth/login.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/auth/register.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/auth/reset-password.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/auth/two-factor-challenge.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/auth/verify-email.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/actions/delete-button.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/analytics/analytics-card-01.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/analytics/analytics-card-02.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/analytics/analytics-card-03.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/analytics/analytics-card-04.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/analytics/analytics-card-05.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/analytics/analytics-card-06.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/analytics/analytics-card-07.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/analytics/analytics-card-08.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/analytics/analytics-card-09.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/analytics/analytics-card-10.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/analytics/analytics-card-11.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/app/header.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/app/sidebar.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/campaigns/campaigns-card.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/community/feed-left-content.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/community/feed-posts.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/community/feed-right-content.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/community/forum-entries.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/community/forum-entry.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/community/forum-left-content.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/community/forum-post-right-content.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/community/forum-right-content.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/community/meetups-posts.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/community/profile-body.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/community/profile-sidebar.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/community/users-tabs-cards.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/community/users-tiles-cards.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/dashboard/dashboard-avatars.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/dashboard/dashboard-card-01.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/dashboard/dashboard-card-02.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/dashboard/dashboard-card-03.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/dashboard/dashboard-card-04.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/dashboard/dashboard-card-05.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/dashboard/dashboard-card-06.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/dashboard/dashboard-card-07.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/dashboard/dashboard-card-08.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/dashboard/dashboard-card-09.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/dashboard/dashboard-card-10.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/dashboard/dashboard-card-11.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/dashboard/welcome-banner.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/date-select.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/datepicker.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/dropdown-filter.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/dropdown-help.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/dropdown-notifications.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/dropdown-profile.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/ecommerce/cart-items.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/ecommerce/customers-table.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/ecommerce/invoices-table.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/ecommerce/orders-table.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/ecommerce/shop-cards-01.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/ecommerce/shop-cards-02.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/ecommerce/shop-cards-03.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/ecommerce/shop-cards-04.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/ecommerce/shop-cards-05.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/ecommerce/shop-cards-06.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/ecommerce/shop-cards-07.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/ecommerce/shop-sidebar.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/finance/transaction-panel.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/finance/transactions-table.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/fintech/fintech-card-01.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/fintech/fintech-card-02.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/fintech/fintech-card-03.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/fintech/fintech-card-04.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/fintech/fintech-card-05.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/fintech/fintech-card-06.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/fintech/fintech-card-07.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/fintech/fintech-card-08.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/fintech/fintech-card-09.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/fintech/fintech-card-10.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/fintech/fintech-card-11.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/fintech/fintech-card-12.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/fintech/fintech-card-13.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/fintech/fintech-card-14.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/fintech/fintech-intro.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/inbox/inbox-body.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/inbox/inbox-sidebar.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/job/job-list.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/job/job-sidebar.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/messages/messages-body.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/messages/messages-sidebar.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/modal-search.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/pagination-classic.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/pagination-numeric.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/search-form.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/settings/account-panel.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/settings/apps-panel.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/settings/billing-panel.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/settings/feedback-panel.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/settings/notifications-panel.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/settings/plans-panel.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/settings/settings-sidebar.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/components/tasks/tasks-cards.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/layouts/app.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/layouts/authentication.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/layouts/empty.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/layouts/guest.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/pages/calendar.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/pages/campaigns.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/pages/community/feed.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/pages/community/forum-post.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/pages/community/forum.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/pages/community/meetups-post.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/pages/community/meetups.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/pages/community/profile.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/pages/community/users-tabs.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/pages/community/users-tiles.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/pages/component/accordion-page.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/pages/component/alert-page.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/pages/component/avatar-page.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/pages/component/badge-page.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/pages/component/breadcrumb-page.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/pages/component/button-page.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/pages/component/dropdown-page.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/pages/component/form-page.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/pages/component/icons-page.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/pages/component/modal-page.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/pages/component/pagination-page.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/pages/component/tabs-page.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/pages/component/tooltip-page.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/pages/dashboard/analytics.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/pages/dashboard/dashboard.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/pages/dashboard/fintech.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/pages/ecommerce/cart-2.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/pages/ecommerce/cart-3.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/pages/ecommerce/cart.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/pages/ecommerce/customers.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/pages/ecommerce/invoices.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/pages/ecommerce/orders.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/pages/ecommerce/pay.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/pages/ecommerce/product.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/pages/ecommerce/shop-2.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/pages/ecommerce/shop.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/pages/finance/credit-cards.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/pages/finance/transaction-details.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/pages/finance/transactions.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/pages/inbox.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/pages/job/company-profile.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/pages/job/job-listing.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/pages/job/job-post.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/pages/messages.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/pages/onboarding-01.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/pages/onboarding-02.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/pages/onboarding-03.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/pages/onboarding-04.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/pages/settings/account.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/pages/settings/apps.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/pages/settings/billing.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/pages/settings/feedback.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/pages/settings/notifications.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/pages/settings/plans.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/pages/tasks/tasks-kanban.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/pages/tasks/tasks-list.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/pages/utility/404.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/pages/utility/changelog.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/pages/utility/empty-state.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/pages/utility/faqs.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/pages/utility/knowledge-base.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/pages/utility/roadmap.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/policy.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/profile/delete-user-form.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/profile/logout-other-browser-sessions-form.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/profile/show.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/profile/two-factor-authentication-form.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/profile/update-password-form.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/profile/update-profile-information-form.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/terms.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/vendor/jetstream/components/action-message.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/vendor/jetstream/components/action-section.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/vendor/jetstream/components/banner.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/vendor/jetstream/components/button.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/vendor/jetstream/components/confirmation-modal.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/vendor/jetstream/components/confirms-password.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/vendor/jetstream/components/danger-button.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/vendor/jetstream/components/dialog-modal.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/vendor/jetstream/components/dropdown-link.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/vendor/jetstream/components/dropdown.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/vendor/jetstream/components/form-section.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/vendor/jetstream/components/input-error.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/vendor/jetstream/components/input.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/vendor/jetstream/components/label.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/vendor/jetstream/components/modal.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/vendor/jetstream/components/nav-link.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/vendor/jetstream/components/responsive-nav-link.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/vendor/jetstream/components/secondary-button.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/vendor/jetstream/components/section-border.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/vendor/jetstream/components/section-title.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/vendor/jetstream/components/switchable-team.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/vendor/jetstream/components/validation-errors.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/vendor/jetstream/components/welcome.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/vendor/jetstream/mail/team-invitation.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/vendor/pagination/simple-tailwind.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/resources/views/vendor/pagination/tailwind.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/routes/api.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/routes/channels.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/routes/console.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/routes/web.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/storage/app/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/storage/app/public/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/storage/framework/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/storage/framework/cache/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/storage/framework/cache/data/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/storage/framework/sessions/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/storage/framework/testing/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/storage/framework/views/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/storage/logs/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/tailwind.config.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/tests/CreatesApplication.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/tests/Feature/ApiTokenPermissionsTest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/tests/Feature/AuthenticationTest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/tests/Feature/BrowserSessionsTest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/tests/Feature/CreateApiTokenTest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/tests/Feature/DeleteAccountTest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/tests/Feature/DeleteApiTokenTest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/tests/Feature/EmailVerificationTest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/tests/Feature/ExampleTest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/tests/Feature/PasswordConfirmationTest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/tests/Feature/PasswordResetTest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/tests/Feature/ProfileInformationTest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/tests/Feature/RegistrationTest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/tests/Feature/TwoFactorAuthenticationSettingsTest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/tests/Feature/UpdatePasswordTest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/tests/TestCase.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/tests/Unit/ExampleTest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dev/templates/mosaic-laravel-livewire/vite.config.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/727a4417-403e-4410-a7a2-cd0dcb60fbbe.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/727a4417-403e-4410-a7a2-cd0dcb60fbbe.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/v2_1_msgr.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/v2_1_msgr.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Livewire/CreateCampaignSmsList.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Livewire/CreateSmsTexts.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/css/filament.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/livewire/create-campaign-sms-list.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/livewire/create-sms-texts.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Filament/Resources/SmsCampaignSendResource/Pages/CreateSmsCampaignSend.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Filament/Resources/SmsCampaignSendResource/Pages/CreateSmsCampaignSend.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Forms/Components/CreateSmsText.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Forms/Components/CreateSmsText.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Providers/AppServiceProvider.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Providers/AppServiceProvider.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/js/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/app.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/forms/components/create-sms-text.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/forms/components/create-sms-text.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tailwind.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/tailwind.config.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vite.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/vite.config.js" afterDir="false" />
@@ -569,6 +31,9 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/vendor/filament/forms/src/Concerns/HasStateBindingModifiers.php" root0="FORCE_HIGHLIGHTING" root1="SKIP_INSPECTION" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -754,31 +219,32 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;credentialsType com.jetbrains.nodejs.remote.NodeJSCreateRemoteSdkForm&quot;: &quot;Docker Compose&quot;,
-    &quot;credentialsType com.jetbrains.php.remote.interpreter.ui.PhpCreateRemoteSdkForm&quot;: &quot;Docker Compose&quot;,
-    &quot;credentialsType com.jetbrains.php.remote.interpreter.ui.PhpInplaceEditRemoteSdkForm&quot;: &quot;Docker Compose&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/slainewilley/Projects/code/v2_docker_install/www/v2_1_msgr/dev/templates&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_interpreter_path&quot;: &quot;node&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;settings.nodejs&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;/Applications/PhpStorm.app/Contents/plugins/javascript-impl/jsLanguageServicesImpl/external&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "credentialsType com.jetbrains.nodejs.remote.NodeJSCreateRemoteSdkForm": "Docker Compose",
+    "credentialsType com.jetbrains.php.remote.interpreter.ui.PhpCreateRemoteSdkForm": "Docker Compose",
+    "credentialsType com.jetbrains.php.remote.interpreter.ui.PhpInplaceEditRemoteSdkForm": "Docker Compose",
+    "last_opened_file_path": "/Users/slainewilley/Projects/code/v2_docker_install/www/v2_1_msgr/dev/templates",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_interpreter_path": "node",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "ts.external.directory.path": "/Applications/PhpStorm.app/Contents/plugins/javascript-impl/jsLanguageServicesImpl/external",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;postgresql&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "postgresql"
     ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/dev/templates" />
@@ -800,7 +266,7 @@
       <option name="presentableId" value="Default" />
       <updated>1684150411716</updated>
       <workItem from="1684150412685" duration="11895000" />
-      <workItem from="1684164344993" duration="532000" />
+      <workItem from="1684164344993" duration="15648000" />
     </task>
     <servers />
   </component>

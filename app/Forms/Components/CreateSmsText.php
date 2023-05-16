@@ -2,6 +2,7 @@
 
 namespace App\Forms\Components;
 
+use Closure;
 use Filament\Forms\Components\Concerns\CanBeAutocapitalized;
 use Filament\Forms\Components\Concerns\CanBeAutocompleted;
 use Filament\Forms\Components\Concerns\CanBeLengthConstrained;
@@ -20,4 +21,15 @@ class CreateSmsText extends Field
     use HasExtraAlpineAttributes;
 
     protected string $view = 'forms.components.create-sms-text';
+
+    public $sms_text = 'class_text';
+    public $colour = 'class_text';
+
+    public function getSmsText()
+    {
+        if (empty($this->getState())) {
+            $this->state('default');
+            return;
+        }
+    }
 }

@@ -12,7 +12,7 @@ use Livewire\Component;
 class CreateText extends Component
 {
     public $text;
-    protected $campaign_id;
+    public $campaign_id;
 
     protected $show_other = false;
 

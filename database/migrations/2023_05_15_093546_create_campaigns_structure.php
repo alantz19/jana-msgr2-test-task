@@ -35,10 +35,9 @@ return new class extends Migration
         });
         Schema::create('sms_campaign_texts', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('campaign_id')->nullable();
-            $table->string('text')->nullable();
+            $table->uuid('campaign_id');
+            $table->string('text');
             $table->boolean('is_active')->nullable();
-            $table->integer('parts')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

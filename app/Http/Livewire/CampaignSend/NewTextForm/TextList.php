@@ -21,15 +21,17 @@ class TextList extends Component  implements HasTable
 
     //add listener to refresh when text is added
     protected $listeners = ['textAdded' => '$refresh'];
+    public $campaign_id;
 
     protected function getFormModel(): Model|string|null
     {
         return SmsCampaignText::class;
     }
 
-    public function mount()
+    public function mount($campaign_id)
     {
-//        $this->table = $this->getTable();
+        $this->campaign_id = $campaign_id;
+        $this->table = $this->getTable();
     }
 
     public static function make($name): static
@@ -64,7 +66,8 @@ class TextList extends Component  implements HasTable
 
     protected function getTableQuery(): Builder
     {
-        return SmsCampaignText::query();
+        return SmsCampaignText::query()
+            ->where(['campaign_id' => $this->campaign_id]);
     }
 
     public static function getEloquentQuery(): Builder

@@ -28,6 +28,11 @@ class TextList extends Component  implements HasTable
         return SmsCampaignText::class;
     }
 
+    public function dehydrate($name)
+    {
+        $this->emit('textAddedCount', $this->table->getAllRecordsCount());
+    }
+
     public function mount($campaign_id)
     {
         $this->campaign_id = $campaign_id;
@@ -66,8 +71,7 @@ class TextList extends Component  implements HasTable
 
     protected function getTableQuery(): Builder
     {
-        return SmsCampaignText::query()
-            ->where(['campaign_id' => $this->campaign_id]);
+        return self::getTextListQuery($this->campaign_id);
     }
 
     public static function getEloquentQuery(): Builder
@@ -81,5 +85,11 @@ class TextList extends Component  implements HasTable
     public function render(): \Illuminate\Contracts\View\View
     {
         return view('livewire.campaign-send.new-text-form.text-list');
+    }
+
+    public static function getTextListQuery($campaign_id)
+    {
+        return SmsCampaignText::query()
+            ->where(['campaign_id' => $campaign_id ]);
     }
 }

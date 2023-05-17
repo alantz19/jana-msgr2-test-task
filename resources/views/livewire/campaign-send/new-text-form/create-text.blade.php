@@ -21,7 +21,7 @@
     <div class="mt-4 flow-root">
         <div class="float-left">
             <div class="filament-button filament-button-size-md inline-flex items-center justify-center py-1 gap-1 font-medium rounded-lg border transition-colors outline-none focus:ring-offset-2 focus:ring-2 focus:ring-inset min-h-[2.25rem] px-4 text-sm text-gray-800 bg-white border-gray-300 hover:bg-gray-50 focus:ring-primary-600 focus:text-primary-600 focus:bg-primary-50 focus:border-primary-600 filament-page-button-action">
-                <a href="#" wire:click.prevent="addText('{domain}')">
+                <a href="#" wire:click.prevent="addText(' {domain} ')" wire:loading.attr="disabled">
                     <span class="">Add shortlink</span>
                 </a>
             </div>
@@ -29,7 +29,7 @@
 
         <div class="float-right" x-data="{ show_other: false }">
             <div class="filament-button filament-button-size-md inline-flex items-center justify-center py-1 gap-1 font-medium rounded-lg border transition-colors outline-none focus:ring-offset-2 focus:ring-2 focus:ring-inset min-h-[2.25rem] px-4 text-sm text-gray-800 bg-white border-gray-300 hover:bg-gray-50 focus:ring-primary-600 focus:text-primary-600 focus:bg-primary-50 focus:border-primary-600 filament-page-button-action">
-                <a href="#" wire:click.prevent="addText('{fname}')">
+                <a href="#" wire:click.prevent="addText(' {fname} ')">
                     <span class="">First name</span>
                 </a>
             </div>

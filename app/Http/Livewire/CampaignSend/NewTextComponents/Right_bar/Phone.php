@@ -8,6 +8,11 @@ class Phone extends Component
 {
     public $text = 'test';
 
+    //https://github.com/acpmasquerade/sms-counter-php
+    public $text_length = 0;
+    public $text_remaining = 0;
+    public $text_per_message = 160;
+
     //add listener to refresh when text is added
     protected $listeners = ['textUpdated' => 'textUpdated'];
 
@@ -18,6 +23,9 @@ class Phone extends Component
 
     public function textUpdated($text)
     {
-        $this->text = $text;
+        $this->text = $text['text'];
+        $this->text_length = $text['size']['length'];
+        $this->text_per_message = $text['size']['per_message'];
+        $this->text_remaining = $text['size']['remaining'];
     }
 }

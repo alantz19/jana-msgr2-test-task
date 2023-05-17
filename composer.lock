@@ -4,8 +4,56 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9d784b3668777214a762859af0f86de1",
+    "content-hash": "f237033203ce0c3e3ee5c2997b3ec37d",
     "packages": [
+        {
+            "name": "acpmasquerade/sms-counter-php",
+            "version": "v1.0.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/acpmasquerade/sms-counter-php.git",
+                "reference": "504c9690b3507e42581ca68aba6511519114c4c9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/acpmasquerade/sms-counter-php/zipball/504c9690b3507e42581ca68aba6511519114c4c9",
+                "reference": "504c9690b3507e42581ca68aba6511519114c4c9",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "SMSCounter": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "acpmasquerade",
+                    "email": "acpmasquerade@gmail.com",
+                    "homepage": "http://acpmasquerade.com"
+                }
+            ],
+            "description": "SMS Counter PHP Class Library which detects encoding of an SMS message text, counts the characters as per the encoding and gives page limit information.",
+            "homepage": "http://github.com/acpmasquerade/sms-counter-php",
+            "keywords": [
+                "counter",
+                "gsm",
+                "sms"
+            ],
+            "support": {
+                "issues": "https://github.com/acpmasquerade/sms-counter-php/issues",
+                "source": "https://github.com/acpmasquerade/sms-counter-php/tree/master"
+            },
+            "abandoned": true,
+            "time": "2015-05-20T02:18:02+00:00"
+        },
         {
             "name": "akaunting/laravel-money",
             "version": "4.0.1",

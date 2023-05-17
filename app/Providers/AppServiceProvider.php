@@ -2,8 +2,12 @@
 
 namespace App\Providers;
 
+use App\Notifications\ModalNotification;
 use Filament\Facades\Filament;
+use Filament\Notifications\Notification;
 use Illuminate\Support\ServiceProvider;
+use Filament\Notifications\Notification as BaseNotification;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -20,8 +24,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-//        Filament::serving(function () {
-//            Filament::registerViteTheme('resources/css/filament.css');
-//        });
+        $this->app->bind(ModalNotification::class);
+        Notification::configureUsing(function (Notification $notification): void {
+            $notification->view('notifications.modal_notification');
+        });
     }
 }

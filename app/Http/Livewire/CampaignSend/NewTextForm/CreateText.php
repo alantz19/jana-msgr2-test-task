@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\CampaignSend\NewTextForm;
 
 use App\Models\SmsCampaignText;
+use App\Notifications\ModalNotification;
 use Filament\Notifications\Notification;
 use Livewire\Component;
 
@@ -40,12 +41,20 @@ class CreateText extends Component
 
     public function addText($text)
     {
-        $this->text = $this->text . $text;
+        if (str_contains($text, '{domain}') && str_contains($this->text, '{domain}')) {
+            ModalNotification::make()->title('Only one domain tag can be in text')->send();
+            return true;
+        }
+        $this->text = trim($this->text . $text);
+        $this->updatedText($this->text);
     }
 
     public function updatedText($value)
     {
-        $this->emit('textUpdated', $value);
+        $size = \SMSCounter::count($value);
+        $this->text = preg_replace('/\s+/', ' ', $value);
+
+        $this->emit('textUpdated', ['text' => $value, 'size' => $size]);
     }
 
 }

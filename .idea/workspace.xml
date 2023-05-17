@@ -5,20 +5,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3867b5cc-60eb-4b48-827a-b48c974ddffa" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/app/Notifications/ModalNotification.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/notifications/modal_notification.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/laravel-idea-personal.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/laravel-idea-personal.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/phpspec.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/phpspec.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Filament/Resources/CampaignResource.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Filament/Resources/CampaignResource.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Filament/Resources/CampaignResource/Pages/EditCampaign.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Filament/Resources/CampaignResource/Pages/EditCampaign.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Filament/Resources/SmsCampaignSendResource.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Filament/Resources/SmsCampaignSendResource/Pages/CreateSmsCampaignSend.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Filament/Resources/SmsCampaignSendResource/Pages/EditSmsCampaignSend.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Filament/Resources/SmsCampaignSendResource/Pages/ListSmsCampaignSends.php" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Livewire/CampaignSend/NewTextComponents/Right_bar/Phone.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Livewire/CampaignSend/NewTextComponents/Right_bar/Phone.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Livewire/CampaignSend/NewTextForm/CreateText.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Livewire/CampaignSend/NewTextForm/CreateText.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Notifications/ModalNotification.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Notifications/ModalNotification.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Providers/AppServiceProvider.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Providers/AppServiceProvider.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/livewire/campaign-send/new-text-components/right-sidebar.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/livewire/campaign-send/new-text-components/right-sidebar.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/livewire/campaign-send/new-text-components/right_bar/phone.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/livewire/campaign-send/new-text-components/right_bar/phone.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/livewire/campaign-send/new-text-form.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/livewire/campaign-send/new-text-form.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/livewire/campaign-send/new-text-form/create-text.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/livewire/campaign-send/new-text-form/create-text.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/vendor/filament/components/footer.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/vendor/filament/components/footer.blade.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -274,7 +274,7 @@
       <updated>1684150411716</updated>
       <workItem from="1684150412685" duration="11895000" />
       <workItem from="1684164344993" duration="23656000" />
-      <workItem from="1684240975826" duration="18123000" />
+      <workItem from="1684240975826" duration="22417000" />
     </task>
     <servers />
   </component>

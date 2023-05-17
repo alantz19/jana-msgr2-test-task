@@ -2,9 +2,11 @@
 
 namespace App\Http\Livewire\CampaignSend\NewTextForm;
 
+use App\Models\SmsCampaign;
 use App\Models\SmsCampaignText;
 use App\Notifications\ModalNotification;
 use Filament\Notifications\Notification;
+use Illuminate\Http\Request;
 use Livewire\Component;
 
 class CreateText extends Component
@@ -25,7 +27,10 @@ class CreateText extends Component
             'text' => 'required|min:3',
         ]);
 
-        SmsCampaignText::create([...$validated, 'campaign_id' => $this->campaign_id]);
+        $model = SmsCampaignText::make([...$validated]);
+        $model->campaign_id = $this->campaign_id;
+        $model->save();
+
         $this->text = '';
         $this->emit('textAdded');
         $this->emit('textUpdated', '');

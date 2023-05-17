@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\CampaignResource\Pages;
 
 use App\Filament\Resources\CampaignResource;
+use Filament\Pages\Actions\Action;
 use Filament\Pages\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
 
@@ -14,6 +15,8 @@ class EditCampaign extends EditRecord
     {
         return [
             DeleteAction::make(),
+            Action::make('Send')
+            ->url(route('filament.resources.campaigns.send', $this->record->id))
         ];
     }
 }

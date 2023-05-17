@@ -25,7 +25,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->app->bind(ModalNotification::class);
-        Notification::configureUsing(function (Notification $notification): void {
+        ModalNotification::configureUsing(function (Notification $notification): void {
             $notification->view('notifications.modal_notification');
         });
     }

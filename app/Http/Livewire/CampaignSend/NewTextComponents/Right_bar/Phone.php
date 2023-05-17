@@ -23,6 +23,13 @@ class Phone extends Component
 
     public function textUpdated($text)
     {
+        if (empty($text['text'])) {
+            $this->text = '';
+            $this->text_length = 0;
+            $this->text_per_message = 160;
+            $this->text_remaining = 0;
+            return true;
+        }
         $this->text = $text['text'];
         $this->text_length = $text['size']['length'];
         $this->text_per_message = $text['size']['per_message'];

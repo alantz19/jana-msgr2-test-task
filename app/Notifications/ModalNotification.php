@@ -7,7 +7,7 @@ use Filament\Notifications\Notification as BaseNotification;
 
 class ModalNotification extends BaseNotification
 {
-    protected string $size = 'md';
+    protected string $size = 'lg';
 
     public function toArray(): array
     {

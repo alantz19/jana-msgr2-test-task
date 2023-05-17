@@ -1,36 +1,34 @@
 <?php
 
-namespace App\Http\Livewire\CampaignSend\NewTextForm;
+namespace App\Http\Livewire\CampaignSend\NewSenderidForm;
 
+use App\Models\SmsCampaignSenderId;
 use App\Models\SmsCampaignText;
-//use Filament\Forms\Components\Component;
-use Filament\Pages\Actions\Action;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Columns\TextColumn;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Livewire\Component;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Livewire\Component;
 
-class TextList extends Component  implements HasTable
+class SenderidList extends Component implements HasTable
 {
     use InteractsWithTable;
 
     //add listener to refresh when text is added
-    protected $listeners = ['textUpdated' => '$refresh'];
+    protected $listeners = ['senderidUpdated' => '$refresh'];
     public $campaign_id;
 
     protected function getFormModel(): Model|string|null
     {
-        return SmsCampaignText::class;
+        return SmsCampaignSenderId::class;
     }
 
-    public function dehydrate($name)
+    public function dehydrate()
     {
-        $this->emit('textAddedCount', $this->table->getAllRecordsCount());
+        $this->emit('senderidCount', $this->table->getAllRecordsCount());
     }
 
     public function mount($campaign_id)
@@ -66,12 +64,12 @@ class TextList extends Component  implements HasTable
 
     protected function getTableEmptyStateHeading(): ?string
     {
-        return 'No texts yet';
+        return 'No Sender IDs yet';
     }
 
     protected function getTableQuery(): Builder
     {
-        return self::getTextListQuery($this->campaign_id);
+        return self::getSenderIdListQuery($this->campaign_id);
     }
 
     public static function getEloquentQuery(): Builder
@@ -82,14 +80,14 @@ class TextList extends Component  implements HasTable
             ]);
     }
 
-    public function render(): \Illuminate\Contracts\View\View
+    public static function getSenderIdListQuery($campaign_id)
     {
-        return view('livewire.campaign-send.new-text-form.text-list');
+        return SmsCampaignSenderId::query()
+            ->where(['campaign_id' => $campaign_id ]);
     }
 
-    public static function getTextListQuery($campaign_id)
+    public function render()
     {
-        return SmsCampaignText::query()
-            ->where(['campaign_id' => $campaign_id ]);
+        return view('livewire.campaign-send.new-senderid-form.senderid-list');
     }
 }

@@ -45,7 +45,7 @@
                     style="overscroll-behavior: none;"
             >
 
-                <div class="my-3 mx-auto font-bold tracking-wide text-black opacity-30">Sender ID</div>
+                <div class="my-3 mx-auto font-bold tracking-wide text-black opacity-30">{{$senderid}}</div>
 
             </div>
 

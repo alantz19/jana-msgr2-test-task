@@ -27,12 +27,11 @@ class CreateText extends Component
             'text' => 'required|min:3',
         ]);
 
-        $model = SmsCampaignText::make([...$validated]);
+        $model = SmsCampaignText::make($validated);
         $model->campaign_id = $this->campaign_id;
         $model->save();
 
         $this->text = '';
-        $this->emit('textAdded');
         $this->emit('textUpdated', '');
         Notification::make()
             ->title('Text added')

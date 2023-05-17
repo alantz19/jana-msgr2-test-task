@@ -3,12 +3,14 @@
 namespace App\Filament\Resources\CampaignResource\Pages;
 
 use App\Filament\Resources\CampaignResource;
+use App\Http\Livewire\CampaignSend\NewSenderidForm\SenderidList;
 use App\Http\Livewire\CampaignSend\NewTextForm\TextList;
 use App\Models\SmsCampaign;
 use Closure;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\Component;
 use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\View;
@@ -21,6 +23,7 @@ use Filament\Resources\Pages\Concerns\InteractsWithRecord;
 use Filament\Resources\Pages\CreateRecord\Concerns\HasWizard;
 use Filament\Resources\Pages\Page;
 use Filament\Tables\Concerns\InteractsWithTable;
+use Hoa\Exception\Group;
 
 class CreateCampaignSend extends Page implements HasForms
 {
@@ -32,6 +35,7 @@ class CreateCampaignSend extends Page implements HasForms
 
     public $lists = [];
     public $textCount = 0;
+    public $senderidCount = 0;
 
     protected static string $resource = CampaignResource::class;
 
@@ -39,15 +43,20 @@ class CreateCampaignSend extends Page implements HasForms
 
     protected static ?string $title = 'Create Campaign Send';
 
-    protected $listeners = ['textAddedCount' => 'updateTextCount'];
+    protected $listeners = [
+        'textAddedCount' => 'updateTextCount',
+        'senderidCount' => 'updateSenderidCount'
+    ];
 
-    //add function that will update textCount attribute
     public function updateTextCount($count)
     {
         $this->textCount = $count;
     }
 
-    //add textCount attribute
+    public function updateSenderidCount($count)
+    {
+        $this->senderidCount = $count;
+    }
 
 
     public function mount($record)
@@ -55,6 +64,7 @@ class CreateCampaignSend extends Page implements HasForms
         /** @noinspection PhpFieldAssignmentTypeMismatchInspection */
         $this->smsCampaign = $this->resolveRecord($record);
         $this->textCount = TextList::getTextListQuery($this->smsCampaign->id)->count();
+        $this->senderidCount = SenderidList::getSenderIdListQuery($this->smsCampaign->id)->count();
     }
 
     protected function getFormSchema(): array
@@ -74,21 +84,39 @@ class CreateCampaignSend extends Page implements HasForms
 
                         Grid::make(3)
                             ->schema([
-                                Card::make([
-                                    ViewField::make('textCount')->view('livewire.campaign-send.new-text-form')->label(false)->rules([
-                                        function () {
-                                            return function (string $attribute, $value, Closure $fail) {
-                                                if ($value < 1) {
-                                                    $fail("At least 1 SMS text is required");
-                                                }
-                                            };
-                                        },
-                                    ])
+                                \Filament\Forms\Components\Group::make()->schema([
+                                    Card::make([
+                                        ViewField::make('senderidCount')->view('livewire.campaign-send.new-senderid-form')->label(false)->rules([
+                                            function () {
+                                                return function (string $attribute, $value, Closure $fail) {
+                                                    if ($value < 1) {
+                                                        $fail("At least 1 Sender ID is required");
+                                                    }
+                                                };
+                                            },
+                                        ])
+                                    ]),
+
+                                    Card::make([
+                                        ViewField::make('textCount')->view('livewire.campaign-send.new-text-form')->label(false)->rules([
+                                            function () {
+                                                return function (string $attribute, $value, Closure $fail) {
+                                                    if ($value < 1) {
+                                                        $fail("At least 1 SMS text is required");
+                                                    }
+                                                };
+                                            },
+                                        ])
+                                    ]),
+
+
                                 ])->columnSpan(2),
+
                                 Card::make([
                                     View::make('livewire.campaign-send.new-text-components.right-sidebar'),
                                 ])->columnSpan(1),
                             ]),
+
                     ]),
 
                 Step::make('Text')

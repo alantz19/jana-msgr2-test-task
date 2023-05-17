@@ -8,7 +8,7 @@
         </p>
     </div>
 
-    <textarea wire:model.debounce="text" @keydown.enter="$wire.save()" name="text" id="" cols="30" rows="5"
+    <textarea wire:model.debounce="text" @keydown.enter="$wire.save()" name="text" id="create_text_textarea" cols="30" rows="5"
               @class([
     'filament-forms-textarea-component filament-forms-input block w-full transition duration-75 rounded-lg shadow-sm outline-none focus:border-primary-500 focus:ring-1 focus:ring-inset focus:ring-primary-500 disabled:opacity-70',
     'border-gray-300' => ! $errors->has('text'),

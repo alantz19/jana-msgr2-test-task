@@ -6,7 +6,7 @@ use Livewire\Component;
 
 class Phone extends Component
 {
-    public $text = 'test';
+    public $text = 'SMS text';
 
     //https://github.com/acpmasquerade/sms-counter-php
     public $text_length = 0;
@@ -14,17 +14,27 @@ class Phone extends Component
     public $text_per_message = 160;
 
     //add listener to refresh when text is added
-    protected $listeners = ['textUpdated' => 'textUpdated'];
+    protected $listeners = ['textUpdated' => 'textUpdated', 'senderidUpdated' => 'senderidUpdated'];
+    public $senderid = 'Sender ID';
 
     public function render()
     {
         return view('livewire.campaign-send.new-text-components.right_bar.phone');
     }
 
+
+    public function senderidUpdated($text)
+    {
+        if (empty($text)) {
+            $this->senderid = 'Sender ID';
+            return true;
+        }
+        $this->senderid = $text;
+    }
     public function textUpdated($text)
     {
         if (empty($text['text'])) {
-            $this->text = '';
+            $this->text = 'Text';
             $this->text_length = 0;
             $this->text_per_message = 160;
             $this->text_remaining = 0;

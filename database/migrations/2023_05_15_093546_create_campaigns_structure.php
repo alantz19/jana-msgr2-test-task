@@ -41,7 +41,14 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
         });
-
+        Schema::create('sms_campaign_senderids', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->uuid('campaign_id');
+            $table->string('text');
+            $table->boolean('is_active')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
+        });
         Schema::create('offers', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('team_id');

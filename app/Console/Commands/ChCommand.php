@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Services\ClickhouseService;
 use ClickHouseDB\Client;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
@@ -11,16 +12,11 @@ class ChCommand extends Command
 {
     protected $signature = 'ch:fresh';
 
-    protected $description = 'Command description';
+    protected $description = 'Clickhouse drop all tables and migrate fresh';
 
     public function handle(): void
     {
-        /** @var Client $db */
-        $db = DB::connection('clickhouse')->getClient();
-        $tables = $db->showTables();
-        foreach ($tables as $table) {
-            $db->write('DROP TABLE `'.$table['name'].'`');
-        }
+        ClickhouseService::dropAllTables();
         Artisan::call('migrate:fresh');
     }
 }

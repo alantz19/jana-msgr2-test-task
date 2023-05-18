@@ -2,7 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Models\Offer;
 use App\Models\SmsCampaign;
+use App\Models\SmsCampaignSenderid;
 use App\Models\SmsCampaignText;
 use App\Models\User;
 use Tests\TestCase;
@@ -20,7 +22,7 @@ class SendSmsCampaignTest extends TestCase
 
     }
 
-    public function test_create_campaign()
+    public function test_send_campaign()
     {
         $campaign = SmsCampaign::factory()->create([
             'team_id' => $this->user->currentTeam->id,
@@ -32,8 +34,21 @@ class SendSmsCampaignTest extends TestCase
             'campaign_id' => $campaign->id,
         ]);
 
-//        SmsCampaignSenderId::factory()->count(5)->create([
-//            'campaign_id' => $campaign->id,
-//        ]);
+        SmsCampaignSenderId::factory()->count(5)->create([
+            'campaign_id' => $campaign->id,
+        ]);
+
+        Offer::factory()->count(5)->create([
+            'team_id' => $this->user->currentTeam->id,
+        ])->each(function($model) use ($campaign) {
+//            $campaign->addOffer($model);
+        });
+
+        $campaign->setSettings([
+            'send_time' => null,
+            'sms_amount' => 100
+        ]);
+
+        $campaign->send();
     }
 }

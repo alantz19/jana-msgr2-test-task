@@ -12,6 +12,13 @@ We've added 2 templates under /dev/templates.
 2. When using Vristo, you can use the [Vristo builder](https://vristo.com/builder) to create the template and then export it to html and css and paste it in the template folder.
 
 
+## clickhouse
+```
+sail artisan ch:fresh - this will create the tables
+php artisan clickhouse:migrate:fresh
+php artisan clickhouse:install:config
+```
+
 ## Notes
 
 1. If you use PHPStorm - Please activate the plugin [Settings Reporsitory](https://plugins.jetbrains.com/plugin/7566-settings-repository) referenced: [1](https://stackoverflow.com/a/17049458/21736297),[2](https://www.jetbrains.com/help/phpstorm/sharing-your-ide-settings.html#settings-repository),[3](https://intellij-support.jetbrains.com/hc/en-us/articles/206544839)

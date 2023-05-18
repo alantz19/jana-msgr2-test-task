@@ -3,6 +3,22 @@
   <component name="LaravelIdeaMainSettings">
     <option name="codeGeneration">
       <LaravelCodeGeneration>
+        <option name="customGenerations">
+          <list>
+            <CustomGeneration>
+              <option name="baseClass" value="PhpClickHouseLaravel\BaseModel" />
+              <option name="namespace" value="Models" />
+              <option name="templateName" value="Laravel Ideal Model" />
+              <option name="title" value="Create clickhouse model" />
+            </CustomGeneration>
+            <CustomGeneration>
+              <option name="classSuffix" value="Service" />
+              <option name="namespace" value="Services" />
+              <option name="templateName" value="Laravel Ideal Class" />
+              <option name="title" value="Create Service class" />
+            </CustomGeneration>
+          </list>
+        </option>
         <option name="generationStringSettings">
           <map>
             <entry key="createEloquentScope:namespace" value="Models\Scopes" />

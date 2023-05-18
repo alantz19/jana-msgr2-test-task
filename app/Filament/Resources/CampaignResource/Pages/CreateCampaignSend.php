@@ -109,7 +109,18 @@ class CreateCampaignSend extends Page implements HasForms
                                         ])
                                     ]),
 
-
+                                    //create card for offers
+                                    Card::make([
+                                        ViewField::make('offersCount')->view('livewire.campaign-send.new-offer-form')->label(false)->rules([
+                                            function () {
+                                                return function (string $attribute, $value, Closure $fail) {
+                                                    if ($value < 1) {
+                                                        $fail("At least 1 SMS text is required");
+                                                    }
+                                                };
+                                            },
+                                        ])
+                                    ]),
                                 ])->columnSpan(2),
 
                                 Card::make([

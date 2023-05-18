@@ -6,6 +6,7 @@
 - [Docs management](#docs-management)
   - [Examples](#examples)
 
+
     
 <a name="general"></a>
 ## General
@@ -17,7 +18,7 @@
 
 
 ### Shortcuts
-`http://v2.local/` - app
+`http://v2.local/admin` - app
 - u: admin@admin.com
 - p: password
 

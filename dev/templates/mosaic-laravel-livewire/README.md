@@ -1,3 +1,10 @@
+To start run
+`composer update`
+`npm i`
+`php artisan migrate`
+`php artisan db:seed`
+
+
 
 ## Mosaic - Admin Dashboard Template for Laravel
 

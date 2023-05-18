@@ -14,5 +14,8 @@ class BalanceTest extends TestCase
         $this->assertEquals(0, BalanceService::getTeamBalance($user));
         $this->assertEquals(true, BalanceService::addBalance($user, 100));
         $this->assertEquals(100, BalanceService::getTeamBalance($user));
+        $this->assertEquals(true, BalanceService::deductBalance($user, 50));
+        $this->assertEquals(50, BalanceService::getTeamBalance($user));
+
     }
 }

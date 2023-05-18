@@ -1,28 +1,39 @@
 <?php
 
-namespace Tests\Feature\Domain\Sms\Sends\Campaigns;
+namespace Tests\Feature;
 
-use App\Domain\Company\Models\Company;
-use App\Domain\Company\Models\CompanyUser;
+use App\Models\SmsCampaign;
+use App\Models\SmsCampaignText;
 use App\Models\User;
-use Faker\Core\Uuid;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use LaravelJsonApi\Testing\MakesJsonApiRequests;
 use Tests\TestCase;
 
 class SendSmsCampaignTest extends TestCase
 {
+    public $user;
 
     public function setUp(): void
     {
         parent::setUp();
-        $user = User::factory()->create();
-        /** @var CompanyUser $user */
+        $user = User::factory()->withPersonalTeam()->create();
         $this->actingAs($user);
+        $this->user = $user;
+
     }
 
     public function test_create_campaign()
     {
+        $campaign = SmsCampaign::factory()->create([
+            'team_id' => $this->user->currentTeam->id,
+        ]);
 
+//        $campaign->addList(1);
+
+        SmsCampaignText::factory()->count(5)->create([
+            'campaign_id' => $campaign->id,
+        ]);
+
+//        SmsCampaignSenderId::factory()->count(5)->create([
+//            'campaign_id' => $campaign->id,
+//        ]);
     }
 }

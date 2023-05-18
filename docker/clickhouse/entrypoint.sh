@@ -82,6 +82,8 @@ do
     fi
 done
 
+chown clickhouse:clickhouse -R /var/lib/clickhouse /var/log/clickhouse-server /etc/clickhouse-server /etc/clickhouse-client
+
 # if clickhouse user is defined - create it (user "default" already exists out of box)
 if [ -n "$CLICKHOUSE_USER" ] && [ "$CLICKHOUSE_USER" != "default" ] || [ -n "$CLICKHOUSE_PASSWORD" ]; then
     echo "$0: create new user '$CLICKHOUSE_USER' instead 'default'"

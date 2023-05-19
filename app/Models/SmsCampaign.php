@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property string $meta
+ */
 class SmsCampaign extends Model
 {
     use HasFactory;
@@ -32,5 +35,34 @@ class SmsCampaign extends Model
     public function sends()
     {
         return $this->hasMany(SmsCampaignSend::class, 'campaign_id');
+    }
+
+    public function setLists(array $list_ids)
+    {
+        $this->addMeta('lists', $list_ids);
+    }
+
+    private function addMeta($key, $value)
+    {
+        $meta = $this->getMeta();
+        $meta[$key] = $value;
+        $this->meta = json_encode($meta);
+        $this->save();
+    }
+
+    private function getMeta(){
+        $meta = json_decode($this->meta, true);
+
+        return $meta ? $meta : [];
+    }
+
+    public function setSettings(array $array)
+    {
+        $this->addMeta('settings', $array);
+    }
+
+    public function offers()
+    {
+        return $this->belongsToMany(Offer::class, 'offers_campaigns', 'campaign_id', 'offer_id');
     }
 }

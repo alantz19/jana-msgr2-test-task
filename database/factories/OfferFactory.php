@@ -17,7 +17,8 @@ class OfferFactory extends Factory
             'name' => $this->faker->name(),
             'url' => $this->faker->url(),
             'profit' => $this->faker->randomNumber(),
-            'date_created' => Carbon::now(),
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
         ];
     }
 }

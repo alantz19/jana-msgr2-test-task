@@ -12,4 +12,6 @@ class Lists extends Model
     use HasUuids;
     use HasFactory;
     use SoftDeletes;
+
+    protected $fillable = ['team_id', 'name'];
 }

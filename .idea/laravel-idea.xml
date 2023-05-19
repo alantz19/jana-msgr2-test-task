@@ -17,6 +17,13 @@
               <option name="templateName" value="Laravel Ideal Class" />
               <option name="title" value="Create Service class" />
             </CustomGeneration>
+            <CustomGeneration>
+              <option name="baseClass" value="Spatie\LaravelData\Data" />
+              <option name="classSuffix" value="Dto" />
+              <option name="namespace" value="Dto" />
+              <option name="templateName" value="Laravel Ideal Class" />
+              <option name="title" value="Create dto class" />
+            </CustomGeneration>
           </list>
         </option>
         <option name="generationStringSettings">

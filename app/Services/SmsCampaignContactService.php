@@ -10,6 +10,7 @@ class SmsCampaignContactService
 
     public static function getContacts(SmsCampaignSend $campaignSend) : array
     {
+        //todo: check if contact unsubscribed
         $limit = $campaignSend->getLimit();
         $lists = $campaignSend->getLists();
 //        $microSegments = $campaignSend->getMicroSegments();

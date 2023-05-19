@@ -2,6 +2,8 @@
 
 namespace App\Jobs;
 
+use App\Actions\startSmsCampaignToContactJob;
+use App\Dto\buildSmsDto;
 use App\Models\SmsCampaignSend;
 use App\Services\SmsCampaignContactService;
 use Illuminate\Bus\Queueable;
@@ -28,8 +30,10 @@ class SendCampaignJob implements ShouldQueue
         //get balance
 
         //submit to sms build queue
+        $i = 0;
         foreach ($contacts as $contact){
-            dd($contact);
+            $dto = buildSmsDto::from([...$contact, 'counter' => $i]);
+            buildSmsJob::handle($dto);
         }
     }
 }

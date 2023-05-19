@@ -16,4 +16,9 @@ class SmsCampaignText extends Model
     protected $fillable = [
         'text',
     ];
+
+    public function haveDomainOrOptoutTag()
+    {
+        return str_contains($this->text, '{domain}') || str_contains($this->text, '{optout}');
+    }
 }

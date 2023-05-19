@@ -18,11 +18,12 @@ class buildSmsJob implements ShouldQueue
     public function handle(buildSmsDto $dto): void
     {
         $data = new BuildSmsData();
+        $data->dto = $dto;
         //check if campaign stopped, check if in temp cache
         //generate sms id
         //finalise sms text (sender id, url, sms text etc')
 
-        TextService::processMsg($dto, $data);
+        TextService::processMsg($data);
 
         //deduct balance
         //add to cache

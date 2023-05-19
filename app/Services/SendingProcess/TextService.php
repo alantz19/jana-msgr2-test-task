@@ -11,6 +11,7 @@ use backend\models\AdTexts;
 use backend\models\Translations;
 use common\components\SMSCounter;
 use common\models\Telecom\Encoder\GsmEncoder;
+use Illuminate\Support\Facades\Log;
 
 class TextService
 {
@@ -77,19 +78,18 @@ class TextService
         return $text;
     }
 
-    public static function processMsg(buildSmsDto $msg, BuildSmsData $data)
+    public static function processMsg(BuildSmsData $data)
     {
-        $data->selectedCampaignText = self::getSpecificAdText($msg->campaign_id, $msg->counter);
+        $data->selectedCampaignText = self::getSpecificAdText($data->dto->campaign_id, $data->dto->counter);
 
         self::processTextReplacement($data);
     }
 
     public static function processTextReplacement(BuildSmsData $msg)
     {
-        //todo:continue..
-        $text = $msg->selectedAdText->text;
-        \Yii::$app->logger->logDebug('text before replacement', ['text' => $text]);
-        if ($msg->selectedAdText->haveDomainOrOptoutTag()) {
+        $text = $msg->selectedCampaignText->text;
+        Log::info('text before replacement', ['text' => $text]);
+        if ($msg->selectedCampaignText->haveDomainOrOptoutTag()) {
             UrlShortenerService::setShortlink($msg);
             $msg->sms_optout_link = UrlShortenerService::getDynamicSmsOptOut($msg->sms_shortlink);
         }
@@ -131,7 +131,7 @@ class TextService
         $shortcodes = [
             '{{{code}}}' => self::$_msg->random_key,
             '{{{phone}}}' => self::$_msg->normalized,
-            '{{{ad_id}}}' => self::$_msg->selectedAdText->id,
+            '{{{ad_id}}}' => self::$_msg->selectedCampaignText->id,
             '{{{dayofweek}}}' => date('l'),
             '{{{ROUTE}}}' => $route_name,
             '{{{route}}}' => $route_name,
@@ -171,7 +171,7 @@ class TextService
         if (self::getParts($text) > self::$_msg->submited_text_parts) {
             Yii::$app->logger->logWarning(
                 'Initial msg was short after replacing was long - mandatory',
-                ['original' => self::$_msg->selectedAdText->text, 'replaced' => $text]
+                ['original' => self::$_msg->selectedCampaignText->text, 'replaced' => $text]
             );
         }
 
@@ -179,7 +179,7 @@ class TextService
         $text = htmlspecialchars_decode($text);
 
         $trim_gsm = intval(self::$_msg->lapObj->getGateway()->getType()->one()->trim_gsm);
-        if (!self::$_msg->selectedAdText->isUnicode() && $trim_gsm) {
+        if (!self::$_msg->selectedCampaignText->isUnicode() && $trim_gsm) {
             $text = GsmEncoder::utf8_to_gsm0338_transliterate($text);
             Yii::$app->logger->logDebug("Trimmed Message: $text");
         }

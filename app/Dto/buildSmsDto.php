@@ -2,6 +2,7 @@
 
 namespace App\Dto;
 
+use App\Models\SmsCampaign;
 use Spatie\LaravelData\Data;
 
 class buildSmsDto extends Data
@@ -14,5 +15,10 @@ class buildSmsDto extends Data
         public int $counter,
     )
     {
+    }
+
+    public function getCampaign()
+    {
+        return SmsCampaign::find($this->campaign_id);
     }
 }

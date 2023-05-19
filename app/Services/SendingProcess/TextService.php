@@ -2,11 +2,10 @@
 
 namespace App\Services\SendingProcess;
 
-use api\v2\sms\sends\campaigns\sending_services\models\CampaignSmsMessage;
-use api\v2\sms\sends\campaigns\sending_services\UrlShortenerService;
+use App\Services\SendingProcess\Data\BuildSmsData;
+use App\Services\UrlShortenerService;
 use App\Dto\buildSmsDto;
 use App\Models\SmsCampaignText;
-use App\Services\SendingProcess\Data\BuildSmsData;
 use backend\models\AdTexts;
 use backend\models\Translations;
 use common\components\SMSCounter;
@@ -15,6 +14,8 @@ use Illuminate\Support\Facades\Log;
 
 class TextService
 {
+    private static BuildSmsData $data;
+
     public static function maxTextParts(int $adId)
     {
         return AdTexts::find()
@@ -23,9 +24,9 @@ class TextService
             ->scalar();
     }
 
-    private static function metaTextReplacements(mixed $text, CampaignSmsMessage $msg)
+    private static function metaTextReplacements(mixed $text)
     {
-        $params = $msg->getReplacementParams();
+        $params = self::$data->getReplacementParams();
         foreach ($params as $shortcode => $val) {
             $textBefore = $text;
             $text = self::metaTextReplacement($text, $shortcode, $val);
@@ -41,7 +42,7 @@ class TextService
     {
         // replaces {rand} with random 3 letter string, max 8 times
         for ($i = 0; str_contains($text, '{rand}') && $i < 8; $i++) {
-            $text = preg_replace('/{rand}/', Yii::$app->security->generateRandomString(3), $text, 1);
+            $text = preg_replace('/{rand}/', \Str::random(1), $text, 1);
         }
 
         for ($i = 0; str_contains($text, '{d}') && $i < 32; $i++) {
@@ -80,40 +81,40 @@ class TextService
 
     public static function processMsg(BuildSmsData $data)
     {
+        self::$data = $data;
         $data->selectedCampaignText = self::getSpecificAdText($data->dto->campaign_id, $data->dto->counter);
 
-        self::processTextReplacement($data);
+        self::processTextReplacement();
     }
 
-    public static function processTextReplacement(BuildSmsData $msg)
+    private static function processTextReplacement()
     {
-        $text = $msg->selectedCampaignText->text;
+        $text = self::$data->selectedCampaignText->text;
         Log::info('text before replacement', ['text' => $text]);
-        if ($msg->selectedCampaignText->haveDomainOrOptoutTag()) {
-            UrlShortenerService::setShortlink($msg);
-            $msg->sms_optout_link = UrlShortenerService::getDynamicSmsOptOut($msg->sms_shortlink);
+        if (self::$data->selectedCampaignText->haveDomainOrOptoutTag()) {
+            UrlShortenerService::setShortlink(self::$data);
+            self::$data->sms_optout_link = UrlShortenerService::getDynamicSmsOptOut(self::$data->sms_shortlink);
         }
 
-        self::setSmsLength($text, $msg);
-
+        self::setSmsLength($text);
 
         $text = self::mandatoryTextReplacements($text);
-        \Yii::$app->logger->logDebug('after mandatory', ['text' => $text]);
+        Log::debug('after mandatory', ['text' => $text]);
         $text = self::optionalTextReplacements($text);
-        \Yii::$app->logger->logDebug('after optional', ['text' => $text]);
-        $text = self::metaTextReplacements($text, $msg);
-        \Yii::$app->logger->logDebug('after meta', ['text' => $text]);
+        Log::debug('after optional', ['text' => $text]);
+        $text = self::metaTextReplacements($text);
+        Log::debug('after meta', ['text' => $text]);
         $text = self::replaceRandomDigits($text);
-        \Yii::$app->logger->logDebug('after rand-digits', ['text' => $text]);
+        Log::debug('after rand-digits', ['text' => $text]);
         $text = self::processSpintext($text);
-        \Yii::$app->logger->logDebug('after spintext', ['text' => $text]);
+        Log::debug('after spintext', ['text' => $text]);
         $text = self::cleanTextFromShortcodes($text);
-        \Yii::$app->logger->logDebug('after cleantextfromshortcodes', ['text' => $text]);
+        Log::debug('after cleantextfromshortcodes', ['text' => $text]);
 
         //todo - refactor out number replacement and clean text..
-        $text = Translations::replaceMessage($msg->lapObj->getCampaign()->user->translationMessage(), $text);
-        $msg->finalText = $text;
-        \Yii::$app->logger->logDebug('Final text', ['text' => $text]);
+//        $text = Translations::replaceMessage($->lapObj->getCampaign()->user->translationMessage(), $text);
+        self::$data->finalText = $text;
+        Log::debug('Final text', ['text' => $text]);
 
         return $text;
     }//end setFinalText()
@@ -127,14 +128,15 @@ class TextService
     public static function optionalTextReplacements(string $text)
     {
         $originalText = $text;
-        $route_name = self::$_msg->lapObj->getGateway()->name;
+//        $route_name = self::$_msg->lapObj->getGateway()->name;
+        $route_name = 'ROUTE_TODO';
+        //todo: after route is implemented, change this to route name
+
         $shortcodes = [
-            '{{{code}}}' => self::$_msg->random_key,
-            '{{{phone}}}' => self::$_msg->normalized,
-            '{{{ad_id}}}' => self::$_msg->selectedCampaignText->id,
-            '{{{dayofweek}}}' => date('l'),
-            '{{{ROUTE}}}' => $route_name,
-            '{{{route}}}' => $route_name,
+            '{sms_id}' => self::$data->sms_id,
+            '{phone}' => self::$data->dto->phone_normalized,
+            '{ad_id}' => self::$data->selectedCampaignText->id,
+            '{dayofweek}' => date('l'),
             '{ROUTE}' => $route_name,
             '{route}' => $route_name,
         ];
@@ -153,36 +155,35 @@ class TextService
 
     public static function mandatoryTextReplacements($text)
     {
-        $shortlink = self::$_msg->sms_shortlink;
-        $optout = self::$_msg->sms_optout_link;
+        $shortlink = self::$data->sms_shortlink;
+        $optout = self::$data->sms_optout_link;
 
-        if (str_contains($text, '{{{domain}}}')) {
-            $text = str_replace('{{{domain}}}', $shortlink, $text);
+        if (str_contains($text, '{domain}')) {
+            $text = str_replace('{domain}', $shortlink, $text);
         }
 
-        if (str_contains($text, '{{{optout}}}')) {
-            $text = str_replace('{{{optout}}}', $optout, $text);
+        if (str_contains($text, '{optout}')) {
+            $text = str_replace('{optout}', $optout, $text);
         }
 
         $text = str_replace("\n", ' ', $text);
-        // removed - if (!$spaces_allowed) {
         $text = preg_replace('~\s+~', ' ', $text);
 
-        if (self::getParts($text) > self::$_msg->submited_text_parts) {
-            Yii::$app->logger->logWarning(
+        if (self::getParts($text) > self::$data->submited_text_parts) {
+            Log::warning(
                 'Initial msg was short after replacing was long - mandatory',
-                ['original' => self::$_msg->selectedCampaignText->text, 'replaced' => $text]
+                ['original' => self::$data->selectedCampaignText->text, 'replaced' => $text]
             );
         }
 
-        $text = self::findBadSymbols($text);
+        $text = self::cleanBadSymbols($text);
         $text = htmlspecialchars_decode($text);
 
-        $trim_gsm = intval(self::$_msg->lapObj->getGateway()->getType()->one()->trim_gsm);
-        if (!self::$_msg->selectedCampaignText->isUnicode() && $trim_gsm) {
-            $text = GsmEncoder::utf8_to_gsm0338_transliterate($text);
-            Yii::$app->logger->logDebug("Trimmed Message: $text");
-        }
+//        $trim_gsm = intval(self::$_msg->lapObj->getGateway()->getType()->one()->trim_gsm);
+//        if (!self::$_msg->selectedCampaignText->isUnicode() && $trim_gsm) {
+//            $text = GsmEncoder::utf8_to_gsm0338_transliterate($text);
+//            Yii::$app->logger->logDebug("Trimmed Message: $text");
+//        }
 
         return $text;
     }//end mandatoryTextReplacements()
@@ -222,17 +223,17 @@ class TextService
         return $text;
     }
 
-    private static function setSmsLength(mixed $text, CampaignSmsMessage $msg)
+    private static function setSmsLength(mixed $text)
     {
         $parts = self::getParts($text);
-        $msg->submited_text_parts = $parts;
+        self::$data->submited_text_parts = $parts;
         if ($parts > 1) {
-            \Yii::$app->logger->logDebug('message too long');
-            $msg->is_initial_msg_long = true;
+            Log::debug('message too long');
+            self::$data->is_initial_msg_long = true;
         }
     }
 
-    private static function findBadSymbols(string $msg)
+    private static function cleanBadSymbols(string $msg)
     {
         $message = preg_replace(
             [

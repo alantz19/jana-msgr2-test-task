@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Log;
 
 class UrlShortenerService
 {
-    private static function callShorty(BuildSmsData $msg, $shortyParams = [])
+    private static function callUrlShortener(BuildSmsData $msg, $shortyParams = [])
     {
         $i = 0;
         do {
@@ -55,18 +55,13 @@ class UrlShortenerService
     public static function setShortlink(BuildSmsData $msg)
     {
         if (env('dont_send', false)) {
-            return 'http://local.dev/abc';
-        }
-
-        if (!empty($msg->sms_shortlink)) {
-            Log::warning('already called');
-            return true;
+            throw new Exception('dont_send');
         }
 
         $offer = self::selectOffer($msg);
         $msg->selectedOffer = $offer;
 
-        $shortyPostParams = self::buildShortyPostParams($msg);
+        $urlShortenerParams = self::buildUrlShortenerPostParams($msg);
         $listOrSegmentId = $msg->dto->list_id;
         if (empty($listOrSegmentId) && !empty($msg->segment_id)) {
             $listOrSegmentId = 'segment_' . $msg->segment_id;
@@ -81,7 +76,7 @@ class UrlShortenerService
         $msg->domain = $domain;
         Log::debug('Shorty domain', ['domain_id' => $domain->id]);
 
-        $link = self::callShorty($msg, $shortyPostParams);
+        $link = self::callUrlShortener($msg, $urlShortenerParams);
         if (empty($link)) {
             throw new Exception('Failed to create shortlink');
         }
@@ -92,7 +87,7 @@ class UrlShortenerService
         return true;
     }//end getShortlink()
 
-    private static function buildShortyPostParams(BuildSmsData $msg)
+    private static function buildUrlShortenerPostParams(BuildSmsData $msg)
     {
         $neededParams = $msg->selectedOffer->getNeededParams();
         if (!$neededParams) {

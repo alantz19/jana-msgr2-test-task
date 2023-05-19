@@ -17,6 +17,17 @@ class BuildSmsData
      */
     public Offer $selectedOffer;
     public Domain $domain;
+    public $submited_text_parts;
+    /**
+     * @var true
+     */
+    public bool $is_initial_msg_long;
+    public string $sms_id;
+    public string $sms_optout_link;
+    /**
+     * @var array|string|string[]|null
+     */
+    public string|array|null $finalText;
 
     public function getReplacementParams()
     {

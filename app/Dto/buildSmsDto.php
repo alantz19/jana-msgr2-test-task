@@ -12,6 +12,8 @@ class buildSmsDto extends Data
         public string $name,
         public string $list_id,
         public string $campaign_id,
+        public string $campaign_send_id,
+        public string $team_id,
         public int $counter,
     )
     {

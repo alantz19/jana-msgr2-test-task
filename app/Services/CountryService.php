@@ -9,6 +9,9 @@ class CountryService
     public static function guessCountry($countryName)
     {
         $countryName = strtolower(trim($countryName, "_-\t\n \r\0\"'"));
+        if (empty($countryName)) {
+            return false;
+        }
 
         if ($countryName == 'uk') {
             $countryName = 'gb';
@@ -60,7 +63,7 @@ class CountryService
             return $country->data->first()['id'];
         }
 
-        throw new \Exception('Country not found');
+        throw new \Exception("Country [{$countryName}] not found");
     }
     
 }

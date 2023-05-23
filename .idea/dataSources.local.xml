@@ -11,6 +11,7 @@
       <schema-mapping>
         <introspection-scope>
           <node negative="1">
+            <node kind="database" negative="1" />
             <node kind="database">
               <name qname="postgres" />
               <name qname="testing" />

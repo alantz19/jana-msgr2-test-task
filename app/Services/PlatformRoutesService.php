@@ -10,8 +10,8 @@ use App\Models\User;
 
 class PlatformRoutesService
 {
-    public static function getCustomersForSeller(User $user)
+    public static function getCustomersConnectionForSeller(User $seller)
     {
-        return $user->currentTeam->routingPlanConnections;
+        return $seller->currentTeam->smsRoutingPlanConnectionsSeller;
     }
 }

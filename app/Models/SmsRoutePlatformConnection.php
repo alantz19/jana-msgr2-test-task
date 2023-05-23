@@ -12,7 +12,7 @@ class SmsRoutePlatformConnection extends Model
     use SoftDeletes, HasFactory, HasUuids;
 
     protected $fillable = [
-        'plan_id',
+        'sms_routing_plan_id',
         'customer_team_id',
         'is_active',
         'name',

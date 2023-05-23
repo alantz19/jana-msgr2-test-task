@@ -68,18 +68,18 @@ class UserFactory extends Factory
                 ])->afterCreating(
                     function (Team $team, User $user) {
                         $user->forceFill(['current_team_id' => $team->id])->save();
-                        if ($this->withUkPlatformRoute()) {
-                            $plan = SmsRoutingPlan::factory()->create([
-                                'team_id' => $team->id,
-                                'name' => 'UK Platform Route',
-                            ]);
-                            $team->routingPlans()->create(
-                                [
-                                    'name' => 'UK Platform Route',
-                                    'is_active' => true,
-                                ]
-                            );
-                        }
+//                        if ($this->withUkPlatformRoute()) {
+//                            $plan = SmsRoutingPlan::factory()->create([
+//                                'team_id' => $team->id,
+//                                'name' => 'UK Platform Route',
+//                            ]);
+//                            $team->routingPlans()->create(
+//                                [
+//                                    'name' => 'UK Platform Route',
+//                                    'is_active' => true,
+//                                ]
+//                            );
+//                        }
                     }
                 ),
         );
@@ -87,35 +87,36 @@ class UserFactory extends Factory
 
     public function withUkPlatformRoute(callable $callback = null): static
     {
-        $sellerTeam = Team::factory()
-            ->has(
-                SmsRoutingPlan::factory()
-                    ->has(SmsRoute::factory()
-                        ->has(SmsRouteRate::factory()->state([
-                            'country_id' => CountryService::guessCountry('UK'),
-                            'rate' => '0.01',
-                        ]))
-                    )
-            );
-
-        create();
-        return $this->has(
-            SmsRoutingPlan::factory()
-                ->state(fn(array $attributes, User $user) => [
-                    'name' => 'UK Platform Route',
-                    'team_id' => $sellerTeam->id,
-                ])
-                ->afterCreating(function (SmsRoutingPlan $plan, User $user) use ($sellerTeam) {
-                    SmsRoutePlatformConnection::create([
-                        'plan_id' => $plan->id,
-                        'customer_team_id' => $user->currentTeam->id,
-                    ]);
-
-                    $plan->hasMany(SmsRoute::factory()->state([
-                        'name' => 'route 123',
-                        'is_active' => true,
-                    ]));
-                }),
-        );
+//        $sellerTeam = Team::factory()
+//            ->has(
+//                SmsRoutingPlan::factory()
+//                    ->has(SmsRoute::factory()
+//                        ->has(SmsRouteRate::factory()->state([
+//                            'country_id' => CountryService::guessCountry('UK'),
+//                            'rate' => '0.01',
+//                        ]))
+//                    )
+//            );
+//
+//        create();
+//        return $this->has(
+//            SmsRoutingPlan::factory()
+//                ->state(fn(array $attributes, User $user) => [
+//                    'name' => 'UK Platform Route',
+//                    'team_id' => $sellerTeam->id,
+//                ])
+//                ->afterCreating(function (SmsRoutingPlan $plan, User $user) use ($sellerTeam) {
+//                    SmsRoutePlatformConnection::create([
+//                        'plan_id' => $plan->id,
+//                        'customer_team_id' => $user->currentTeam->id,
+//                    ]);
+//
+//                    $plan->hasMany(SmsRoute::factory()->state([
+//                        'name' => 'route 123',
+//                        'is_active' => true,
+//                    ]));
+//                }),
+//        );
+        return $this;
     }
 }

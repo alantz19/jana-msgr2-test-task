@@ -45,7 +45,7 @@ class RoutingTest extends TestCase
         $route = SmsRoute::create([
             'team_id' => $this->user->currentTeam->id,
             'name' => 'Test Route',
-            'routing_plan_id' => $plan->id,
+            'sms_routing_plan_id' => $plan->id,
             'route_company_id' => $company->id,
         ]);
 
@@ -66,7 +66,7 @@ class RoutingTest extends TestCase
 
         //get route rate for country
         SmsRoutingPlanRoutes::create([
-            'routing_plan_id' => $plan->id,
+            'sms_routing_plan_id' => $plan->id,
             'sms_route_id' => $route->id,
         ]);
 
@@ -92,7 +92,7 @@ class RoutingTest extends TestCase
         $route = SmsRoute::create([
             'team_id' => $this->user->currentTeam->id,
             'name' => 'Test Route',
-            'routing_plan_id' => $plan->id,
+            'sms_routing_plan_id' => $plan->id,
             'route_company_id' => $company->id,
         ]);
 
@@ -113,13 +113,13 @@ class RoutingTest extends TestCase
 
         //get route rate for country
         SmsRoutingPlanRoutes::create([
-            'routing_plan_id' => $plan->id,
+            'sms_routing_plan_id' => $plan->id,
             'sms_route_id' => $route->id,
         ]);
 
         //get available routes for user
         SmsRoutePlatformConnection::create([
-            'plan_id' => $plan->id,
+            'sms_routing_plan_id' => $plan->id,
             'name' => 'SMSEdge',
             'customer_team_id' => $this->customer->current_team_id,
             'rate_multiplier' => 1.1,
@@ -133,7 +133,7 @@ class RoutingTest extends TestCase
         $this->assertEquals($routes['platform'][0]->id, $route->id);
         $this->assertEquals($routes['platform'][0]->platformConnection->name, 'SMSEdge');
         $this->assertEquals(0.011, round($routes['platform'][0]->priceForCountry*10000)/10000 );
-        $this->assertEquals('SMSEdge::Test Route', $routes['platform'][0]->customerRouteName);
+        $this->assertEquals('SMSEdge::Test Route', $routes['platform'][0]->getCustomerRouteName());
     }
 
 
@@ -147,17 +147,26 @@ class RoutingTest extends TestCase
             'name' => 'Test Plan',
         ]);
 
+        $this->assertNotEmpty($plan->id);
+
         $company = SmsRouteCompany::create([
             'team_id' => $user->currentTeam->id,
             'name' => 'Test Company',
         ]);
 
+        //assert not empty company id
+        $this->assertNotEmpty($company->id);
+
         $route = SmsRoute::create([
             'team_id' => $user->currentTeam->id,
             'name' => 'Test Route',
-            'routing_plan_id' => $plan->id,
+            'sms_routing_plan_id' => $plan->id,
             'route_company_id' => $company->id,
         ]);
+
+        //assert not empty route id
+        $this->assertNotEmpty($route->id);
+
 
         $connection = SmsRouteSmppConnection::create([
             'url' => '167.235.66.91',
@@ -165,6 +174,10 @@ class RoutingTest extends TestCase
             'password' => 'admin',
             'port' => 2775,
         ]);
+
+        //assert not empty connection id
+        $this->assertNotEmpty($connection->id);
+
         $route->smppConnections()->associate($connection);
         $route->saveOrFail();
 
@@ -174,22 +187,32 @@ class RoutingTest extends TestCase
             'rate' => 0.01,
         ]);
 
+        //assert not empty rate id
+        $this->assertNotEmpty($rate->id);
+
         //get route rate for country
-        SmsRoutingPlanRoutes::create([
-            'routing_plan_id' => $plan->id,
+        $planroutes = SmsRoutingPlanRoutes::create([
+            'sms_routing_plan_id' => $plan->id,
             'sms_route_id' => $route->id,
         ]);
 
+        //assert not empty plan route id
+        $this->assertNotEmpty($planroutes->id);
+
         //get available routes for user
-        SmsRoutePlatformConnection::create([
-            'plan_id' => $plan->id,
+        $platformConnection = SmsRoutePlatformConnection::create([
+            'sms_routing_plan_id' => $plan->id,
             'name' => 'SMSEdge',
             'customer_team_id' => $customer->current_team_id,
             'rate_multiplier' => 1.1,
         ]);
 
+        //assert not empty platform connection id
+        $this->assertNotEmpty($platformConnection->id);
 
-        $res = PlatformRoutesService::getCustomersForSeller($user);
+
+        $res = PlatformRoutesService::getCustomersConnectionForSeller($user);
+//        dd($res);
         $this->assertEquals($res[0]->customer_team_id, $customer->current_team_id);
         $this->assertEquals($res[0]->is_active, true);
     }

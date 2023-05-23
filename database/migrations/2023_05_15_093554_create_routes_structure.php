@@ -27,28 +27,32 @@ return new class extends Migration
             $table->string('notes')->nullable();
 
             $table->timestamps();
+
+            $table->foreign('world_country_id')->references('id')->on('world_countries');
         });
         $this->insertNetworks();
 
         Schema::create('sms_route_companies', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('team_id');
+            $table->foreignUuid('team_id')->references('id')->on('teams');
             $table->string('name');
             $table->json('meta')->nullable();
             $table->timestamps();
             $table->softDeletes();
+
         });
 
         Schema::create('sms_routes', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('team_id');
             $table->string('name');
-            $table->uuid('route_company_id');
+            $table->foreignUuid('route_company_id')->references('id')->on('sms_route_companies');
             $table->nullableUuidMorphs('connection');
             $table->json('meta')->nullable();
             $table->timestamps();
             $table->softDeletes();
             $table->boolean('is_active')->default(true);
+
         });
 
         Schema::create('sms_route_smpp_connections', function (Blueprint $table) {
@@ -64,42 +68,41 @@ return new class extends Migration
             $table->softDeletes();
             $table->timestamps();
         });
-
-        Schema::create('sms_route_platform_connections', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->string('name')->nullable();
-            $table->uuid('plan_id');
-            $table->uuid('customer_team_id');
-            $table->decimal('rate_multiplier', 8, 5);
-            $table->boolean('is_active')->default(true);
-            $table->timestamps();
-            $table->softDeletes();
-        });
-
-        Schema::create('sms_route_rates', function(Blueprint $table){
-            $table->uuid('id')->primary(); //causes error?
-            $table->uuid('sms_route_id');
-            $table->integer('world_country_id')->foreign('world_country_id')->references('id')->on('world_countries');
-            $table->decimal('rate', 8, 4);
-            $table->json('meta')->nullable();
-            $table->timestamps();
-            $table->softDeletes();
-
-            $table->index(['sms_route_id', 'world_country_id']);
-        });
         Schema::create('sms_routing_plans', function(Blueprint $table){
             $table->uuid('id')->primary();
-            $table->uuid('team_id')->index();
+            $table->foreignUuid('team_id')->references('id')->on('teams');
             $table->string('name');
             $table->boolean('is_platform_plan')->default(false);
             $table->timestamps();
             $table->softDeletes();
         });
+        Schema::create('sms_route_platform_connections', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->string('name')->nullable();
+            $table->foreignUuid('sms_routing_plan_id')->references('id')->on('sms_routing_plans');
+            $table->foreignUuid('customer_team_id')->references('id')->on('teams');
+            $table->decimal('rate_multiplier', 8, 5);
+            $table->boolean('is_active')->default(true);
+            $table->timestamps();
+            $table->softDeletes();
+
+        });
+
+        Schema::create('sms_route_rates', function(Blueprint $table){
+            $table->uuid('id')->primary(); //causes error?
+            $table->foreignUuid('sms_route_id');
+            $table->foreignId('world_country_id');
+            $table->decimal('rate', 8, 4);
+            $table->json('meta')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
+
+        });
 
         Schema::create('sms_routing_plan_rules', function(Blueprint $table){
             $table->uuid('id')->primary();
-            $table->uuid('routing_plan_id')->index();
-            $table->uuid('sms_route_id')->index();
+            $table->foreignUuid('sms_route_id')->references('id')->on('sms_routes');
+            $table->foreignUuid('sms_routing_plan_id')->references('id')->on('sms_routing_plans');
             $table->foreignId('country_id')->references('id')->on('world_countries');
             $table->foreignId('network_id')->references('id')->on('world_mobile_networks');
             $table->boolean('is_active')->default(true);
@@ -109,17 +112,19 @@ return new class extends Migration
             $table->boolean('is_platform_plan')->index()->default(false);
             $table->timestamps();
             $table->softDeletes();
+
         });
 
         Schema::create('sms_routing_plan_routes', function(Blueprint $table){
             $table->uuid('id')->primary();
-            $table->uuid('routing_plan_id')->index();
-            $table->uuid('sms_route_id')->index();
+            $table->foreignUuid('sms_route_id')->references('id')->on('sms_routes');
+            $table->foreignUuid('sms_routing_plan_id')->references('id')->on('sms_routing_plans');
             $table->boolean('is_active')->default(true);
             $table->string('priority')->default(0);
             $table->json('meta')->nullable();
             $table->timestamps();
             $table->softDeletes();
+
         });
     }
 

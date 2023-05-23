@@ -27,7 +27,7 @@ class UserRoutesService
             foreach ($planConnections as $i => $planConnection) {
                 $planRoutes[$i]['connection'] = $planConnection;
                 $routes = SmsRoutingPlanRoutes::where([
-                    'routing_plan_id' => $planConnections->pluck('plan_id')->all()
+                    'sms_routing_plan_id' => $planConnections->pluck('sms_routing_plan_id')->all()
                 ])->get();
                 if ($routes->isNotEmpty()) {
                     $planRoutes[$i]['routes'] = CustomerRoute::where(

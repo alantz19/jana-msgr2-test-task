@@ -13,7 +13,7 @@ class SmsRoutingPlanRoutes extends Model
 
     protected $fillable = [
         'sms_route_id',
-        'routing_plan_id',
+        'sms_routing_plan_id',
         'customer_id',
         'priority',
     ];

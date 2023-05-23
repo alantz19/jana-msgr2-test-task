@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/../../../di8/www/msgr/.idea/msgr.iml" filepath="$PROJECT_DIR$/../../../di8/www/msgr/.idea/msgr.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/v2_1_msgr.iml" filepath="$PROJECT_DIR$/.idea/v2_1_msgr.iml" />
     </modules>
   </component>

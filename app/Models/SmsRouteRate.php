@@ -12,7 +12,7 @@ class SmsRouteRate extends Model
     use SoftDeletes, HasFactory, HasUuids;
 
     protected $fillable = [
-        'route_id',
+        'sms_route_id',
         'world_country_id',
         'rate',
         'meta'

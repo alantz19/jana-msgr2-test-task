@@ -7,19 +7,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class SmsRoutingPlan extends Model
+class SmsRoutingPlanRoutes extends Model
 {
     use SoftDeletes, HasFactory, HasUuids;
 
     protected $fillable = [
-        'team_id',
-        'name',
-        'route_company_id',
-        'meta'
+        'sms_route_id',
+        'routing_plan_id',
+        'customer_id',
+        'priority',
     ];
-
-    public function connections()
-    {
-        return $this->hasMany(SmsRoutePlatformConnection::class);
-    }
 }

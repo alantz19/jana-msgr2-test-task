@@ -6,7 +6,7 @@ use Nnjeim\World\World;
 
 class CountryService
 {
-    public static function guessCountry($countryName)
+    public static function guessCountry($countryName): int|false
     {
         $countryName = strtolower(trim($countryName, "_-\t\n \r\0\"'"));
         if (empty($countryName)) {

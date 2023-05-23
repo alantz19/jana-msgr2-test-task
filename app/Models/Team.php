@@ -50,4 +50,14 @@ class Team extends JetstreamTeam
     {
         return $this->hasMany(Lists::class);
     }
+
+    public function routingPlans()
+    {
+        return $this->hasMany(SmsRoutingPlan::class);
+    }
+
+    public function routingPlanConnections()
+    {
+        return $this->hasManyThrough(SmsRoutePlatformConnection::class, SmsRoutingPlan::class, 'team_id', 'plan_id' );
+    }
 }

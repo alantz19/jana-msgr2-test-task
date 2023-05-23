@@ -20,8 +20,15 @@ class SmsRoute extends Model
         'meta'
     ];
 
+    public $priceForCountry;
+
     public function smppConnections() : MorphTo
     {
         return $this->morphTo('connection');
+    }
+
+    public function rates()
+    {
+        return $this->hasMany(SmsRouteRate::class);
     }
 }

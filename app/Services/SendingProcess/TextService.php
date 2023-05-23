@@ -4,13 +4,9 @@ namespace App\Services\SendingProcess;
 
 use App\Services\SendingProcess\Data\BuildSmsData;
 use App\Services\UrlShortenerService;
-use App\Dto\buildSmsDto;
 use App\Models\SmsCampaignText;
-use backend\models\AdTexts;
-use backend\models\Translations;
-use common\components\SMSCounter;
-use common\models\Telecom\Encoder\GsmEncoder;
 use Illuminate\Support\Facades\Log;
+use SMSCounter;
 
 class TextService
 {
@@ -82,7 +78,7 @@ class TextService
     public static function processMsg(BuildSmsData $data)
     {
         self::$data = $data;
-        $data->selectedCampaignText = self::getSpecificAdText($data->dto->campaign_id, $data->dto->counter);
+        $data->selectedCampaignText = self::getSpecificAdText($data->dto->sms_campaign_id, $data->dto->counter);
 
         self::processTextReplacement();
     }
@@ -121,8 +117,8 @@ class TextService
 
     private static function getSpecificAdText($campaign_id, $counter)
     {
-        $adTexts = SmsCampaignText::where(['sms_campaign_id' => $campaign_id, 'active' => 1])->all();
-        return $adTexts[($counter % count($adTexts))];
+        $adTexts = SmsCampaignText::where(['sms_campaign_id' => $campaign_id, 'is_active' => 1])->get();
+        return $adTexts[($counter % $adTexts->count())];
     }//end selectSpecificAdText()
 
     public static function optionalTextReplacements(string $text)
@@ -156,14 +152,14 @@ class TextService
     public static function mandatoryTextReplacements($text)
     {
         $shortlink = self::$data->sms_shortlink;
-        $optout = self::$data->sms_optout_link;
+
+        if (!empty(self::$data->sms_optout_link) && str_contains($text, '{optout}')){
+            $optout = self::$data->sms_optout_link;
+            $text = str_replace('{optout}', $optout, $text);
+        }
 
         if (str_contains($text, '{domain}')) {
             $text = str_replace('{domain}', $shortlink, $text);
-        }
-
-        if (str_contains($text, '{optout}')) {
-            $text = str_replace('{optout}', $optout, $text);
         }
 
         $text = str_replace("\n", ' ', $text);

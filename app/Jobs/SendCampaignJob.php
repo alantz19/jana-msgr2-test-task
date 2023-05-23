@@ -15,7 +15,7 @@ class SendCampaignJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    private $campaignSend;
+    private SmsCampaignSend $campaignSend;
 
     public function __construct(SmsCampaignSend $campaignSend)
     {
@@ -32,9 +32,14 @@ class SendCampaignJob implements ShouldQueue
         //submit to sms build queue
         $i = 0;
         foreach ($contacts as $contact) {
-            $dto = buildSmsDto::from([...$contact, 'counter' => $i, 'campaign_send_id' => $this->campaignSend->id,
-                'team_id' => $this->campaignSend->campaign()->team_id]);
-            buildSmsJob::handle($dto);
+            $dto = buildSmsDto::from(
+                [...$contact,
+                    'counter' => $i,
+                    'sms_campaign_send_id' => $this->campaignSend->id,
+                    'sms_campaign_id' => $this->campaignSend->sms_campaign_id,
+                    'team_id' => $this->campaignSend->campaign->team_id
+                ]);
+            buildSmsJob::dispatch($dto);
         }
     }
 }

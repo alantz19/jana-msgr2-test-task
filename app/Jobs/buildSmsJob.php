@@ -18,23 +18,26 @@ class buildSmsJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public function handle(buildSmsDto $dto): void
+    public function __construct(public BuildSmsDto $dto)
+    {}
+
+    public function handle(): void
     {
         //check stop conditions
-        if (SmsCampaignSend::find($dto->campaign_send_id)->status == 'stopped') {
+        if (SmsCampaignSend::find($this->dto->sms_campaign_send_id)->status == 'stopped') {
             return;
         }
 
-        $res = Cache::pull($dto->phone_normalized . '_' . $dto->team_id);
+        $res = Cache::pull($this->dto->phone_normalized . '_' . $this->dto->team_id);
         if ($res) {
-            \Log::warning('Duplicate sms cache: ' . $dto->phone_normalized . '_' . $dto->team_id);
+            \Log::warning('Duplicate sms cache: ' . $this->dto->phone_normalized . '_' . $this->dto->team_id);
             return;
         }
 
-        Cache::put($dto->phone_normalized . '_' . $dto->team_id, true, 20);
+        Cache::put($this->dto->phone_normalized . '_' . $this->dto->team_id, true, 20);
 
         $data = new BuildSmsData();
-        $data->dto = $dto;
+        $data->dto = $this->dto;
         $data->sms_id = \Str::uuid()->toString();
         TextService::processMsg($data);
         //decide on route.

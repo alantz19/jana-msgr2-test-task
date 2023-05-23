@@ -31,82 +31,33 @@ class SendSmsCampaignTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $user = User::factory()->withPersonalTeam()->create();
-        $this->actingAs($user);
-        $this->user = $user;
-
     }
 
     public function test_send_campaign()
     {
-        $routeProvider = User::factory()->withPersonalTeam()->create();
+        $user = User::factory()->withPersonalTeam()->create();
+        $userId = $user->id;
 
         //setup contacts
         $list = Lists::create([
-            'team_id' => $this->user->currentTeam->id,
+            'team_id' => $user->currentTeam->id,
             'name' => 'Test List',
         ]);
 
         $contact = Contact::make([
-            'team_id' => $this->user->currentTeam->id,
+            'team_id' => $user->currentTeam->id,
             'list_id' => $list->id,
             'country_id' => CountryService::guessCountry('UK'),
             'phone_normalized' => '447'.rand(10000000, 99999999),
             'phone_is_good' => true,
         ]);
         $contact->save();
-
-        //setup routes
-        $plan = SmsRoutingPlan::create([
-            'team_id' => $routeProvider->currentTeam->id,
-            'name' => 'Test Plan',
-        ]);
-
-        $company = SmsRouteCompany::create([
-            'team_id' => $routeProvider->currentTeam->id,
-            'name' => 'Test Company',
-        ]);
-
-        $route = SmsRoute::create([
-            'team_id' => $routeProvider->currentTeam->id,
-            'name' => 'Test Route',
-            'sms_routing_plan_id' => $plan->id,
-            'sms_route_company_id' => $company->id,
-        ]);
-
-        $connection = SmsRouteSmppConnection::create([
-            'url' => '167.235.66.91',
-            'username' => 'admin',
-            'password' => 'admin',
-            'port' => 2775,
-        ]);
-        $route->smppConnections()->associate($connection);
-        $route->saveOrFail();
-
-        $rate = SmsRouteRate::create([
-            'sms_route_id' => $route->id,
-            'world_country_id' => CountryService::guessCountry('UK'),
-            'rate' => 0.01,
-        ]);
-
-        SmsRoutingPlanRoutes::create([
-            'sms_routing_plan_id' => $plan->id,
-            'sms_route_id' => $route->id,
-        ]);
-
-
-        /** @var SmsRoutePlatformConnection $connection */
-        $connection = SmsRoutePlatformConnection::create([
-            'sms_routing_plan_id' => $plan->id,
-            'name' => 'SMSEdge',
-            'customer_team_id' => $this->user->current_team_id,
-            'rate_multiplier' => 1.1,
-        ]);
-//        $this->user->currentTeam->smsRoutePlatformConnections()->attach($connection->id);
+//        dd($user->current_team_id);
+        $seller = User::factory()->asUkRouteSeller($user->currentTeam)->create();
 
         //setup campaign
         $campaign = SmsCampaign::factory()->create([
-            'team_id' => $this->user->currentTeam->id,
+            'team_id' => $user->currentTeam->id,
         ]);
 
         $campaign->setLists([$list->id]);
@@ -120,11 +71,10 @@ class SendSmsCampaignTest extends TestCase
         ]);
 
         Offer::factory()->count(5)->create([
-            'team_id' => $this->user->currentTeam->id,
+            'team_id' => $user->currentTeam->id,
         ])->each(function($model) use ($campaign) {
             $campaign->offers()->attach($model->id);
         });
-//        $campaign->routes()->attach($route->id);
 
         $campaign->setSettings([
             'send_time' => null,

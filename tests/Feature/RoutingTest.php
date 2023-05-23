@@ -46,7 +46,7 @@ class RoutingTest extends TestCase
             'team_id' => $this->user->currentTeam->id,
             'name' => 'Test Route',
             'sms_routing_plan_id' => $plan->id,
-            'route_company_id' => $company->id,
+            'sms_route_company_id' => $company->id,
         ]);
 
         $connection = SmsRouteSmppConnection::create([
@@ -93,7 +93,7 @@ class RoutingTest extends TestCase
             'team_id' => $this->user->currentTeam->id,
             'name' => 'Test Route',
             'sms_routing_plan_id' => $plan->id,
-            'route_company_id' => $company->id,
+            'sms_route_company_id' => $company->id,
         ]);
 
         $connection = SmsRouteSmppConnection::create([
@@ -161,7 +161,7 @@ class RoutingTest extends TestCase
             'team_id' => $user->currentTeam->id,
             'name' => 'Test Route',
             'sms_routing_plan_id' => $plan->id,
-            'route_company_id' => $company->id,
+            'sms_route_company_id' => $company->id,
         ]);
 
         //assert not empty route id

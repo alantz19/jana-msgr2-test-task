@@ -121,7 +121,7 @@ class TextService
 
     private static function getSpecificAdText($campaign_id, $counter)
     {
-        $adTexts = SmsCampaignText::where(['campaign_id' => $campaign_id, 'active' => 1])->all();
+        $adTexts = SmsCampaignText::where(['sms_campaign_id' => $campaign_id, 'active' => 1])->all();
         return $adTexts[($counter % count($adTexts))];
     }//end selectSpecificAdText()
 

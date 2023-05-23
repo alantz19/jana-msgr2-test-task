@@ -13,7 +13,7 @@ class SmsCampaignSenderidFactory extends Factory
     public function definition(): array
     {
         return [
-            'campaign_id' => $this->faker->uuid(),
+            'sms_campaign_id' => $this->faker->uuid(),
             'text' => $this->faker->text(8),
             'is_active' => true,
             'created_at' => Carbon::now(),

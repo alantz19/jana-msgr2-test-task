@@ -13,7 +13,7 @@ class SmsCampaignTextFactory extends Factory
     public function definition(): array
     {
         return [
-            'campaign_id' => $this->faker->word(),
+            'sms_campaign_id' => $this->faker->word(),
             'text' => $this->faker->text(),
             'is_active' => $this->faker->boolean(),
             'created_at' => Carbon::now(),

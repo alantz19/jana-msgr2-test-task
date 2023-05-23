@@ -83,7 +83,7 @@ class SenderidList extends Component implements HasTable
     public static function getSenderIdListQuery($campaign_id)
     {
         return SmsCampaignSenderId::query()
-            ->where(['campaign_id' => $campaign_id ]);
+            ->where(['sms_campaign_id' => $campaign_id ]);
     }
 
     public function render()

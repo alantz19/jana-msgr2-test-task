@@ -70,8 +70,8 @@ class SendSmsCampaignTest extends TestCase
         $route = SmsRoute::create([
             'team_id' => $routeProvider->currentTeam->id,
             'name' => 'Test Route',
-            'routing_plan_id' => $plan->id,
-            'route_company_id' => $company->id,
+            'sms_routing_plan_id' => $plan->id,
+            'sms_route_company_id' => $company->id,
         ]);
 
         $connection = SmsRouteSmppConnection::create([
@@ -90,19 +90,19 @@ class SendSmsCampaignTest extends TestCase
         ]);
 
         SmsRoutingPlanRoutes::create([
-            'routing_plan_id' => $plan->id,
+            'sms_routing_plan_id' => $plan->id,
             'sms_route_id' => $route->id,
         ]);
 
 
         /** @var SmsRoutePlatformConnection $connection */
         $connection = SmsRoutePlatformConnection::create([
-            'plan_id' => $plan->id,
+            'sms_routing_plan_id' => $plan->id,
             'name' => 'SMSEdge',
             'customer_team_id' => $this->user->current_team_id,
             'rate_multiplier' => 1.1,
         ]);
-        $this->user->currentTeam->smsRoutePlatformConnections()->attach($connection->id);
+//        $this->user->currentTeam->smsRoutePlatformConnections()->attach($connection->id);
 
         //setup campaign
         $campaign = SmsCampaign::factory()->create([
@@ -112,11 +112,11 @@ class SendSmsCampaignTest extends TestCase
         $campaign->setLists([$list->id]);
 
         SmsCampaignText::factory()->count(5)->create([
-            'campaign_id' => $campaign->id,
+            'sms_campaign_id' => $campaign->id,
         ]);
 
         SmsCampaignSenderId::factory()->count(5)->create([
-            'campaign_id' => $campaign->id,
+            'sms_campaign_id' => $campaign->id,
         ]);
 
         Offer::factory()->count(5)->create([
@@ -124,7 +124,7 @@ class SendSmsCampaignTest extends TestCase
         ])->each(function($model) use ($campaign) {
             $campaign->offers()->attach($model->id);
         });
-        $campaign->routes()->attach($route->id);
+//        $campaign->routes()->attach($route->id);
 
         $campaign->setSettings([
             'send_time' => null,

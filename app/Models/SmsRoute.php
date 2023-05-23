@@ -16,7 +16,7 @@ class SmsRoute extends Model
     protected $fillable = [
         'team_id',
         'name',
-        'route_company_id',
+        'sms_route_company_id',
         'meta'
     ];
 

@@ -90,6 +90,6 @@ class TextList extends Component  implements HasTable
     public static function getTextListQuery($campaign_id)
     {
         return SmsCampaignText::query()
-            ->where(['campaign_id' => $campaign_id ]);
+            ->where(['sms_campaign_id' => $campaign_id ]);
     }
 }

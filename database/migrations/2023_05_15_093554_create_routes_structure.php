@@ -27,14 +27,12 @@ return new class extends Migration
             $table->string('notes')->nullable();
 
             $table->timestamps();
-
-            $table->foreign('world_country_id')->references('id')->on('world_countries');
         });
         $this->insertNetworks();
 
         Schema::create('sms_route_companies', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('team_id')->references('id')->on('teams');
+            $table->foreignUuid('team_id')->index();
             $table->string('name');
             $table->json('meta')->nullable();
             $table->timestamps();
@@ -44,9 +42,9 @@ return new class extends Migration
 
         Schema::create('sms_routes', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('team_id');
+            $table->foreignUuid('team_id')->index();
             $table->string('name');
-            $table->foreignUuid('route_company_id')->references('id')->on('sms_route_companies');
+            $table->foreignUuid('sms_route_company_id')->index();
             $table->nullableUuidMorphs('connection');
             $table->json('meta')->nullable();
             $table->timestamps();
@@ -68,9 +66,10 @@ return new class extends Migration
             $table->softDeletes();
             $table->timestamps();
         });
+
         Schema::create('sms_routing_plans', function(Blueprint $table){
             $table->uuid('id')->primary();
-            $table->foreignUuid('team_id')->references('id')->on('teams');
+            $table->foreignUuid('team_id')->index();
             $table->string('name');
             $table->boolean('is_platform_plan')->default(false);
             $table->timestamps();
@@ -79,8 +78,8 @@ return new class extends Migration
         Schema::create('sms_route_platform_connections', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('name')->nullable();
-            $table->foreignUuid('sms_routing_plan_id')->references('id')->on('sms_routing_plans');
-            $table->foreignUuid('customer_team_id')->references('id')->on('teams');
+            $table->foreignUuid('sms_routing_plan_id')->index();
+            $table->foreignUuid('customer_team_id')->index()->references('id')->on('teams');
             $table->decimal('rate_multiplier', 8, 5);
             $table->boolean('is_active')->default(true);
             $table->timestamps();
@@ -101,15 +100,15 @@ return new class extends Migration
 
         Schema::create('sms_routing_plan_rules', function(Blueprint $table){
             $table->uuid('id')->primary();
-            $table->foreignUuid('sms_route_id')->references('id')->on('sms_routes');
-            $table->foreignUuid('sms_routing_plan_id')->references('id')->on('sms_routing_plans');
-            $table->foreignId('country_id')->references('id')->on('world_countries');
-            $table->foreignId('network_id')->references('id')->on('world_mobile_networks');
+            $table->foreignUuid('sms_route_id')->index();
+            $table->foreignUuid('sms_routing_plan_id')->index();
+            $table->foreignId('world_country_id')->index();
+            $table->foreignId('world_network_id')->index();
             $table->boolean('is_active')->default(true);
             $table->string('priority')->default(0);
             $table->string('action')->default('send');
             $table->json('action_vars')->nullable();
-            $table->boolean('is_platform_plan')->index()->default(false);
+//            $table->boolean('is_platform_plan')->index()->default(false);
             $table->timestamps();
             $table->softDeletes();
 
@@ -117,8 +116,8 @@ return new class extends Migration
 
         Schema::create('sms_routing_plan_routes', function(Blueprint $table){
             $table->uuid('id')->primary();
-            $table->foreignUuid('sms_route_id')->references('id')->on('sms_routes');
-            $table->foreignUuid('sms_routing_plan_id')->references('id')->on('sms_routing_plans');
+            $table->foreignUuid('sms_route_id')->index();
+            $table->foreignUuid('sms_routing_plan_id')->index();
             $table->boolean('is_active')->default(true);
             $table->string('priority')->default(0);
             $table->json('meta')->nullable();

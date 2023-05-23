@@ -9,7 +9,7 @@ class SmsCampaignTextCreateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'campaign_id' => ['required', 'integer'],
+            'sms_campaign_id' => ['required', 'integer'],
             'text' => ['required', 'string'],
         ];
     }

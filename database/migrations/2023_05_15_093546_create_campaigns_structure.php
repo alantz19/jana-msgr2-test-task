@@ -20,7 +20,7 @@ return new class extends Migration
         });
         Schema::create('sms_campaign_sends', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('campaign_id')->nullable();
+            $table->foreignUuid('sms_campaign_id')->nullable();
             $table->string('status')->nullable();
             $table->json('meta')->nullable();
             $table->timestamps();
@@ -35,7 +35,7 @@ return new class extends Migration
         });
         Schema::create('sms_campaign_texts', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('campaign_id');
+            $table->foreignUuid('sms_campaign_id');
             $table->string('text');
             $table->boolean('is_active')->nullable();
             $table->timestamps();
@@ -43,7 +43,7 @@ return new class extends Migration
         });
         Schema::create('sms_campaign_senderids', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('campaign_id');
+            $table->foreignUuid('sms_campaign_id');
             $table->string('text');
             $table->boolean('is_active')->nullable();
             $table->timestamps();
@@ -61,7 +61,7 @@ return new class extends Migration
 
         Schema::create('offers_campaigns', function (Blueprint $table) {
             $table->foreignUuid('offer_id')->references('id')->on('offers');
-            $table->foreignUuid('campaign_id')->references('id')->on('sms_campaigns');
+            $table->foreignUuid('sms_campaign_id');
             $table->boolean('is_active')->default(true);
             $table->timestamp('date_created')->useCurrent();
         });

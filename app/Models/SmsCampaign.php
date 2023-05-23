@@ -34,7 +34,7 @@ class SmsCampaign extends Model
 
     public function sends()
     {
-        return $this->hasMany(SmsCampaignSend::class, 'campaign_id');
+        return $this->hasMany(SmsCampaignSend::class, 'sms_campaign_id');
     }
 
     public function setLists(array $list_ids)
@@ -63,6 +63,6 @@ class SmsCampaign extends Model
 
     public function offers()
     {
-        return $this->belongsToMany(Offer::class, 'offers_campaigns', 'campaign_id', 'offer_id');
+        return $this->belongsToMany(Offer::class, 'offers_campaigns', 'sms_campaign_id', 'offer_id');
     }
 }

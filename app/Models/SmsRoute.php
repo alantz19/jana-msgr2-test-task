@@ -27,8 +27,13 @@ class SmsRoute extends Model
         return $this->morphTo('connection');
     }
 
-    public function rates()
+    public function smsRouteRates()
     {
         return $this->hasMany(SmsRouteRate::class);
+    }
+
+    public function team()
+    {
+        return $this->belongsTo(Team::class);
     }
 }

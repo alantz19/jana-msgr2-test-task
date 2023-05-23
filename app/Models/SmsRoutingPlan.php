@@ -23,8 +23,8 @@ class SmsRoutingPlan extends Model
         return $this->hasMany(SmsRoutePlatformConnection::class);
     }
 
-    public function routes()
+    public function smsRoutes()
     {
-        return $this->hasMany(SmsRoute::class);
+        return $this->belongsToMany(SmsRoute::class, 'sms_routing_plan_routes');
     }
 }

@@ -55,7 +55,7 @@ class UserRoutesService
         ];
         foreach ($routes['private'] as $customRoutes) {
             /** @var SmsRoute $customRoutes */
-            $rate = $customRoutes->rates()->where(['world_country_id' => $country])->first();
+            $rate = $customRoutes->smsRouteRates()->where(['world_country_id' => $country])->first();
             if ($rate) {
                 $customRoutes->priceForCountry = $rate->rate;
                 $prices['private'][] = $customRoutes;
@@ -75,7 +75,7 @@ class UserRoutesService
 
     private static function setPlatformRate(CustomerRoute $route, int $country, SmsRoutePlatformConnection $connection)
     {
-        $rate = $route->rates()->where(['world_country_id' => $country])->first();
+        $rate = $route->smsRouteRates()->where(['world_country_id' => $country])->first();
         if ($rate) {
             $route->priceForCountry = $rate->rate * $connection->rate_multiplier;
             $route->platformConnection = $connection;

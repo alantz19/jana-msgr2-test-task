@@ -19,7 +19,7 @@ class CustomerRoute extends SmsRoute
         return "{$this->platformConnection->name}::{$this->name}";
     }
 
-    public function rates()
+    public function smsRouteRates()
     {
         return $this->hasMany(SmsRouteRate::class, 'sms_route_id', 'id');
     }

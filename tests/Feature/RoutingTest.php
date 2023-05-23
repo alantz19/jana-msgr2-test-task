@@ -14,6 +14,7 @@ use App\Services\ClickhouseService;
 use App\Services\CountryService;
 use App\Services\PlatformRoutesService;
 use App\Services\UserRoutesService;
+use Database\Factories\PlatformRouteFactory;
 use Tests\TestCase;
 
 class RoutingTest extends TestCase
@@ -212,8 +213,18 @@ class RoutingTest extends TestCase
 
 
         $res = PlatformRoutesService::getCustomersConnectionForSeller($user);
-//        dd($res);
         $this->assertEquals($res[0]->customer_team_id, $customer->current_team_id);
         $this->assertEquals($res[0]->is_active, true);
+    }
+
+    public function testRouteFactory()
+    {
+        $customer = User::factory()->withPersonalTeam()->create();
+        $seller = User::factory()->asUkRouteSeller($customer->currentTeam)->create();
+        $routes = UserRoutesService::getAvailableRoutes($customer);
+        $this->assertNotEmpty($routes['platform']);
+
+        $prices = UserRoutesService::getAvailableRoutesForCountry($customer, 'UK');
+        $this->assertEquals(0.015, round($prices['platform'][0]->priceForCountry*10000)/10000);
     }
 }

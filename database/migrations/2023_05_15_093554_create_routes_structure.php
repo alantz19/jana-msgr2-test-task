@@ -115,7 +115,7 @@ return new class extends Migration
         });
 
         Schema::create('sms_routing_plan_routes', function(Blueprint $table){
-            $table->uuid('id')->primary();
+            $table->uuid('id')->default(DB::raw('gen_random_uuid()'))->primary();
             $table->foreignUuid('sms_route_id')->index();
             $table->foreignUuid('sms_routing_plan_id')->index();
             $table->boolean('is_active')->default(true);

@@ -17,7 +17,9 @@ return new class extends Migration
             $table->string('name')->nullable();
             $table->json('meta')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
+
         Schema::create('sms_campaign_sends', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('sms_campaign_id')->nullable();
@@ -59,7 +61,7 @@ return new class extends Migration
             $table->softDeletes();
         });
 
-        Schema::create('offers_campaigns', function (Blueprint $table) {
+        Schema::create('offer_campaign', function (Blueprint $table) {
             $table->foreignUuid('offer_id')->references('id')->on('offers');
             $table->foreignUuid('sms_campaign_id');
             $table->boolean('is_active')->default(true);

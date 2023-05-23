@@ -133,6 +133,7 @@ class RoutingTest extends TestCase
         $this->assertEquals($routes['platform'][0]->id, $route->id);
         $this->assertEquals($routes['platform'][0]->platformConnection->name, 'SMSEdge');
         $this->assertEquals(0.011, round($routes['platform'][0]->priceForCountry*10000)/10000 );
+        $this->assertEquals('SMSEdge::Test Route', $routes['platform'][0]->customerRouteName);
     }
 
 
@@ -192,5 +193,4 @@ class RoutingTest extends TestCase
         $this->assertEquals($res[0]->customer_team_id, $customer->current_team_id);
         $this->assertEquals($res[0]->is_active, true);
     }
-    //add smpp customer route test
 }

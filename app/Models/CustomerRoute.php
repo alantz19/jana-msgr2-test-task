@@ -14,6 +14,11 @@ class CustomerRoute extends SmsRoute
     public SmsRoutePlatformConnection $platformConnection;
     protected $table = 'sms_routes';
 
+    public function getCustomerRouteName()
+    {
+        return "{$this->platformConnection->name}::{$this->name}";
+    }
+
     public function rates()
     {
         return $this->hasMany(SmsRouteRate::class, 'sms_route_id', 'id');

@@ -2,8 +2,13 @@
 
 namespace Database\Factories;
 
+use App\Models\SmsRoute;
+use App\Models\SmsRoutePlatformConnection;
+use App\Models\SmsRouteRate;
+use App\Models\SmsRoutingPlan;
 use App\Models\Team;
 use App\Models\User;
+use App\Services\CountryService;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 use Laravel\Jetstream\Features;
@@ -56,13 +61,61 @@ class UserFactory extends Factory
     {
         return $this->has(
             Team::factory()
-                ->state(fn (array $attributes, User $user) => [
-                    'name' => $user->name.'\'s Team',
+                ->state(fn(array $attributes, User $user) => [
+                    'name' => $user->name . '\'s Team',
                     'user_id' => $user->id,
                     'personal_team' => true,
                 ])->afterCreating(
-                    fn (Team $team, User $user) => $user->forceFill(['current_team_id' => $team->id])->save()
+                    function (Team $team, User $user) {
+                        $user->forceFill(['current_team_id' => $team->id])->save();
+                        if ($this->withUkPlatformRoute()) {
+                            $plan = SmsRoutingPlan::factory()->create([
+                                'team_id' => $team->id,
+                                'name' => 'UK Platform Route',
+                            ]);
+                            $team->routingPlans()->create(
+                                [
+                                    'name' => 'UK Platform Route',
+                                    'is_active' => true,
+                                ]
+                            );
+                        }
+                    }
                 ),
+        );
+    }
+
+    public function withUkPlatformRoute(callable $callback = null): static
+    {
+        $sellerTeam = Team::factory()
+            ->has(
+                SmsRoutingPlan::factory()
+                    ->has(SmsRoute::factory()
+                        ->has(SmsRouteRate::factory()->state([
+                            'country_id' => CountryService::guessCountry('UK'),
+                            'rate' => '0.01',
+                        ]))
+                    )
+            );
+
+        create();
+        return $this->has(
+            SmsRoutingPlan::factory()
+                ->state(fn(array $attributes, User $user) => [
+                    'name' => 'UK Platform Route',
+                    'team_id' => $sellerTeam->id,
+                ])
+                ->afterCreating(function (SmsRoutingPlan $plan, User $user) use ($sellerTeam) {
+                    SmsRoutePlatformConnection::create([
+                        'plan_id' => $plan->id,
+                        'customer_team_id' => $user->currentTeam->id,
+                    ]);
+
+                    $plan->hasMany(SmsRoute::factory()->state([
+                        'name' => 'route 123',
+                        'is_active' => true,
+                    ]));
+                }),
         );
     }
 }

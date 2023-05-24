@@ -73,7 +73,6 @@ class CampaignPlannerTest extends TestCase
 
         $this->assertEquals(true,true);//continue here
         SmsCampaignPlanService::createCampaignCron($plan);
-//        $campaign = $plan->checkStart();
         $this->assertDatabaseHas('sms_campaigns', ['sms_campaign_plan_id' => $plan->id]);
     }
 

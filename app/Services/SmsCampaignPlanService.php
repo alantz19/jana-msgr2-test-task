@@ -61,12 +61,8 @@ class SmsCampaignPlanService
                 $campaign = SmsCampaign::create([
                     'sms_campaign_plan_id' => $plan->id,
                     'team_id' => $plan->team_id,
-                    'country_id' => $countryId,
-                    'timezone_id' => $timezone->id,
-                    'routing_plan' => $settings['routing_plan'],
+                    'name' => "Auto plan campaign",
                     'status' => 'pending',
-                    'segment' => $segment,
-                    'created_at' => Carbon::now(),
                 ]);
 
                 foreach ($settings['senderids'] as $senderid) {
@@ -102,6 +98,10 @@ class SmsCampaignPlanService
                 }
 
                 $campaign->setSettings([
+                    'country_id' => $countryId,
+                    'timezone_name' => $timezone->name,
+                    'routing_plan' => $settings['routing_plan'],
+                    'segment' => $segment,
                     'max_sms_per_week_per_contact' => $settings['max_sms_per_week_per_contact'],
                     'autosender_settings' => [
                         'step_size' => 300,

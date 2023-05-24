@@ -22,7 +22,7 @@ class SmsRoute extends Model
 
     public $priceForCountry;
 
-    public function smppConnections() : MorphTo
+    public function smppConnection() : MorphTo
     {
         return $this->morphTo('connection');
     }

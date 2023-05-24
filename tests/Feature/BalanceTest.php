@@ -8,7 +8,7 @@ use Tests\TestCase;
 
 class BalanceTest extends TestCase
 {
-    public function testBasic()
+    public function testBalanceLogic()
     {
         $user = User::factory()->withPersonalTeam()->create();
         $this->assertEquals(0, BalanceService::getTeamBalance($user));

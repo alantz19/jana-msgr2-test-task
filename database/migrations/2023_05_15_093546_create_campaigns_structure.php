@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('sms_campaigns', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('team_id')->nullable();
-            $table->string('name')->nullable();
+            $table->foreignUuid('team_id');
+            $table->string('name');
+            $table->string('status')->default(\App\Enums\SmsCampaignStatusEnum::draft());
             $table->foreignUuid('sms_campaign_plan_id')->nullable();
             $table->json('meta')->nullable();
             $table->timestamps();
@@ -23,8 +24,8 @@ return new class extends Migration
 
         Schema::create('sms_campaign_sends', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('sms_campaign_id')->nullable();
-            $table->string('status')->nullable();
+            $table->foreignUuid('sms_campaign_id');
+            $table->string('status')->default(\App\Enums\SmsCampaignStatusEnum::draft());
             $table->json('meta')->nullable();
             $table->timestamps();
             $table->softDeletes();
@@ -40,7 +41,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignUuid('sms_campaign_id');
             $table->string('text');
-            $table->boolean('is_active')->nullable();
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
             $table->softDeletes();
         });
@@ -48,14 +49,14 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignUuid('sms_campaign_id');
             $table->string('text');
-            $table->boolean('is_active')->nullable();
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
             $table->softDeletes();
         });
         Schema::create('offers', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('team_id');
-            $table->string('name')->nullable();
+            $table->string('name');
             $table->string('url');
             $table->integer('profit')->nullable();
             $table->timestamps();

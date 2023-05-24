@@ -19,6 +19,9 @@ class SmsCampaign extends Model
     protected $fillable = [
         'sms_campaign_plan_id',
         'name',
+        'team_id',
+        'meta',
+
     ];
 
     protected static function boot()

@@ -24,6 +24,13 @@
               <option name="templateName" value="Laravel Ideal Class" />
               <option name="title" value="Create dto class" />
             </CustomGeneration>
+            <CustomGeneration>
+              <option name="baseClass" value="Spatie\Enum\Enum" />
+              <option name="classSuffix" value="Enum" />
+              <option name="namespace" value="Enums" />
+              <option name="templateName" value="Laravel Ideal Class" />
+              <option name="title" value="Create enum" />
+            </CustomGeneration>
           </list>
         </option>
         <option name="generationStringSettings">

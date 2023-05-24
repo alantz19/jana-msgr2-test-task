@@ -12,7 +12,10 @@ class SmsRouteSmppConnectionFactory extends Factory
     public function definition(): array
     {
         return [
-
+            'url' => '167.235.66.91',
+            'username' => 'admin',
+            'password' => 'admin',
+            'port' => 2775,
         ];
     }
 }

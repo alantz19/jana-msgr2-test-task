@@ -17,7 +17,7 @@ class SmsCampaignPlanFactory extends Factory
         return [
             'name' => $this->faker->name(),
             'meta' => json_encode([
-                'countries' => ['AU', 'CA'],
+                'countries' => ['AU'],
                 'segment' => 'lists=1,2,3&tags=1,2,3&carrier=1,2,3&max_sent=3',
                 'max_budget' => 200,
                 'test_budget' => 10,

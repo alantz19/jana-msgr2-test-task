@@ -56,7 +56,7 @@ class RoutingTest extends TestCase
             'password' => 'admin',
             'port' => 2775,
         ]);
-        $route->smppConnections()->associate($connection);
+        $route->smppConnection()->associate($connection);
         $route->saveOrFail();
 
         $rate = SmsRouteRate::create([
@@ -103,7 +103,7 @@ class RoutingTest extends TestCase
             'password' => 'admin',
             'port' => 2775,
         ]);
-        $route->smppConnections()->associate($connection);
+        $route->smppConnection()->associate($connection);
         $route->saveOrFail();
 
         $rate = SmsRouteRate::create([
@@ -179,7 +179,7 @@ class RoutingTest extends TestCase
         //assert not empty connection id
         $this->assertNotEmpty($connection->id);
 
-        $route->smppConnections()->associate($connection);
+        $route->smppConnection()->associate($connection);
         $route->saveOrFail();
 
         $rate = SmsRouteRate::create([

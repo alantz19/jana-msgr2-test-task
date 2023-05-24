@@ -15,6 +15,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignUuid('team_id')->nullable();
             $table->string('name')->nullable();
+            $table->foreignUuid('sms_campaign_plan_id')->nullable();
             $table->json('meta')->nullable();
             $table->timestamps();
             $table->softDeletes();

@@ -8,8 +8,10 @@ use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
+//    use \Illuminate\Foundation\Testing\DatabaseMigrations;
 
-    //if adding refresh database in other tables add this clickhouse drop all tables..
+
+//    if adding refresh database in other tables add this clickhouse drop all tables..
 //    use \Illuminate\Foundation\Testing\RefreshDatabase;
 //    protected function beforeRefreshingDatabase()
 //    {

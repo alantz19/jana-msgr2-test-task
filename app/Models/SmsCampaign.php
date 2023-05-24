@@ -17,6 +17,7 @@ class SmsCampaign extends Model
     use SoftDeletes;
 
     protected $fillable = [
+        'sms_campaign_plan_id',
         'name',
     ];
 

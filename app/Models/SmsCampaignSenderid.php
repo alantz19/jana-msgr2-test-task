@@ -14,6 +14,7 @@ class SmsCampaignSenderid extends Model
     use HasFactory;
 
     protected $fillable = [
-        'text'
+        'text',
+        'sms_campaign_id'
     ];
 }

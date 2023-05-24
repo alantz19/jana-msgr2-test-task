@@ -15,6 +15,7 @@ class SmsCampaignText extends Model
 
     protected $fillable = [
         'text',
+        'sms_campaign_id'
     ];
 
     public function haveDomainOrOptoutTag()

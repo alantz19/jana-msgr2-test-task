@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use Carbon\Carbon;
+use DateTimeZone;
 use Nnjeim\World\World;
 
 class CountryService
@@ -64,6 +66,11 @@ class CountryService
         }
 
         throw new \Exception("Country [{$countryName}] not found");
+    }
+
+    public static function timeHasPassed(string $timezone, string $time): bool
+    {
+        return Carbon::parse($time, new DateTimeZone($timezone))->isPast();
     }
     
 }

@@ -6,8 +6,6 @@
         <entry key="createNotification.type" value="database" />
         <entry key="newModelSimpleOption:addFillable" value="1" />
         <entry key="newModelSimpleOption:softDeletes" value="1" />
-        <entry key="postGeneration:databaseClassFactory" value="1" />
-        <entry key="postGeneration:migration" value="" />
       </map>
     </option>
     <option name="lastContentRoot" value="$PROJECT_DIR$" />

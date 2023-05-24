@@ -2,7 +2,10 @@
 
 namespace App\Services;
 
+use App\Models\Contact;
 use ClickHouseDB\Client;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class ClickhouseService
@@ -13,12 +16,34 @@ class ClickhouseService
         $db = DB::connection('clickhouse')->getClient();
         $tables = $db->showTables();
         foreach ($tables as $table) {
-            $db->write('DROP TABLE `'.$table['name'].'`');
+            $db->write('DROP TABLE `' . $table['name'] . '`');
         }
     }
 
     public static function getClient(): Client
     {
         return DB::connection('clickhouse')->getClient();
+    }
+
+    public static function batchInsertModelCollection(Collection $collection): void
+    {
+        if ($collection->isEmpty()) {
+            return;
+        }
+
+        /** @var Model $model */
+        $model = $collection->first();
+        $columns = [];
+//        foreach ($model->getAttributes() as $key => $val) {
+//            $columns[] = $key;
+//        }
+        $insert = [];
+        foreach ($collection as $modelCollection) {
+//            /** @var Contact $modelCollection */
+            $insert[] = $modelCollection->attributesToArray();
+        }
+
+        $db = self::getClient();
+        $db->insertAssocBulk($model->getTable(), $insert, $columns);
     }
 }

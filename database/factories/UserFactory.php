@@ -69,18 +69,6 @@ class UserFactory extends Factory
                 ])->afterCreating(
                     function (Team $team, User $user) {
                         $user->forceFill(['current_team_id' => $team->id])->save();
-//                        if ($this->withUkPlatformRoute()) {
-//                            $plan = SmsRoutingPlan::factory()->create([
-//                                'team_id' => $team->id,
-//                                'name' => 'UK Platform Route',
-//                            ]);
-//                            $team->routingPlans()->create(
-//                                [
-//                                    'name' => 'UK Platform Route',
-//                                    'is_active' => true,
-//                                ]
-//                            );
-//                        }
                     }
                 ),
         );

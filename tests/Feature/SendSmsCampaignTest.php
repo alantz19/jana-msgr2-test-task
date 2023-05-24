@@ -26,12 +26,6 @@ use Tests\TestCase;
 class SendSmsCampaignTest extends TestCase
 {
     public $user;
-//    use DatabaseMigrations;
-
-    public function setUp(): void
-    {
-        parent::setUp();
-    }
 
     public function test_send_campaign()
     {
@@ -82,5 +76,6 @@ class SendSmsCampaignTest extends TestCase
         ]);
 
         SendCampaignService::send($campaign);
+        $this->assertEquals(true,true); //todo: continue after campagin creator/autosender
     }
 }

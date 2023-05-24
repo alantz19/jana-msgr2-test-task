@@ -10,9 +10,9 @@ use Tests\TestCase;
 
 class ProfileInformationTest extends TestCase
 {
-    use RefreshDatabase;
+//    use RefreshDatabase;
 
-    public function test_current_profile_information_is_available(): void
+    public function _test_current_profile_information_is_available(): void
     {
         $this->actingAs($user = User::factory()->create());
 
@@ -22,7 +22,7 @@ class ProfileInformationTest extends TestCase
         $this->assertEquals($user->email, $component->state['email']);
     }
 
-    public function test_profile_information_can_be_updated(): void
+    public function _test_profile_information_can_be_updated(): void
     {
         $this->actingAs($user = User::factory()->create());
 

@@ -10,7 +10,7 @@ return new class extends \PhpClickHouseLaravel\Migration
     public function up(): void
     {
         static::write(
-            "CREATE TABLE msgr.sms_sendlog
+            "CREATE TABLE IF NOT EXISTS msgr.sms_sendlog
     (
         `sms_id` UUID,
         `team_id` UUID,
@@ -61,7 +61,7 @@ SETTINGS index_granularity = 8192"
 
 //        `list_id` SimpleAggregateFunction(anyLast, UUID),
 //        static::write("
-//        CREATE TABLE msgr.sms_sendlog_materialized
+//        CREATE TABLE IF NOT EXISTS msgr.sms_sendlog_materialized
 //        (
 //        `team_id` UUID,
 //        `first_datetime` SimpleAggregateFunction(any, DateTime),
@@ -103,12 +103,12 @@ SETTINGS index_granularity = 8192"
 //        SETTINGS index_granularity = 8192;
 //        ");
 
-        static::write("CREATE MATERIALIZED VIEW sms_sendlog_mv TO contacts_sms_materialized AS
+        static::write("CREATE MATERIALIZED VIEW IF NOT EXISTS sms_sendlog_mv TO contacts_sms_materialized AS
     select team_id,list_id,phone_normalized, sum(is_sent), sum(is_clicked) as clicks_count, sum(is_lead) as leads_count,  
     sum(is_sale) as sales_count, sum(profit) as profit_sum from sms_sendlog group by team_id,list_id,phone_normalized;");
 
 
-        static::write("create table contacts (
+        static::write("create table IF NOT EXISTS contacts (
     `id` UUID,
     `team_id` UUID,
     `list_id` UUID,
@@ -152,7 +152,7 @@ SETTINGS index_granularity = 8192");
         //    `email_is_good` SimpleAggregateFunction(anyLast,UInt8),
         //    `email_is_good_reason` SimpleAggregateFunction(anyLast,UInt8),
          */
-        static::write('create table contacts_sms_materialized
+        static::write('create table IF NOT EXISTS contacts_sms_materialized
 (
     `team_id` UUID,
     `list_id` UUID,
@@ -199,7 +199,7 @@ SETTINGS index_granularity = 8192");
         SETTINGS index_granularity = 8192;
 ');
 
-        static::write("CREATE MATERIALIZED VIEW contacts_mv TO contacts_sms_materialized AS
+        static::write("CREATE MATERIALIZED VIEW IF NOT EXISTS contacts_mv TO contacts_sms_materialized AS
     select team_id, list_id, phone_normalized,  
     anyLast(custom1_str), 
     anyLast(custom2_str), anyLast(custom3_str),
@@ -216,7 +216,7 @@ SETTINGS index_granularity = 8192");
          anyLast(state_id), anyLast(state_id_reason) 
     from contacts group by team_id, list_id, phone_normalized;");
 
-        static::write('create table contact_tags
+        static::write('create table IF NOT EXISTS contact_tags
 (
     team_id UUID,
     contact_id UUID,
@@ -227,7 +227,7 @@ SETTINGS index_granularity = 8192");
     ORDER BY (team_id, contact_id, tag)
 SETTINGS index_granularity = 8192');
 
-        static::write('create table contact_tags_materialized
+        static::write('create table IF NOT EXISTS contact_tags_materialized
 (
     team_id UUID,
     tag String,
@@ -237,10 +237,10 @@ SETTINGS index_granularity = 8192');
 ORDER BY (team_id, tag, contact_id)
 SETTINGS index_granularity = 8192');
 
-        static::write("CREATE MATERIALIZED VIEW contact_tags_mv TO contact_tags_materialized AS
+        static::write("CREATE MATERIALIZED VIEW IF NOT EXISTS contact_tags_mv TO contact_tags_materialized AS
     select team_id, tag, contact_id, max(is_deleted) from contact_tags group by team_id, contact_id, tag;");
 
-        static::write('create table action_log
+        static::write('create table IF NOT EXISTS action_log
 (
     id UUID,
     team_id UUID,
@@ -255,7 +255,7 @@ ORDER BY (team_id, related_model, date_created)
 TTL date_created + INTERVAL 12 MONTH
 SETTINGS index_granularity = 8192');
 
-        static::write("create table balances
+        static::write("create table IF NOT EXISTS balances
 (
     id UUID,
     team_id UUID,
@@ -267,21 +267,21 @@ SETTINGS index_granularity = 8192');
     ORDER BY (team_id)
 ");
 
-        static::write("create table balances_teams_materialized
+        static::write("create table IF NOT EXISTS balances_teams_materialized
 (
     team_id UUID,
     balance SimpleAggregateFunction(sumWithOverflow(), DECIMAL64(6))
 ) ENGINE = SummingMergeTree
     ORDER BY (team_id)
 ");
-        static::write('create materialized view balances_teams_mv TO balances_teams_materialized AS
+        static::write('create materialized view IF NOT EXISTS balances_teams_mv TO balances_teams_materialized AS
         select team_id, sum(amount) as balance from balances group by team_id
         ');
-        static::write('create view balances_teams_v AS
+        static::write('create view IF NOT EXISTS balances_teams_v AS
         select team_id, sum(balance) as balance from balances_teams_materialized group by team_id
         ');
 
-        static::write("create table v2_contact_unsub_manual (
+        static::write("create table IF NOT EXISTS v2_contact_unsub_manual (
     `team_id` UUID,
     `unsub_list_id` UUID DEFAULT '00000000-0000-0000-0000-000000000000',
     `phone_normalized` UInt64,
@@ -291,7 +291,7 @@ SETTINGS index_granularity = 8192');
 ORDER BY (team_id,unsub_list_id)
 SETTINGS index_granularity = 8192");
 
-        static::write("create table v2_contact_unsub_manual_materialized (
+        static::write("create table IF NOT EXISTS v2_contact_unsub_manual_materialized (
     `team_id` UUID,
     `unsub_list_id` UUID,
     `phone_normalized` UInt64,
@@ -302,7 +302,7 @@ ORDER BY (team_id, unsub_list_id)
 SETTINGS index_granularity = 8192
 ");
 
-        static::write("CREATE MATERIALIZED VIEW v2_contact_unsub_manual_mv TO v2_contact_unsub_manual_materialized AS
+        static::write("CREATE MATERIALIZED VIEW IF NOT EXISTS v2_contact_unsub_manual_mv TO v2_contact_unsub_manual_materialized AS
     select team_id,unsub_list_id, phone_normalized, max(date_updated),max(is_deleted) from v2_contact_unsub_manual group by team_id,unsub_list_id,phone_normalized;");
 
 

@@ -12,6 +12,7 @@ class SendCampaignService
         $campaignSend = $campaign->sends()->create([
             'status' => 'sending',
             'meta' => $campaign->meta,
+            'autosender_status' => $campaign->hasAutosender() ? 'pending' : null,
         ]);
 
         SendCampaignJob::dispatch($campaignSend);

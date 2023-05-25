@@ -3,8 +3,10 @@
 namespace Database\Factories;
 
 use App\Models\Contact;
+use App\Models\WorldMobileNetwork;
 use App\Services\ClickhouseService;
 use App\Services\CountryService;
+use App\Services\SmsContactMobileNetworksService;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Collection;
 
@@ -25,7 +27,7 @@ class ContactFactory extends Factory
         ];
     }
 
-    public function saveAndReturn($list_id = false):Collection
+    public function saveAndReturn($list_id = false, $country = 'uk', $withNetworks = false):Collection
     {
         $contacts = new Collection();
         if (!$list_id) {
@@ -34,12 +36,30 @@ class ContactFactory extends Factory
         $i=0;
         while ($i < 100) {
             $i++;
-            $contact = $this->make();
+//            $contact = $this->make(); //doens't work
+//            $contact = new Contact($this->definition());
+//            dd($contact->list_id);
+            $contact = new Contact();
+            $contact->fill($this->definition());
             $contact->list_id = $list_id;
-            $contact->country_id = CountryService::guessCountry('uk');
+            $contact->country_id = CountryService::guessCountry($country);
             $contacts->add($contact);
         }
         ClickhouseService::batchInsertModelCollection($contacts);
+
+        if ($withNetworks) {
+            foreach ($contacts as $contact) {
+                $network = SmsContactMobileNetworksService::getNetworkCacheForNumber($contact->phone_normalized);
+                if (!$network) {
+                    dd($contact->country_id);
+                    $network_id = WorldMobileNetwork::where(['world_country_id' => $contact->country_id])
+                        ->inRandomOrder()->first();
+                    dd($network_id);
+                    SmsContactMobileNetworksService::saveNumberNetwork($contact->phone_normalized, $network_id);
+                }
+                SmsContactMobileNetworksService::setNetwork($contact);
+            }
+        }
 
         return $contacts;
     }

@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
+        Schema::disableForeignKeyConstraints();
         Schema::create('world_mobile_networks', function(Blueprint $table){
             $table->id();
             $table->smallInteger('mcc')->nullable();
@@ -68,9 +69,10 @@ return new class extends Migration {
         //create the states table as above in laravel
         Schema::create('world_states', function(Blueprint $table){
             $table->id();
-            $table->integer('country_id')->nullable()->index();
+            $table->foreignId('world_country_id')->nullable()->index();
             $table->string('code')->nullable();
             $table->string('name')->nullable();
+            $table->foreignId('world_timezone_id')->nullable()->index();
             $table->timestamps();
         });
         $this->insertStates();
@@ -91,14 +93,16 @@ return new class extends Migration {
         //create the timezones table as above in laravel
         Schema::create('world_timezones', function(Blueprint $table){
             $table->id();
-            $table->integer('country_id')->nullable()->index();
+            $table->foreignIdFor(\App\Models\WorldCountry::class)->nullable()->index();
             $table->string('utc')->nullable();
             $table->string('code')->nullable();
             $table->string('name')->nullable();
-            $table->boolean('is_main')->default(false);
+            $table->tinyInteger('is_main')->default(0);
+            $table->timestamps();
         });
 
         $this->insertTimezones();
+        Schema::enableForeignKeyConstraints();
     }
 
     public function down(): void
@@ -3001,83 +3005,83 @@ Wanderers Móvil','Telestar Móvil S.A.','Operational','MVNO','Uses movistar'),
 
     private function insertStates(){
         DB::statement("
-        INSERT INTO world_states (country_id,code,name,created,country_timezone_id) VALUES
-	 (226,'AL','Alabama','2018-11-18 15:32:59.0',534),
-	 (226,'AK','Alaska','2018-11-18 15:32:59.0',530),
-	 (226,'AZ','Arizona','2018-11-18 15:32:59.0',540),
-	 (226,'AR','Arkansas','2018-11-18 15:32:59.0',534),
-	 (226,'CA','California','2018-11-18 15:32:59.0',542),
-	 (226,'CO','Colorado','2018-11-18 15:32:59.0',540),
-	 (226,'CT','Connecticut','2018-11-18 15:32:59.0',536),
-	 (226,'DE','Delaware','2018-11-18 15:32:59.0',536),
-	 (226,'FL','Florida','2018-11-18 15:32:59.0',536),
-	 (226,'GA','Georgia','2018-11-18 15:32:59.0',536),
-	 (226,'HI','Hawaii','2018-11-18 15:32:59.0',538),
-	 (226,'ID','Idaho','2018-11-18 15:32:59.0',540),
-	 (226,'IL','Illinois','2018-11-18 15:32:59.0',534),
-	 (226,'IN','Indiana','2018-11-18 15:32:59.0',534),
-	 (226,'IA','Iowa','2018-11-18 15:32:59.0',534),
-	 (226,'KS','Kansas','2018-11-18 15:32:59.0',534),
-	 (226,'KY','Kentucky','2018-11-18 15:32:59.0',534),
-	 (226,'LA','Louisiana','2018-11-18 15:32:59.0',534),
-	 (226,'ME','Maine','2018-11-18 15:32:59.0',536),
-	 (226,'MD','Maryland','2018-11-18 15:32:59.0',536),
-	 (226,'MA','Massachusetts','2018-11-18 15:32:59.0',536),
-	 (226,'MI','Michigan','2018-11-18 15:32:59.0',536),
-	 (226,'MN','Minnesota','2018-11-18 15:32:59.0',534),
-	 (226,'MS','Mississippi','2018-11-18 15:32:59.0',534),
-	 (226,'MO','Missouri','2018-11-18 15:32:59.0',534),
-	 (226,'MT','Montana','2018-11-18 15:32:59.0',540),
-	 (226,'NE','Nebraska','2018-11-18 15:32:59.0',540),
-	 (226,'NV','Nevada','2018-11-18 15:32:59.0',540),
-	 (226,'NH','New Hampshire','2018-11-18 15:32:59.0',536),
-	 (226,'NJ','New Jersey','2018-11-18 15:32:59.0',536),
-	 (226,'NM','New Mexico','2018-11-18 15:32:59.0',540),
-	 (226,'NY','New York','2018-11-18 15:32:59.0',536),
-	 (226,'NC','North Carolina','2018-11-18 15:32:59.0',536),
-	 (226,'ND','North Dakota','2018-11-18 15:32:59.0',534),
-	 (226,'OH','Ohio','2018-11-18 15:32:59.0',536),
-	 (226,'OK','Oklahoma','2018-11-18 15:32:59.0',534),
-	 (226,'OR','Oregon','2018-11-18 15:32:59.0',540),
-	 (226,'PA','Pennsylvania','2018-11-18 15:32:59.0',536),
-	 (226,'RI','Rhode Island','2018-11-18 15:32:59.0',536),
-	 (226,'SC','South Carolina','2018-11-18 15:32:59.0',536),
-	 (226,'SD','South Dakota','2018-11-18 15:32:59.0',534),
-	 (226,'TN','Tennessee','2018-11-18 15:32:59.0',534),
-	 (226,'TX','Texas','2018-11-18 15:32:59.0',534),
-	 (226,'UT','Utah','2018-11-18 15:32:59.0',540),
-	 (226,'VT','Vermont','2018-11-18 15:32:59.0',536),
-	 (226,'VA','Virginia','2018-11-18 15:32:59.0',536),
-	 (226,'WA','Washington','2018-11-18 15:32:59.0',542),
-	 (226,'WV','West Virginia','2018-11-18 15:32:59.0',536),
-	 (226,'WI','Wisconsin','2018-11-18 15:32:59.0',534),
-	 (226,'WY','Wyoming','2018-11-18 15:32:59.0',540),
-	 (38,'AB','Alberta','2018-11-18 15:32:59.0',86),
-	 (38,'BC','British Columbia','2018-11-18 15:32:59.0',90),
-	 (38,'MB','Manitoba','2018-11-18 15:32:59.0',82),
-	 (38,'NB','New Brunswick','2018-11-18 15:32:59.0',80),
-	 (38,'NL','Newfoundland and Labrador','2018-11-18 15:32:59.0',88),
-	 (38,'NT','Northwest Territories','2018-11-18 15:32:59.0',90),
-	 (38,'NS','Nova Scotia','2018-11-18 15:32:59.0',80),
-	 (38,'NU','Nunavut','2018-11-18 15:32:59.0',84),
-	 (38,'ON','Ontario','2018-11-18 15:32:59.0',84),
-	 (38,'PE','Prince Edward Island','2018-11-18 15:32:59.0',80),
-	 (38,'QC','Quebec','2018-11-18 15:32:59.0',80),
-	 (38,'SK','Saskatchewan','2018-11-18 15:32:59.0',82),
-	 (38,'YT','Yukon','2018-11-18 15:32:59.0',90),
-	 (13,'NSW','New South Wales','2018-11-18 15:32:59.0',26),
-	 (13,'NT','Northern Territory','2018-11-18 15:32:59.0',24),
-	 (13,'QLD','Queensland','2018-11-18 15:32:59.0',26),
-	 (13,'SA','South Australia','2018-11-18 15:32:59.0',24),
-	 (13,'TAS','Tasmania','2018-11-18 15:32:59.0',26),
-	 (13,'VIC','Victoria','2018-11-18 15:32:59.0',26),
-	 (13,'WA','Western Australia','2018-11-18 15:32:59.0',28),
-	 (226,'DC','Washington, D.C.','2019-07-03 17:15:28.0',536);        
+        INSERT INTO world_states (world_country_id,code,name,world_timezone_id) VALUES
+	 (226,'AL','Alabama',534),
+	 (226,'AK','Alaska',530),
+	 (226,'AZ','Arizona',540),
+	 (226,'AR','Arkansas',534),
+	 (226,'CA','California',542),
+	 (226,'CO','Colorado',540),
+	 (226,'CT','Connecticut',536),
+	 (226,'DE','Delaware',536),
+	 (226,'FL','Florida',536),
+	 (226,'GA','Georgia',536),
+	 (226,'HI','Hawaii',538),
+	 (226,'ID','Idaho',540),
+	 (226,'IL','Illinois',534),
+	 (226,'IN','Indiana',534),
+	 (226,'IA','Iowa',534),
+	 (226,'KS','Kansas',534),
+	 (226,'KY','Kentucky',534),
+	 (226,'LA','Louisiana',534),
+	 (226,'ME','Maine',536),
+	 (226,'MD','Maryland',536),
+	 (226,'MA','Massachusetts',536),
+	 (226,'MI','Michigan',536),
+	 (226,'MN','Minnesota',534),
+	 (226,'MS','Mississippi',534),
+	 (226,'MO','Missouri',534),
+	 (226,'MT','Montana',540),
+	 (226,'NE','Nebraska',540),
+	 (226,'NV','Nevada',540),
+	 (226,'NH','New Hampshire',536),
+	 (226,'NJ','New Jersey',536),
+	 (226,'NM','New Mexico',540),
+	 (226,'NY','New York',536),
+	 (226,'NC','North Carolina',536),
+	 (226,'ND','North Dakota',534),
+	 (226,'OH','Ohio',536),
+	 (226,'OK','Oklahoma',534),
+	 (226,'OR','Oregon',540),
+	 (226,'PA','Pennsylvania',536),
+	 (226,'RI','Rhode Island',536),
+	 (226,'SC','South Carolina',536),
+	 (226,'SD','South Dakota',534),
+	 (226,'TN','Tennessee',534),
+	 (226,'TX','Texas',534),
+	 (226,'UT','Utah',540),
+	 (226,'VT','Vermont',536),
+	 (226,'VA','Virginia',536),
+	 (226,'WA','Washington',542),
+	 (226,'WV','West Virginia',536),
+	 (226,'WI','Wisconsin',534),
+	 (226,'WY','Wyoming',540),
+	 (38,'AB','Alberta',86),
+	 (38,'BC','British Columbia',90),
+	 (38,'MB','Manitoba',82),
+	 (38,'NB','New Brunswick',80),
+	 (38,'NL','Newfoundland and Labrador',88),
+	 (38,'NT','Northwest Territories',90),
+	 (38,'NS','Nova Scotia',80),
+	 (38,'NU','Nunavut',84),
+	 (38,'ON','Ontario',84),
+	 (38,'PE','Prince Edward Island',80),
+	 (38,'QC','Quebec',80),
+	 (38,'SK','Saskatchewan',82),
+	 (38,'YT','Yukon',90),
+	 (13,'NSW','New South Wales',26),
+	 (13,'NT','Northern Territory',24),
+	 (13,'QLD','Queensland',26),
+	 (13,'SA','South Australia',24),
+	 (13,'TAS','Tasmania',26),
+	 (13,'VIC','Victoria',26),
+	 (13,'WA','Western Australia',28),
+	 (226,'DC','Washington, D.C.',536);        
         ");
     }
 
     private function insertTimezones(){
-        DB::statement("INSERT INTO world_timezones (id,country_id,utc,code,name,is_main,created) VALUES
+        DB::statement("INSERT INTO world_timezones (id,world_country_id,utc,code,name,is_main,created_at) VALUES
 	 (2,1,'+04:30','AFT','Afghanistan Time',1,'2018-12-03 15:23:51.0'),
 	 (4,2,'+02:00','CET','Central European Time',1,'2018-12-03 15:23:51.0'),
 	 (6,3,'+01:00','CET','Central European Time',1,'2018-12-03 15:23:51.0'),

@@ -10,7 +10,10 @@ class SmsCampaignContactService
 
     public static function getContacts(SmsCampaignSend $campaignSend) : array
     {
-        //todo: check if contact unsubscribed
+        if ($campaignSend->isAutosender()) {
+            return self::getContactsForAutosender($campaignSend);
+        }
+        //todo: check if contact unsubscribed, add cache
         $limit = $campaignSend->getLimit();
         $lists = $campaignSend->getLists();
 //        $microSegments = $campaignSend->getMicroSegments();
@@ -30,5 +33,10 @@ class SmsCampaignContactService
         LIMIT :limit
         ", ['lists' => $lists, 'limit' => $limit]);
 
+    }
+
+    private static function getContactsForAutosender(SmsCampaignSend $campaignSend)
+    {
+        
     }
 }

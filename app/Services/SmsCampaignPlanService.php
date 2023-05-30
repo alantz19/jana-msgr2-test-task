@@ -118,6 +118,7 @@ class SmsCampaignPlanService
                 ]);
 
                 $campaign->save();
+                SendCampaignService::send($campaign);
                 \Log::debug('Created campaign: ' . $campaign->id . ' for plan: ' . $plan->id);
             }
 

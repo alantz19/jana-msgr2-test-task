@@ -73,4 +73,9 @@ class SmsCampaign extends Model
     {
         return $this->belongsToMany(Offer::class, 'offer_campaign', 'sms_campaign_id', 'offer_id');
     }
+
+    public function hasAutosender()
+    {
+        return $this->getMeta()['autosender_settings'] ?? false;
+    }
 }

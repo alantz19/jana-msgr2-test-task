@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class WorldMobileNetwork extends Model
 {
-    use SoftDeletes, HasFactory;
+    use HasFactory;
 
     protected $guarded = [];
 }

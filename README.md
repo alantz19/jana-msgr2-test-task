@@ -8,7 +8,7 @@
 composer install
 sail up -d
 sail artisan migrate:fresh --seed
+sail test
 npm install
 npm run dev
-
 ```

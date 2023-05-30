@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->string('type')->nullable();
             $table->string('country_name')->nullable();
             $table->string('country_code')->nullable();
-            $table->integer('country_id')->nullable()->index();
+            $table->foreignId('world_country_id')->nullable()->index();
             $table->string('brand')->nullable();
             $table->string('operator')->nullable();
             $table->string('status')->nullable();
@@ -113,7 +113,7 @@ return new class extends Migration {
     private function insertNetworks()
     {
         DB::statement("
-        INSERT INTO world_mobile_networks (id,mcc,mnc, type,country_name,country_code,country_id,brand,operator,status,bands,notes) VALUES
+        INSERT INTO world_mobile_networks (id,mcc,mnc, type,country_name,country_code,world_country_id,brand,operator,status,bands,notes) VALUES
 	 (8624,289,67,'National','Abkhazia','GE-AB',NULL,'Aquafon','Aquafon JSC','Operational','GSM 900 / GSM 1800 / UMTS 2100 / LTE 800','MCC is not listed by ITU; LTE band 20'),
 	 (8625,289,88,'National','Abkhazia','GE-AB',NULL,'A-Mobile','A-Mobile LLSC','Operational','GSM 900 / GSM 1800 / UMTS 2100 / LTE 800 / LTE 1800','MCC is not listed by ITU'),
 	 (8626,412,1,'National','Afghanistan','AF',1,'AWCC','Afghan Wireless Communication Company','Operational','GSM 900 / GSM 1800 / UMTS 2100 / LTE 1800',NULL),

@@ -36,9 +36,6 @@ class ContactFactory extends Factory
         $i=0;
         while ($i < 100) {
             $i++;
-//            $contact = $this->make(); //doens't work
-//            $contact = new Contact($this->definition());
-//            dd($contact->list_id);
             $contact = new Contact();
             $contact->fill($this->definition());
             $contact->list_id = $list_id;
@@ -49,15 +46,16 @@ class ContactFactory extends Factory
 
         if ($withNetworks) {
             foreach ($contacts as $contact) {
-                $network = SmsContactMobileNetworksService::getNetworkCacheForNumber($contact->phone_normalized);
-                if (!$network) {
-                    dd($contact->country_id);
+                //todo:add test
+                $network_id = SmsContactMobileNetworksService::getNetworkCacheForNumber($contact->phone_normalized);
+                if (!$network_id) { //random network
                     $network_id = WorldMobileNetwork::where(['world_country_id' => $contact->country_id])
-                        ->inRandomOrder()->first();
-                    dd($network_id);
+                        ->whereNotNull('brand')
+                        ->whereNot('brand', '')
+                        ->inRandomOrder()->first()->id;
                     SmsContactMobileNetworksService::saveNumberNetwork($contact->phone_normalized, $network_id);
                 }
-                SmsContactMobileNetworksService::setNetwork($contact);
+                $contact->network_id = $network_id;
             }
         }
 

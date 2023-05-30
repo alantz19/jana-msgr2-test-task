@@ -29,7 +29,7 @@ class CountryService
         }
 
         if (strlen($countryName) === 2) {
-            $country = WorldCountry::where(['iso2' => strtoupper($countryName)])->first();
+            $country = WorldCountry::where(['iso' => strtoupper($countryName)])->first();
 
             if (!empty($country)) {
                 return $country->id;
@@ -44,7 +44,7 @@ class CountryService
             }
         }
 
-        $country = WorldCountry::where(['name' => ucwords($countryName)])->first();
+        $country = WorldCountry::where(['nicename' => ucwords($countryName)])->first();
 
         if (!empty($country)) {
             return $country->id;

@@ -106,7 +106,6 @@ SETTINGS index_granularity = 8192"
     select team_id,list_id,phone_normalized, sum(is_sent), sum(is_clicked) as clicks_count, sum(is_lead) as leads_count,  
     sum(is_sale) as sales_count, sum(profit) as profit_sum from sms_sendlog group by team_id,list_id,phone_normalized;");
 
-
         static::write("create table IF NOT EXISTS contacts (
     `id` UUID,
     `team_id` UUID,
@@ -156,8 +155,8 @@ SETTINGS index_granularity = 8192");
     `team_id` UUID,
     `list_id` UUID,
     `phone_normalized` UInt64,
-    `last_sent` SimpleAggregateFunction(sum, UInt64),
-    `last_clicked` SimpleAggregateFunction(sum, UInt64),
+    `last_sent` SimpleAggregateFunction(anyLast, DATETIME),
+    `last_clicked` SimpleAggregateFunction(anyLast, DATETIME),
     `sent_count` SimpleAggregateFunction(sum, UInt64),
     `clicked_count` SimpleAggregateFunction(sum, UInt64),
     `leads_count` SimpleAggregateFunction(sum, UInt64),
@@ -348,6 +347,16 @@ SETTINGS index_granularity = 8192;
         ENGINE = SummingMergeTree()
         ORDER BY normalized;
         ");
+
+        static::write('CREATE MATERIALIZED VIEW IF NOT EXISTS sms_contact_sms_networks_mv TO contacts_sms_materialized AS
+select csm.phone_normalized,
+       csm.list_id,
+       csm.team_id,
+       vnn.network_id    as network_id,
+       vnn.network_brand as network_brand
+from v2_numbers_networks vnn
+         inner join contacts_sms_materialized csm on phone_normalized = normalized
+where csm.network_id = 0;');
 
         static::write("
 CREATE TABLE IF NOT EXISTS v2_mobile_networks

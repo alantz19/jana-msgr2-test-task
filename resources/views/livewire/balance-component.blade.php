@@ -1,5 +1,5 @@
 <div class="w-32 h-5">
-    <div>Your Balance: <b>{{ $balance }}</b></div>
+    <div>Balance: <b>{{ $balance }}</b></div>
 </div>
 
 

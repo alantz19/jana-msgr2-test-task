@@ -4,7 +4,7 @@
 > project docs are at http://v2.local/docs you can access them after starting the project
 
 # Starting project
-Create a .env file from .env.example and fill in the required fields
+Create a .env file from .env.example
 ```bash
 cp .env.example .env
 ```

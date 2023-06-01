@@ -62,8 +62,6 @@ class NamecheapTest extends TestCase
             ->withNamecheap()
             ->create();
 
-        $this->actingAs($user);
-
         Http::fake([
             'https://api.sandbox.namecheap.com/*' => Http::response(file_get_contents(__DIR__ .
                 '/data/namecheap/namecheap.domains.create.errors.xml')),
@@ -83,8 +81,6 @@ class NamecheapTest extends TestCase
             ->withPersonalTeam()
             ->withNamecheap()
             ->create();
-
-        $this->actingAs($user);
 
         Http::fake([
             'https://api.sandbox.namecheap.com/*' => Http::response(file_get_contents(__DIR__ .

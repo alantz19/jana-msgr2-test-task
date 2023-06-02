@@ -34,10 +34,10 @@
           @focusout="dropdownOpen = false"
         >
           <li>
-            <router-link class="font-medium text-sm text-indigo-500 hover:text-indigo-600 flex items-center py-1 px-3" to="/settings/account" @click="dropdownOpen = false">Settings</router-link>
+            <Link href="/settings/account" class="font-medium text-sm text-indigo-500 hover:text-indigo-600 flex items-center py-1 px-3" @click="dropdownOpen = false">Settings</Link>
           </li>
           <li>
-            <router-link class="font-medium text-sm text-indigo-500 hover:text-indigo-600 flex items-center py-1 px-3" to="/signin" @click="dropdownOpen = false">Sign Out</router-link>
+            <Link href="/signin" class="font-medium text-sm text-indigo-500 hover:text-indigo-600 flex items-center py-1 px-3" @click="dropdownOpen = false">Sign Out</Link>
           </li>
         </ul>
       </div> 
@@ -48,10 +48,14 @@
 <script>
 import { ref, onMounted, onUnmounted } from 'vue'
 // import UserAvatar from '../images/user-avatar-32.png'
+import {Link} from '@inertiajs/vue3'
 
 export default {
   name: 'DropdownProfile',
   props: ['align'],
+  components: {
+    Link
+  },
   data() {
     return {
       UserAvatar: '',

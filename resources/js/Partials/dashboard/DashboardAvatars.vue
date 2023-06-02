@@ -1,24 +1,24 @@
 <template>
   <ul class="flex flex-wrap justify-center sm:justify-start mb-8 sm:mb-0 -space-x-3 -ml-px">
     <li>
-      <router-link class="block" to="#0">
+      <Link href="#0" class="block" >
         <img class="w-9 h-9 rounded-full" src="../../images/user-36-01.jpg" width="36" height="36" alt="User 01" />
-      </router-link>
+      </Link>
     </li>
     <li>
-      <router-link class="block" to="#0">
+      <Link href="#0" class="block" >
         <img class="w-9 h-9 rounded-full" src="../../images/user-36-02.jpg" width="36" height="36" alt="User 02" />
-      </router-link>
+      </Link>
     </li>
     <li>
-      <router-link class="block" to="#0">
+      <Link href="#0" class="block" >
         <img class="w-9 h-9 rounded-full" src="../../images/user-36-03.jpg" width="36" height="36" alt="User 03" />
-      </router-link>
+      </Link>
     </li>
     <li>
-      <router-link class="block" to="#0">
+      <Link href="#0" class="block" >
         <img class="w-9 h-9 rounded-full" src="../../images/user-36-04.jpg" width="36" height="36" alt="User 04" />
-      </router-link>
+      </Link>
     </li>
     <li>
       <button class="flex justify-center items-center w-9 h-9 rounded-full bg-white border border-slate-200 hover:border-slate-300 text-indigo-500 shadow-sm transition duration-150 ml-2">
@@ -32,7 +32,11 @@
 </template>
 
 <script>
+import { Link } from '@inertiajs/vue3'
 export default {
   name: 'DashboardAvatars',
+  components: {
+    Link
+  },
 }
 </script>

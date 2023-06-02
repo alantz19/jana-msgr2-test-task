@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4e21532c1c58f27ad9b79b26e5a927c4",
+    "content-hash": "01002bd438a0f844c56f51817c166727",
     "packages": [
         {
             "name": "acpmasquerade/sms-counter-php",

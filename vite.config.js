@@ -7,14 +7,28 @@ export default defineConfig({
         vue(),
         laravel({
             input: [
-                'resources/css/app.css',
                 'resources/js/app.js',
             ],
-            refresh: true
-            // refresh: [
-            //     ...refreshPaths,
-            //     'app/Http/Livewire/**',
-            // ],
+            // refresh: true
+            refresh: [
+                'resources/**',
+                'resources/**/*.vue',
+            ],
         }),
     ],
+    resolve: {
+        alias: [
+            {
+                find: /^~.+/,
+                replacement: (val) => {
+                    return val.replace(/^~/, "");
+                },
+            },
+        ],
+    },
+    build: {
+        commonjsOptions: {
+            transformMixedEsModules: true,
+        },
+    }
 });

@@ -31,22 +31,22 @@
           @focusout="dropdownOpen = false"
         >
           <li class="border-b border-slate-200 last:border-0">
-            <router-link class="block py-2 px-4 hover:bg-slate-50" to="#0" @click="dropdownOpen = false">
+            <Link href="#0" class="block py-2 px-4 hover:bg-slate-50" @click="dropdownOpen = false">
               <span class="block text-sm mb-2">📣 <span class="font-medium text-slate-800">Edit your information in a swipe</span> Sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim.</span>
               <span class="block text-xs font-medium text-slate-400">Feb 12, 2021</span>
-            </router-link>
+            </Link>
           </li>
           <li class="border-b border-slate-200 last:border-0">
-            <router-link class="block py-2 px-4 hover:bg-slate-50" to="#0" @click="dropdownOpen = false">
+            <Link href="#0" class="block py-2 px-4 hover:bg-slate-50" @click="dropdownOpen = false">
               <span class="block text-sm mb-2">📣 <span class="font-medium text-slate-800">Edit your information in a swipe</span> Sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim.</span>
               <span class="block text-xs font-medium text-slate-400">Feb 9, 2021</span>
-            </router-link>
+            </Link>
           </li>
           <li class="border-b border-slate-200 last:border-0">
-            <router-link class="block py-2 px-4 hover:bg-slate-50" to="#0" @click="dropdownOpen = false">
+            <Link href="#0" class="block py-2 px-4 hover:bg-slate-50" @click="dropdownOpen = false">
               <span class="block text-sm mb-2">🚀<span class="font-medium text-slate-800">Say goodbye to paper receipts!</span> Sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim.</span>
               <span class="block text-xs font-medium text-slate-400">Jan 24, 2020</span>
-            </router-link>
+            </Link>
           </li>
         </ul>
       </div> 
@@ -56,9 +56,13 @@
 
 <script>
 import { ref, onMounted, onUnmounted } from 'vue'
+import {Link} from '@inertiajs/vue3'
 
 export default {
   name: 'DropdownNotifications',
+  components: {
+    Link,
+  },
   props: ['align'],
   setup() {
 

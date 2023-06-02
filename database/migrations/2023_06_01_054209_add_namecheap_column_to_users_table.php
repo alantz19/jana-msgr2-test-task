@@ -11,18 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->jsonb('namecheap')->nullable();
+        Schema::table('teams', function (Blueprint $table) {
+            $table->jsonb('meta')->nullable()->after('personal_team');
         });
     }
 
     /**
      * Reverse the migrations.
      */
-    public function down(): void
-    {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn(['namecheap']);
-        });
-    }
+//    public function down(): void
+//    {
+//        Schema::table('teams', function (Blueprint $table) {
+//            $table->dropColumn(['meta']);
+//        });
+//    }
 };

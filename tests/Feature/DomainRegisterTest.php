@@ -3,31 +3,24 @@
 namespace Tests\Feature;
 
 use App\Models\User;
-use App\Services\NamecheapService;
-use Illuminate\Support\Facades\Cache;
+use App\Services\DomainRegisterService;
 use Illuminate\Support\Facades\Http;
-use Ramsey\Uuid\Nonstandard\Uuid;
 use Tests\TestCase;
 
-class NamecheapTest extends TestCase
+class DomainRegisterTest extends TestCase
 {
     public function test_get_tld_list_errors()
     {
         $user = User::factory()
             ->withPersonalTeam()
-            ->withNamecheap()
             ->create();
-
-        $this->actingAs($user);
-
-        $namecheap = new NamecheapService($user);
 
         Http::fake([
             'https://api.sandbox.namecheap.com/*' => Http::response(file_get_contents(__DIR__ .
                 '/data/namecheap/namecheap.domains.getTldList.errors.xml')),
         ]);
 
-        $res = $namecheap->getTldList();
+        $res = DomainRegisterService::getTldList($user->currentTeam);
 
         $this->assertNotEmpty($res['errors']);
         $this->assertEmpty($res['tlds']);
@@ -37,19 +30,14 @@ class NamecheapTest extends TestCase
     {
         $user = User::factory()
             ->withPersonalTeam()
-            ->withNamecheap()
             ->create();
-
-        $this->actingAs($user);
-
-        $namecheap = new NamecheapService($user);
 
         Http::fake([
             'https://api.sandbox.namecheap.com/*' => Http::response(file_get_contents(__DIR__ .
                 '/data/namecheap/namecheap.domains.getTldList.xml')),
         ]);
 
-        $res = $namecheap->getTldList();
+        $res = DomainRegisterService::getTldList($user->currentTeam);
 
         $this->assertEmpty($res['errors']);
         $this->assertNotEmpty($res['tlds']);
@@ -59,7 +47,6 @@ class NamecheapTest extends TestCase
     {
         $user = User::factory()
             ->withPersonalTeam()
-            ->withNamecheap()
             ->create();
 
         Http::fake([
@@ -67,9 +54,7 @@ class NamecheapTest extends TestCase
                 '/data/namecheap/namecheap.domains.create.errors.xml')),
         ]);
 
-        $namecheap = new NamecheapService($user);
-
-        $res = $namecheap->createDomain('smsedge.com');
+        $res = DomainRegisterService::createDomain($user->currentTeam, 'smsedge.com');
 
         $this->assertNotEmpty($res['errors']);
         $this->assertEmpty($res['result']);
@@ -79,7 +64,6 @@ class NamecheapTest extends TestCase
     {
         $user = User::factory()
             ->withPersonalTeam()
-            ->withNamecheap()
             ->create();
 
         Http::fake([
@@ -87,9 +71,7 @@ class NamecheapTest extends TestCase
                 '/data/namecheap/namecheap.domains.create.xml')),
         ]);
 
-        $namecheap = new NamecheapService($user);
-
-        $res = $namecheap->createDomain('smsedge.com');
+        $res = DomainRegisterService::createDomain($user->currentTeam, 'smsedge.com');
 
         $this->assertEmpty($res['errors']);
         $this->assertNotEmpty($res['result']);

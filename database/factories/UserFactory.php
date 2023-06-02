@@ -66,6 +66,22 @@ class UserFactory extends Factory
                     'name' => $user->name . '\'s Team',
                     'user_id' => $user->id,
                     'personal_team' => true,
+                    'meta' => [
+                        'domain_register' => [
+                            'api_key' => config('testing.namecheap.api_key'),
+                            'api_user' => config('testing.namecheap.api_user'),
+                            'client_ip' => config('testing.namecheap.client_ip'),
+                            'first_name' => 'John',
+                            'last_name' => 'Doe',
+                            'address1' => $this->faker->streetAddress(),
+                            'city' => $this->faker->city(),
+                            'state_province' => $this->faker->state(),
+                            'postal_code' => $this->faker->postcode(),
+                            'country' => $this->faker->countryCode(),
+                            'phone' => substr_replace($this->faker->e164PhoneNumber(), '.', 4, 0),
+                            'email' => $this->faker->email(),
+                        ],
+                    ],
                 ])->afterCreating(
                     function (Team $team, User $user) {
                         $user->forceFill(['current_team_id' => $team->id])->save();
@@ -107,27 +123,4 @@ class UserFactory extends Factory
         );
         return $this;
     }
-
-    public function withNamecheap(): Factory
-    {
-        return $this->state(function (array $attributes) {
-            return [
-                'namecheap' => [
-                    'api_key' => config('testing.namecheap.api_key'),
-                    'api_user' => config('testing.namecheap.api_user'),
-                    'client_ip' => config('testing.namecheap.client_ip'),
-                    'first_name' => 'John',
-                    'last_name' => 'Doe',
-                    'address1' => $this->faker->streetAddress(),
-                    'city' => $this->faker->city(),
-                    'state_province' => $this->faker->state(),
-                    'postal_code' => $this->faker->postcode(),
-                    'country' => $this->faker->countryCode(),
-                    'phone' => substr_replace($this->faker->e164PhoneNumber(), '.', 4, 0),
-                    'email' => $this->faker->email(),
-                ],
-            ];
-        });
-    }
-
 }

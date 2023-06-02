@@ -79,7 +79,6 @@
       <path value="$PROJECT_DIR$/vendor/symfony/yaml" />
       <path value="$PROJECT_DIR$/vendor/symfony/translation" />
       <path value="$PROJECT_DIR$/vendor/composer" />
-      <path value="$PROJECT_DIR$/vendor/league/uri-parser" />
       <path value="$PROJECT_DIR$/vendor/nesbot/carbon" />
       <path value="$PROJECT_DIR$/vendor/opcodesio/log-viewer" />
       <path value="$PROJECT_DIR$/vendor/spatie/laravel-package-tools" />
@@ -91,30 +90,16 @@
       <path value="$PROJECT_DIR$/vendor/spatie/laravel-activitylog" />
       <path value="$PROJECT_DIR$/vendor/laravel/pint" />
       <path value="$PROJECT_DIR$/vendor/phar-io/version" />
-      <path value="$PROJECT_DIR$/vendor/spatie/invade" />
       <path value="$PROJECT_DIR$/vendor/laravel/fortify" />
-      <path value="$PROJECT_DIR$/vendor/laravel/jetstream" />
       <path value="$PROJECT_DIR$/vendor/laravel/serializable-closure" />
       <path value="$PROJECT_DIR$/vendor/laravel/framework" />
       <path value="$PROJECT_DIR$/vendor/nunomaduro/larastan" />
       <path value="$PROJECT_DIR$/vendor/doctrine/lexer" />
-      <path value="$PROJECT_DIR$/vendor/blade-ui-kit/blade-heroicons" />
       <path value="$PROJECT_DIR$/vendor/doctrine/inflector" />
       <path value="$PROJECT_DIR$/vendor/doctrine/deprecations" />
-      <path value="$PROJECT_DIR$/vendor/blade-ui-kit/blade-icons" />
       <path value="$PROJECT_DIR$/vendor/masterminds/html5" />
-      <path value="$PROJECT_DIR$/vendor/akaunting/laravel-money" />
       <path value="$PROJECT_DIR$/vendor/nikic/php-parser" />
-      <path value="$PROJECT_DIR$/vendor/filament/support" />
-      <path value="$PROJECT_DIR$/vendor/filament/forms" />
-      <path value="$PROJECT_DIR$/vendor/danharrin/livewire-rate-limiting" />
-      <path value="$PROJECT_DIR$/vendor/danharrin/date-format-converter" />
-      <path value="$PROJECT_DIR$/vendor/filament/filament" />
-      <path value="$PROJECT_DIR$/vendor/ryangjchandler/blade-capture-directive" />
-      <path value="$PROJECT_DIR$/vendor/filament/notifications" />
-      <path value="$PROJECT_DIR$/vendor/filament/tables" />
       <path value="$PROJECT_DIR$/vendor/laravel/telescope" />
-      <path value="$PROJECT_DIR$/vendor/tgalopin/html-sanitizer" />
       <path value="$PROJECT_DIR$/vendor/laravel/horizon" />
       <path value="$PROJECT_DIR$/vendor/psr/simple-cache" />
       <path value="$PROJECT_DIR$/vendor/psr/http-client" />
@@ -139,7 +124,6 @@
       <path value="$PROJECT_DIR$/vendor/fakerphp/faker" />
       <path value="$PROJECT_DIR$/vendor/tightenco/ziggy" />
       <path value="$PROJECT_DIR$/vendor/phpunit/php-timer" />
-      <path value="$PROJECT_DIR$/vendor/livewire/livewire" />
       <path value="$PROJECT_DIR$/vendor/filp/whoops" />
       <path value="$PROJECT_DIR$/vendor/phpunit/phpunit" />
       <path value="$PROJECT_DIR$/vendor/mobiledetect/mobiledetectlib" />
@@ -185,6 +169,11 @@
       <path value="$PROJECT_DIR$/vendor/spatie/laravel-data" />
       <path value="$PROJECT_DIR$/vendor/phpstan/phpdoc-parser" />
       <path value="$PROJECT_DIR$/vendor/spatie/enum" />
+      <path value="$PROJECT_DIR$/vendor/laravel/dusk" />
+      <path value="$PROJECT_DIR$/vendor/php-webdriver/webdriver" />
+      <path value="$PROJECT_DIR$/vendor/inertiajs/inertia-laravel" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-php83" />
+      <path value="$PROJECT_DIR$/vendor/laravel/jetstream" />
     </include_path>
   </component>
   <component name="PhpInterpreters">

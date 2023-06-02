@@ -11,3 +11,9 @@
 @import 'additional-styles/theme.css';
 
 @import 'tailwindcss/utilities';
+html, body {
+    font-family: 'Inter', sans-serif;
+}
+.antialiased{
+    -webkit-font-smoothing: antialiased;
+}

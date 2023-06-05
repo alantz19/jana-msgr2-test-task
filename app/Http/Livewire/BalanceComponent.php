@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 class BalanceComponent extends Component
 {
-
     public $balance;
 
     protected $listeners = ['balanceUpdated' => 'refreshBalance'];
@@ -25,17 +24,6 @@ class BalanceComponent extends Component
 
     public function refreshBalance()
     {
-        $user = User::where('id',Auth::user()->id)->first();
-        $this->balance = BalanceService::getTeamBalance($user);
-    }
-
-    public function hydrate()
-    {
-        $this->refreshBalance();
-    }
-
-    public function updated()
-    {
-        $this->refreshBalance();
+        $this->balance = BalanceService::getTeamBalance(\auth()->user());
     }
 }

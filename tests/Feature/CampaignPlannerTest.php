@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Offer;
 use App\Models\SmsCampaignPlan;
 use App\Models\User;
 use App\Services\CountryService;
@@ -21,23 +22,22 @@ class CampaignPlannerTest extends TestCase
         ]);
 
         $plan->addSettings([
-            'countries' => ['AU', 'CA'],
-            'segments' => [
-                'segment1' => 'lists=1,2,3&tags=1,2,3&carrier=1,2,3&max_sent=3',
-            ],
+            'countries' => ['AU'],
+            'segment' => 'lists=1,2,3&tags=1,2,3&carrier=1,2,3&max_sent=3',
             'max_budget' => 200,
             'test_budget' => 10,
             'days' => ['mon', 'tue', 'wed', 'thu', 'fri'],
             'max_sms_per_week_per_contact' => 2,
-            'hours' => ['18:00-22:00'],
+            'hours' => '18:00-22:00',
             'routing_plan' => [1],
             'texts' => [
-                'text1',
-                'text2',
-                'text3',
+                ['text' => 'text1', 'is_active' => true],
+                ['text' => 'text2', 'is_active' => true],
+                ['text' => 'text3', 'is_active' => true]
             ],
-            'sender_ids' => [
-                'sender1', 'sender2',
+            'senderids' => [
+                ['text' => 'sender1', 'is_active' => true],
+                ['text' => 'sender2', 'is_active' => true],
             ],
             'autosender_settings' => [
                 'step_size' => 100,
@@ -52,11 +52,15 @@ class CampaignPlannerTest extends TestCase
                 'optimise_carriers' => true,
             ],
             'offers' => [
-                1, 2, 3
+                [
+                    'id' => Offer::factory()->create()->id,
+                    'is_active' => true
+                ],
             ],
             'text_by_carrier' => true,
             'auto_expand_texts' => true,
             'notify_slack' => true,
+            'sent_to_people_with_timezone_unknown' => true,
         ]);
         $plan->save();
 

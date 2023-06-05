@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\WorldCountry;
 use Carbon\Carbon;
 use DateTimeZone;
 use Nnjeim\World\World;
@@ -20,49 +21,33 @@ class CountryService
         }
 
         if (is_numeric($countryName)) {
-            $country = World::countries([
-                'filters' => [
-                    'id' => $countryName,
-                ]
-            ]);
+            $country = WorldCountry::where(['id' => $countryName])->first();
 
-            if ($country->data->count() > 0) {
-                return $country->data->first()['id'];
+            if (!empty($country)) {
+                return $country->id;
             }
         }
 
         if (strlen($countryName) === 2) {
-            $country = World::countries([
-                'filters' => [
-                    'iso2' => strtoupper($countryName),
-                ]
-            ]);
+            $country = WorldCountry::where(['iso' => strtoupper($countryName)])->first();
 
-            if ($country->data->count() > 0) {
-                return $country->data->first()['id'];
+            if (!empty($country)) {
+                return $country->id;
             }
         }
 
         if (strlen($countryName) === 3) {
-            $country = World::countries([
-                'filters' => [
-                    'iso3' => strtoupper($countryName),
-                ]
-            ]);
+            $country = WorldCountry::where(['iso3' => strtoupper($countryName)])->first();
 
-            if ($country->data->count() > 0) {
-                return $country->data->first()['id'];
+            if (!empty($country)) {
+                return $country->id;
             }
         }
 
-        $country = World::countries([
-            'filters' => [
-                'name' => ucwords($countryName),
-            ]
-        ]);
+        $country = WorldCountry::where(['nicename' => ucwords($countryName)])->first();
 
-        if ($country->data->count() > 0) {
-            return $country->data->first()['id'];
+        if (!empty($country)) {
+            return $country->id;
         }
 
         throw new \Exception("Country [{$countryName}] not found");

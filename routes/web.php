@@ -31,5 +31,7 @@ Route::middleware([
         return Inertia::render('Dashboard');
     })->name('home');
 
+    Route::get('/campaigns', [\App\Http\Controllers\SmsCampaignsController::class, 'index'])->name('campaigns.index');
+
     Route::get('/logout', [\App\Http\Controllers\AuthController::class, 'destroy'])->name('logout');
 });

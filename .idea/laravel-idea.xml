@@ -19,10 +19,10 @@
             </CustomGeneration>
             <CustomGeneration>
               <option name="baseClass" value="Spatie\LaravelData\Data" />
-              <option name="classSuffix" value="Dto" />
-              <option name="namespace" value="Dto" />
+              <option name="classSuffix" value="Data" />
+              <option name="namespace" value="Data" />
               <option name="templateName" value="Laravel Ideal Class" />
-              <option name="title" value="Create dto class" />
+              <option name="title" value="Create data class" />
             </CustomGeneration>
             <CustomGeneration>
               <option name="baseClass" value="Spatie\Enum\Enum" />

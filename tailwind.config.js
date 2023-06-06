@@ -66,7 +66,15 @@ export default {
                 modifySelectors(({ className }) => `.sidebar-expanded .${e(`sidebar-expanded${separator}${className}`)}`);
             });
         }),
+        require('daisyui')
     ],
+    daisyui: {
+        // themes: false,
+        // base: false,
+        // styled: false,
+        // utils: false,
+        prefix: 'daisy-',
+    },
     build: {
         commonjsOptions: {
             transformMixedEsModules: true,

@@ -11,7 +11,7 @@ class BuildSmsData
     public SmsCampaignText $selectedCampaignText;
     public $sms_shortlink;
     public $segment_id; //todo
-    public \App\Dto\buildSmsDto $dto;
+    public \App\Data\buildSmsData $dto;
     /**
      * @var \App\Models\Offer|mixed
      */

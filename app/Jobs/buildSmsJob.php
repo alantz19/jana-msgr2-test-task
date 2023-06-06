@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Dto\buildSmsDto;
+use App\Data\buildSmsData;
 use App\Models\SmsCampaign;
 use App\Models\SmsCampaignSend;
 use App\Services\SendingProcess\Data\BuildSmsData;
@@ -18,7 +18,7 @@ class buildSmsJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public function __construct(public BuildSmsDto $dto)
+    public function __construct(public buildSmsData $dto)
     {}
 
     public function handle(): void

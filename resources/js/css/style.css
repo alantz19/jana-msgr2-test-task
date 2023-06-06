@@ -17,3 +17,6 @@ html, body {
 .antialiased{
     -webkit-font-smoothing: antialiased;
 }
+:focus, :focus-visible, .input:focus{
+    @apply border-slate-300 outline-none ring-0;
+}

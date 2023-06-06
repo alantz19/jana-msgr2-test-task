@@ -17,11 +17,11 @@
 </head>
 <body class="font-inter antialiased bg-slate-100 text-slate-600">
 <script>
-    if (localStorage.getItem('sidebar-expanded') == 'true') {
-        document.querySelector('body').classList.add('sidebar-expanded');
-    } else {
-        document.querySelector('body').classList.remove('sidebar-expanded');
-    }
+    // if (localStorage.getItem('sidebar-expanded') == 'true') {
+    //     document.querySelector('body').classList.add('sidebar-expanded');
+    // } else {
+    //     document.querySelector('body').classList.remove('sidebar-expanded');
+    // }
 </script>
 
 @inertia

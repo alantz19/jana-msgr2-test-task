@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Dto;
+namespace App\Data;
 
 use App\Models\SmsCampaign;
 use Spatie\LaravelData\Data;
 
-class buildSmsDto extends Data
+class buildSmsData extends Data
 {
     public function __construct(
         public string $phone_normalized,

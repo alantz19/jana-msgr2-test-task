@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Dto\buildSmsDto;
+use App\Data\buildSmsData;
 use App\Models\SmsCampaignSend;
 use App\Services\SmsCampaignContactService;
 use Illuminate\Bus\Queueable;
@@ -32,7 +32,7 @@ class SendCampaignJob implements ShouldQueue
         //submit to sms build queue
         $i = 0;
         foreach ($contacts as $contact) {
-            $dto = buildSmsDto::from(
+            $dto = buildSmsData::from(
                 [...$contact,
                     'counter' => $i,
                     'sms_campaign_send_id' => $this->campaignSend->id,

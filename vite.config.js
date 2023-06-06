@@ -26,6 +26,11 @@ export default defineConfig({
             },
         ],
     },
+    server: {
+        watch: {
+            usePolling: true,
+        }
+    },
     build: {
         commonjsOptions: {
             transformMixedEsModules: true,

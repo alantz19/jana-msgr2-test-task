@@ -33,6 +33,8 @@
     "vue-flatpickr-component": "^9.0.8"
   },
   "dependencies": {
+    "@headlessui/vue": "^1.7.14",
+    "@heroicons/vue": "^2.0.18",
     "@inertiajs/vue3": "^1.0.7",
     "@vitejs/plugin-vue": "^4.2.3",
     "chartjs": "^0.3.24",

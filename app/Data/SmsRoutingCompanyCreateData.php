@@ -4,5 +4,11 @@ namespace App\Data;
 
 use Spatie\LaravelData\Data;
 
-class SmsRoutingCompanyCreateData extends Data{
+class SmsRoutingCompanyCreateData extends Data
+{
+    public function __construct(
+        public string $name,
+    )
+    {
+    }
 }

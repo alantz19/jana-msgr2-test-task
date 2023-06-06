@@ -5,15 +5,17 @@ import {defineProps, defineOptions, watch} from "vue";
 let props = defineProps({
   company: Object
 });
-
 let form = useForm(props.company)
 
 function submit(){
-  form.post('/sms/routing/companies', {
+  form.patch('/sms/routing/companies/' + props.company.id, {
     onSuccess: () => {
       form.reset();
     }
   });
+}
+function back(){
+  window.history.back();
 }
 </script>
 
@@ -23,7 +25,7 @@ function submit(){
     <div class="mx-auto max-w-3xl">
       <PageHeader>
         <template #title>
-          Create SMS Company
+          Update SMS Company - <span v-text="form.name"></span>
         </template>
       </PageHeader>
       <!-- Content goes here -->
@@ -36,6 +38,7 @@ function submit(){
           </div>
 
           <div class="mt-6 flex items-center justify-end gap-x-6">
+            <button type="button" class="text-sm font-semibold leading-6 text-gray-900" @click="back">Cancel</button>
             <button type="submit" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Save</button>
 
           </div>

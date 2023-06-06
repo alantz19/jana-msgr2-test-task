@@ -34,4 +34,10 @@ Route::middleware([
     Route::get('/campaigns', [\App\Http\Controllers\SmsCampaignsController::class, 'index'])->name('campaigns.index');
 
     Route::get('/logout', [\App\Http\Controllers\AuthController::class, 'destroy'])->name('logout');
+
+    Route::prefix('sms')->name('sms.')->group(function(){
+        Route::prefix('routing')->name('routing.')->group(function(){
+            Route::resource('companies', \App\Http\Controllers\SmsRouteCompanyController::class);
+        });
+    });
 });

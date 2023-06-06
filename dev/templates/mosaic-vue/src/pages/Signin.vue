@@ -10,7 +10,7 @@
           <div class="flex-1">
             <div class="flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
               <!-- Logo -->
-              <router-link class="block" to="/">
+              <Link class="block" href="/">
                 <svg width="32" height="32" viewBox="0 0 32 32">
                   <defs>
                     <linearGradient x1="28.538%" y1="20.229%" x2="100%" y2="108.156%" id="logo-a">
@@ -27,7 +27,7 @@
                   <path d="M7.404 2.503l18.339 26.19A15.93 15.93 0 0116 32C7.163 32 0 24.837 0 16 0 10.327 2.952 5.344 7.404 2.503z" fill="url(#logo-a)" />
                   <path d="M2.223 24.14L29.777 7.86A15.926 15.926 0 0132 16c0 8.837-7.163 16-16 16-5.864 0-10.991-3.154-13.777-7.86z" fill="url(#logo-b)" />
                 </svg>
-              </router-link>
+              </Link>
             </div>
           </div>          
 
@@ -47,15 +47,15 @@
               </div>
               <div class="flex items-center justify-between mt-6">
                 <div class="mr-1">
-                  <router-link class="text-sm underline hover:no-underline" to="/reset-password">Forgot Password?</router-link>
+                  <Link class="text-sm underline hover:no-underline" href="/reset-password">Forgot Password?</Link>
                 </div>
-                <router-link class="btn bg-indigo-500 hover:bg-indigo-600 text-white ml-3" to="/">Sign In</router-link>
+                <Link class="btn bg-indigo-500 hover:bg-indigo-600 text-white ml-3" href="/">Sign In</Link>
               </div>
             </form>
             <!-- Footer -->
             <div class="pt-5 mt-6 border-t border-slate-200">
               <div class="text-sm">
-                Don’t you have an account? <router-link class="font-medium text-indigo-500 hover:text-indigo-600" to="/signup">Sign Up</router-link>
+                Don’t you have an account? <Link class="font-medium text-indigo-500 hover:text-indigo-600" href="/signup">Signup</Link>
               </div>
               <!-- Warning -->
               <div class="mt-5">
@@ -63,9 +63,6 @@
                   <svg class="inline w-3 h-3 shrink-0 fill-current mr-2" viewBox="0 0 12 12">
                     <path d="M10.28 1.28L3.989 7.575 1.695 5.28A1 1 0 00.28 6.695l3 3a1 1 0 001.414 0l7-7A1 1 0 0010.28 1.28z" />
                   </svg>
-                  <span class="text-sm">
-                    To support you during the pandemic super pro features are free until March 31st.
-                  </span>
                 </div>
               </div>
             </div>

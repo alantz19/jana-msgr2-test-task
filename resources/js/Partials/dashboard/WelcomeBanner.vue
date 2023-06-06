@@ -45,7 +45,7 @@
 
     <!-- Content -->
     <div class="relative">
-      <h1 class="text-2xl md:text-3xl text-slate-800 font-bold mb-1">Good afternoon, Acme Inc. 👋</h1>
+      <h1 class="text-2xl md:text-3xl text-slate-800 font-bold mb-1">Welcome to comm.com 👋</h1>
       <p>Here is what’s happening with your projects today:</p>
     </div>
 

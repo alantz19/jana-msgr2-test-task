@@ -20,11 +20,9 @@ class SignupTest extends DuskTestCase
         $this->browse(function (Browser $browser) {
             $browser->visit('/signup')
                 ->waitFor('input#email')
-                ->screenshot('page')
-//                ->type('#email', 'a@a.com')
-//                ->type('#password', 'password')
-                ->press('SIGNUP')
-                ->waitUntil('"!$.active"')
+                ->screenshot('Auth/SignupPage')
+                ->press('Signup')
+                ->waitForText("The name field is required.")
             ->assertSee('The name field is required.')
             ->assertSee('The email field is required.')
             ->assertSee('The password field is required.')
@@ -38,15 +36,14 @@ class SignupTest extends DuskTestCase
         $this->browse(function (Browser $browser) {
             $browser->visit('/signup')
                 ->waitFor('input#email')
-                ->screenshot('page')
                 ->type('#name', 'Test User')
                 ->type('#email', Factory::create()->email)
                 ->type('#password', 'password1947')
+                ->type('#company_name', Factory::create()->company())
                 ->type('#website', Factory::create()->url)
                 ->check('#tc_confirm')
-                ->press('SIGNUP')
-                ->waitUntil("!$.active")
-                ->assertUrlIs('/')
+                ->press('Signup')
+                ->waitForLocation("/")
                 ->screenshot('Auth/signup-success');
         });
     }

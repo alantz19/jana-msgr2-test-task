@@ -17,31 +17,9 @@ use Inertia\Inertia;
 
 Route::middleware(\App\Http\Middleware\RedirectIfAuthenticated::class)
     ->group(function () {
-        Route::get('/login', function () {
-            return Inertia::render('Auth/Login');
-        })->name('login');
-        Route::get('/signup', function () {
-            return Inertia::render('Auth/Signup', [
-                'formData' => \App\Data\SignupData::empty()
-            ]);
-        })->name('signup');
-
-        Route::post('/signup', function (\App\Data\SignupData $data) {
-            $user = \App\Models\User::create($data->toArray());
-            $team = \App\Models\Team::make([
-                'user_id' => $user->id,
-                'name' => $user->name,
-                'personal_team' => false
-            ]);
-            $team->user_id = $user->id;
-            $team->save();
-
-            $user->current_team_id = $team->id;
-            $user->save();
-            \Auth::guard('web')->login($user);
-
-            return to_route('home');
-        });
+        Route::get('/login', [\App\Http\Controllers\AuthController::class, 'view'])->name('login');
+        Route::get('/signup', [\App\Http\Controllers\AuthController::class, 'create'])->name('signup');
+        Route::post('/signup', [\App\Http\Controllers\AuthController::class, 'store'])->name('signup.store');
     });
 
 Route::middleware([
@@ -53,6 +31,5 @@ Route::middleware([
         return Inertia::render('Dashboard');
     })->name('home');
 
-    Route::get('/logout', [\App\Http\Controllers\AuthController::class, 'destroy'])
-        ->name('logout');
+    Route::get('/logout', [\App\Http\Controllers\AuthController::class, 'destroy'])->name('logout');
 });

@@ -1,9 +1,14 @@
 <script setup>
-
+import CampaignsTable from "../../Components/SmsCampaigns/CampaignsTable.vue";
 </script>
 
 <template>
-  <h1 class="text-3xl font-bold text-gray-900">SMS Campaigns</h1>
+  <div class="mb-6">
+    <h1 class="text-2xl md:text-3xl text-slate-800 font-bold">Campaigns</h1>
+  </div>
+  <div>
+    <CampaignsTable />
+  </div>
 </template>
 
 <style scoped>

@@ -91,22 +91,22 @@
             <div class="lg:hidden lg:sidebar-expanded:block 2xl:block">
               <ul class="pl-9 mt-1" :class="!parentLink.expanded && 'hidden'">
                   <li class="mb-1 last:mb-0">
-                    <Link href="/sms/routing/companies" class="block text-slate-400 hover:text-slate-200 transition duration-150 truncate" :class="{'!text-indigo-500': $page.url === '/sms/routing/companies'}">
+                    <Link href="/sms/routing/companies" class="block text-slate-400 hover:text-slate-200 transition duration-150 truncate" :class="{'!text-indigo-500': $page.url.startsWith('/sms/routing/companies')}">
                       <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Companies</span>
                     </Link>
                   </li>
                   <li class="mb-1 last:mb-0">
-                    <Link href="/sms/routing/routes" class="block text-slate-400 hover:text-slate-200 transition duration-150 truncate" :class="{'!text-indigo-500': $page.url === '/sms/routing/routes'}">
+                    <Link href="/sms/routing/routes" class="block text-slate-400 hover:text-slate-200 transition duration-150 truncate" :class="{'!text-indigo-500': $page.url.startsWith('/sms/routing/routes')}">
                       <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Routes</span>
                     </Link>
                   </li>
                   <li class="mb-1 last:mb-0">
-                    <Link href="/sms/routing/rates" class="block text-slate-400 hover:text-slate-200 transition duration-150 truncate" :class="{'!text-indigo-500': $page.url === '/sms/routing/rates'}">
+                    <Link href="/sms/routing/rates" class="block text-slate-400 hover:text-slate-200 transition duration-150 truncate" :class="{'!text-indigo-500': $page.url.startsWith('/sms/routing/rates')}">
                       <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Rates</span>
                     </Link>
                   </li>
                   <li class="mb-1 last:mb-0">
-                    <Link href="/sms/routing/reports" class="block text-slate-400 hover:text-slate-200 transition duration-150 truncate" :class="{'!text-indigo-500': $page.url === '/sms/routing/reports'}">
+                    <Link href="/sms/routing/reports" class="block text-slate-400 hover:text-slate-200 transition duration-150 truncate" :class="{'!text-indigo-500': $page.url.startsWith('/sms/routing/reports')}">
                       <span class="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Reports</span>
                     </Link>
                   </li>

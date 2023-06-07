@@ -39,6 +39,7 @@
     "@vitejs/plugin-vue": "^4.2.3",
     "chartjs": "^0.3.24",
     "chartjs-adapter-moment": "^1.0.1",
+    "pinia": "^2.1.3",
     "vite-plugin-live-reload": "^3.0.2"
   }
 }

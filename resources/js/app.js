@@ -3,6 +3,9 @@ import './css/style.css'
 import { createApp, h } from 'vue'
 import { createInertiaApp } from '@inertiajs/vue3'
 import Layout from "./Partials/Layout.vue";
+import { createPinia } from 'pinia'
+
+const pinia = createPinia()
 
 createInertiaApp({
     resolve: name => {
@@ -16,6 +19,7 @@ createInertiaApp({
     setup({ el, App, props, plugin }) {
         createApp({ render: () => h(App, props) })
             .use(plugin)
+            .use(pinia)
             .mount(el)
     },
 })

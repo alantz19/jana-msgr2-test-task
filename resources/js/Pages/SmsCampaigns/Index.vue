@@ -6,7 +6,7 @@ import PageHeader from "../../Partials/PageHeader.vue";
 <template>
   <PageHeader title="SMS Campaigns" />
   <div>
-    <CampaignsTable />
+<!--    <CampaignsTable />-->
   </div>
 </template>
 

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full bg-white">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -14,7 +14,7 @@
     @vite(['resources/js/app.js'])
     @inertiaHead
 </head>
-<body class="font-inter antialiased bg-slate-100 text-slate-600">
+<body class="h-full">
 <script>
     // if (localStorage.getItem('sidebar-expanded') == 'true') {
     //     document.querySelector('body').classList.add('sidebar-expanded');

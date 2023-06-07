@@ -1,75 +1,60 @@
 <template>
-  <header class="sticky top-0 bg-white border-b border-slate-200 z-30">
-    <div class="px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-16 -mb-px">
+  <div class="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
+    <button type="button" class="-m-2.5 p-2.5 text-gray-700 lg:hidden" @click="appStore.sidebarOpen = true">
+      <span class="sr-only">Open sidebar</span>
+      <Bars3Icon class="h-6 w-6" aria-hidden="true" />
+    </button>
 
-        <!-- Header: Left side -->
-        <div class="flex">
+    <!-- Separator -->
+    <div class="h-6 w-px bg-gray-900/10 lg:hidden" aria-hidden="true" />
 
-          <!-- Hamburger button -->
-          <button class="text-slate-500 hover:text-slate-600 lg:hidden" @click.stop="$emit('toggle-sidebar')" aria-controls="sidebar" :aria-expanded="sidebarOpen">
-            <span class="sr-only">Open sidebar</span>
-            <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <rect x="4" y="5" width="16" height="2" />
-              <rect x="4" y="11" width="16" height="2" />
-              <rect x="4" y="17" width="16" height="2" />
-            </svg>
-          </button>
+    <div class="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
+      <form class="relative flex flex-1" action="#" method="GET">
+        <label for="search-field" class="sr-only">Search</label>
+        <MagnifyingGlassIcon class="pointer-events-none absolute inset-y-0 left-0 h-full w-5 text-gray-400" aria-hidden="true" />
+        <input id="search-field" class="block h-full w-full border-0 py-0 pl-8 pr-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm" placeholder="Search..." type="search" name="search" />
+      </form>
+      <div class="flex items-center gap-x-4 lg:gap-x-6">
+        <button type="button" class="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500">
+          <span class="sr-only">View notifications</span>
+          <BellIcon class="h-6 w-6" aria-hidden="true" />
+        </button>
 
-        </div>
+        <!-- Separator -->
+        <div class="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-900/10" aria-hidden="true" />
 
-        <!-- Header: Right side -->
-        <div class="flex items-center space-x-3">
-          <div>
-            <button
-              class="w-8 h-8 flex items-center justify-center bg-slate-100 hover:bg-slate-200 transition duration-150 rounded-full ml-3"
-              :class="{ 'bg-slate-200': searchModalOpen }"
-              @click.stop="searchModalOpen = true"
-              aria-controls="search-modal"
-            >
-              <span class="sr-only">Search</span>
-              <svg class="w-4 h-4" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-                <path class="fill-current text-slate-500" d="M7 14c-3.86 0-7-3.14-7-7s3.14-7 7-7 7 3.14 7 7-3.14 7-7 7zM7 2C4.243 2 2 4.243 2 7s2.243 5 5 5 5-2.243 5-5-2.243-5-5-5z" />
-                <path class="fill-current text-slate-400" d="M15.707 14.293L13.314 11.9a8.019 8.019 0 01-1.414 1.414l2.393 2.393a.997.997 0 001.414 0 .999.999 0 000-1.414z" />
-              </svg>
-            </button>          
-            <SearchModal id="search-modal" searchId="search" :modalOpen="searchModalOpen" @open-modal="searchModalOpen = true" @close-modal="searchModalOpen = false" />
-          </div>
-          <Notifications align="right" />
-          <Help align="right" />
-          <!-- Divider -->
-          <hr class="w-px h-6 bg-slate-200" />
-          <UserMenu align="right" />
-
-        </div>
-
+        <!-- Profile dropdown -->
+        <Menu as="div" class="relative">
+          <MenuButton class="-m-1.5 flex items-center p-1.5">
+            <span class="sr-only">Open user menu</span>
+            <img class="h-8 w-8 rounded-full bg-gray-50" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="" />
+            <span class="hidden lg:flex lg:items-center">
+                  <span class="ml-4 text-sm font-semibold leading-6 text-gray-900" aria-hidden="true">Tom Cook</span>
+                  <ChevronDownIcon class="ml-2 h-5 w-5 text-gray-400" aria-hidden="true" />
+                </span>
+          </MenuButton>
+          <transition enter-active-class="transition ease-out duration-100" enter-from-class="transform opacity-0 scale-95" enter-to-class="transform opacity-100 scale-100" leave-active-class="transition ease-in duration-75" leave-from-class="transform opacity-100 scale-100" leave-to-class="transform opacity-0 scale-95">
+            <MenuItems class="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none">
+              <MenuItem v-for="item in userNavigation" :key="item.name" v-slot="{ active }">
+                <a :href="item.href" :class="[active ? 'bg-gray-50' : '', 'block px-3 py-1 text-sm leading-6 text-gray-900']">{{ item.name }}</a>
+              </MenuItem>
+            </MenuItems>
+          </transition>
+        </Menu>
       </div>
     </div>
-  </header>
+  </div>
 </template>
 
-<script>
-import { ref } from 'vue'
+<script setup>
+import {Menu, MenuButton, MenuItem, MenuItems} from "@headlessui/vue";
+import {ChevronDownIcon, MagnifyingGlassIcon} from "@heroicons/vue/20/solid";
+import {Bars3Icon, BellIcon} from "@heroicons/vue/24/outline";
+import {useAppStore} from "../stores/app.js";
+const appStore = useAppStore()
 
-import SearchModal from '../components/ModalSearch.vue'
-import Notifications from '../components/DropdownNotifications.vue'
-import Help from '../components/DropdownHelp.vue'
-import UserMenu from '../components/DropdownProfile.vue'
-
-export default {
-  name: 'Header',
-  props: ['sidebarOpen'],
-  components: {
-    SearchModal,
-    Notifications,
-    Help,
-    UserMenu,
-  },
-  setup() {
-    const searchModalOpen = ref(false)
-    return {
-      searchModalOpen,
-    }  
-  }  
-}
+const userNavigation = [
+  { name: 'Your profile', href: '#' },
+  { name: 'Logout', href: '/logout' },
+]
 </script>

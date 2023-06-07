@@ -90,9 +90,9 @@ router.on('navigate', (event) => {
         {name: 'Upload', href: '#'},
       ],
     },
-    {name: 'Routes', href: '#', icon: CalendarIcon, current: event.detail.page.url.startsWith('/sms/routing/companies'), children: [
+    {name: 'Routes', href: '#', icon: CalendarIcon, current: event.detail.page.url.startsWith('/sms/routing/'), children: [
         {name: 'Companies', href: '/sms/routing/companies', current: event.detail.page.url.startsWith('/sms/routing/companies')},
-        {name: 'Routes', href: '#'},
+        {name: 'Routes', href: '/sms/routing/routes', current: event.detail.page.url.startsWith('/sms/routing/routes')},
         {name: 'Rates', href: '#'},
         {name: 'Reports', href: '#'},
       ]}

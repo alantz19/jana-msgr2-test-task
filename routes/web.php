@@ -38,6 +38,7 @@ Route::middleware([
     Route::prefix('sms')->name('sms.')->group(function(){
         Route::prefix('routing')->name('routing.')->group(function(){
             Route::resource('companies', \App\Http\Controllers\SmsRouteCompanyController::class);
+            Route::resource('routes', \App\Http\Controllers\SmsRoutingRoutesControllesController::class);
         });
     });
 });

@@ -26,7 +26,7 @@
 
     <!-- Static sidebar for desktop -->
     <div class="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
-      <Sidebar/>
+      <Sidebar />
     </div>
 
     <div class="lg:pl-72">
@@ -43,7 +43,6 @@
 
 <script setup>
 import {useAppStore} from "../stores/app.js";
-
 const appStore = useAppStore();
 
 import {

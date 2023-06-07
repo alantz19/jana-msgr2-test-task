@@ -14,7 +14,7 @@
     @vite(['resources/js/app.js'])
     @inertiaHead
 </head>
-<body class="h-full">
+<body class="h-full bg-slate-100">
 <script>
     // if (localStorage.getItem('sidebar-expanded') == 'true') {
     //     document.querySelector('body').classList.add('sidebar-expanded');

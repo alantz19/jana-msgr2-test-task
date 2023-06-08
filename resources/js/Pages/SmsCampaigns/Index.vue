@@ -1,12 +1,10 @@
 <script setup>
-import CampaignsTable from "../../Components/SmsCampaigns/CampaignsTable.vue";
-import PageHeader from "../../Partials/PageHeader.vue";
+import PageHeader from "@/Components/PageHeader.vue";
 </script>
 
 <template>
   <PageHeader title="SMS Campaigns" />
   <div>
-<!--    <CampaignsTable />-->
   </div>
 </template>
 

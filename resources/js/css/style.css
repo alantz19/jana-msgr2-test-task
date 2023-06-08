@@ -11,6 +11,8 @@
 @import 'additional-styles/theme.css';
 
 @import 'tailwindcss/utilities';
+@import 'vue3-easy-data-table/dist/style.css';
+
 html, body {
     font-family: 'Inter', sans-serif;
 }

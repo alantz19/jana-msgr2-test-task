@@ -1,5 +1,5 @@
 <script setup>
-import PageHeader from "../../../Partials/PageHeader.vue";
+import PageHeader from "@/Components/PageHeader.vue";
 import {useForm} from "@inertiajs/vue3";
 import {defineProps, defineOptions, watch} from "vue";
 let props = defineProps({

@@ -3,7 +3,7 @@ import {ref} from "vue";
 export const useAppStore =
     defineStore('app', () => {
     const sidebarOpen = ref(false);
-    const navigation = ref([])
+    const navigation = ref([]); //done in Sidebar.vue
 
     return {sidebarOpen, navigation}
 });

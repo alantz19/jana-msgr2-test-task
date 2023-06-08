@@ -11,7 +11,7 @@
     <link rel="shortcut icon" href="{{ asset('favicon.png') }}">
 
     <link href="https://fonts.googleapis.com/css?family=Nunito:400,600,700" rel="stylesheet">
-    @vite(['resources/js/app.js'])
+    @vite(['resources/js/app.ts'])
     @inertiaHead
 </head>
 <body class="h-full bg-slate-100">

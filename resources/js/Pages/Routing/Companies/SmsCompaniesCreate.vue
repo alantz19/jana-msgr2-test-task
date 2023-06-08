@@ -1,6 +1,6 @@
 <script setup>
-import PageHeader from "../../../Partials/PageHeader.vue";
 import {useForm} from "@inertiajs/vue3";
+import PageHeader from "@/Components/PageHeader.vue";
 import {defineProps, defineOptions, watch} from "vue";
 let props = defineProps({
   company: Object
@@ -18,7 +18,7 @@ function submit(){
 </script>
 
 <template>
-  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-pagehstori8">
     <!-- We've used 3xl here, but feel free to try other max-widths based on your needs -->
     <div class="mx-auto max-w-3xl">
       <PageHeader>

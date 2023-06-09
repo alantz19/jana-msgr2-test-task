@@ -1,13 +1,46 @@
-<script setup>
+<script setup lang="ts">
 import Vue3EasyDataTable from "vue3-easy-data-table";
-defineProps({
-  items: Array,
-  headers: Array
-});
+import Button from "./Button.vue";
+import {Link} from "@inertiajs/vue3";
+import {PlusIcon} from "@heroicons/vue/20/solid";
+
+interface EmptyState {
+  name: string;
+  href: string;
+}
+interface Props {
+  items: [];
+  headers: [];
+  emptyState: EmptyState
+}
+
+const props = defineProps<Props>()
+
 </script>
 
 <template>
-  <Vue3EasyDataTable :items="items" :headers="headers"
+<!--  Empty state-->
+  <div v-if="items.length === 0">
+    <div class="text-center">
+      <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+        <path vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+      </svg>
+      <h3 class="mt-2 text-sm font-semibold text-gray-900">No {{ emptyState.name }}</h3>
+      <p class="mt-1 text-sm text-gray-500">Get started by creating a new {{ emptyState.name }}.</p>
+      <div class="mt-6">
+        <Link :href="emptyState.href">
+
+          <Button>
+            <PlusIcon class="-ml-0.5 mr-1.5 h-5 w-5" />
+            New {{ emptyState.name }}
+          </Button>
+        </Link>
+      </div>
+    </div>
+  </div>
+
+<!--  Data-->
+  <Vue3EasyDataTable v-else :items="items" :headers="headers"
                      :theme-color="'rgb(99 102 241)'"
   >
     <slot/>

@@ -69,10 +69,10 @@ export default {
         require('daisyui')
     ],
     daisyui: {
-        // themes: false,
-        // base: false,
-        // styled: false,
-        // utils: false,
+        themes: false,
+        base: false,
+        styled: false,
+        utils: false,
         prefix: 'daisy-',
     },
     build: {

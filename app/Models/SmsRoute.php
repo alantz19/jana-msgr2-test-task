@@ -27,6 +27,14 @@ class SmsRoute extends Model
         return $this->morphTo('connection');
     }
 
+    /**
+     * @return MorphOne - SMPP or Highway connection
+     */
+    public function connection() : MorphTo
+    {
+        return $this->morphTo();
+    }
+
     public function smsRouteRates()
     {
         return $this->hasMany(SmsRouteRate::class);
@@ -35,5 +43,10 @@ class SmsRoute extends Model
     public function team()
     {
         return $this->belongsTo(Team::class);
+    }
+
+    public function smsCompany()
+    {
+        return $this->belongsTo(SmsRouteCompany::class);
     }
 }

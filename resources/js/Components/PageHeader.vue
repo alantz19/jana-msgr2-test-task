@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {Link} from "@inertiajs/vue3";
-import Button from "../../../stories/Button.vue";
+import Button from "@/Components/Button.vue";
 interface HeaderButtons {
   text: string;
   href: string;
@@ -24,11 +24,11 @@ defineProps({
     <div class="grid grid-flow-col sm:auto-cols-max justify-end sm:justify-end space-x-2">
       <div v-if="buttons" v-for="button in buttons">
         <Link :href="button.href">
-          <button class="btn bg-indigo-500 hover:bg-indigo-600 text-white">
+          <Button>
             <span v-if="button.icon" v-html="button.icon">
             </span>
             <span class="hidden xs:block ml-2">{{ button.text }}</span>
-          </button>
+          </Button>
         </Link>
       </div>
     </div>

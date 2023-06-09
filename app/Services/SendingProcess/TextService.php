@@ -89,7 +89,7 @@ class TextService
         Log::info('text before replacement', ['text' => $text]);
         if (self::$data->selectedCampaignText->haveDomainOrOptoutTag()) {
             UrlShortenerService::setShortlink(self::$data);
-            self::$data->sms_optout_link = UrlShortenerService::getDynamicSmsOptOut(self::$data->sms_shortlink);
+//            self::$data->sms_optout_link = UrlShortenerService::getDynamicSmsOptOut(self::$data->sms_shortlink);
         }
 
         self::setSmsLength($text);

@@ -29,6 +29,9 @@ class BuildSmsData
      */
     public string|array|null $finalText;
 
+    public array $keyword_data = [];
+    public string $scheme;
+
     public function getReplacementParams()
     {
         //todo
@@ -79,5 +82,15 @@ class BuildSmsData
 
         $this->_cache['replacement_params'] =  array_merge($customParams, $metaParams, $stateParams, $params);
         return $this->_cache['replacement_params'];
+    }
+
+    public function getShortLink()
+    {
+        return $this->scheme . '://' . $this->keyword_data['url'];
+    }
+
+    public function getOptOutLink()
+    {
+        return $this->scheme . '://' . $this->keyword_data['opt-out'];
     }
 }

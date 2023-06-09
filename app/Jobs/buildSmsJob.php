@@ -5,7 +5,7 @@ namespace App\Jobs;
 use App\Data\buildSmsData;
 use App\Models\SmsCampaign;
 use App\Models\SmsCampaignSend;
-use App\Services\SendingProcess\Data\BuildSmsData;
+use App\Services\SendingProcess\Data\BuildSmsData as SPBuildSmsData;
 use App\Services\SendingProcess\TextService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;

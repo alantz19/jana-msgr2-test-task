@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Data\SmsRoutingCompanyCreateData;
+use App\Data\SmsRoutingCompanyViewData;
 use App\Models\SmsRouteCompany;
 use Inertia\Inertia;
 
@@ -11,7 +12,8 @@ class SmsRouteCompanyController extends Controller
     public function index()
     {
       return Inertia::render('Routing/Companies/Index',[
-        'companies' => \App\Models\SmsRouteCompany::where(['team_id' => \Auth::user()->current_team_id])->get()
+        'companies' => SmsRoutingCompanyViewData::from(\App\Models\SmsRouteCompany::where(['team_id' => \Auth::user()->current_team_id])
+            ->get())
       ]);
     }
 

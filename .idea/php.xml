@@ -173,6 +173,8 @@
       <path value="$PROJECT_DIR$/vendor/inertiajs/inertia-laravel" />
       <path value="$PROJECT_DIR$/vendor/symfony/polyfill-php83" />
       <path value="$PROJECT_DIR$/vendor/laravel/jetstream" />
+      <path value="$PROJECT_DIR$/vendor/spatie/typescript-transformer" />
+      <path value="$PROJECT_DIR$/vendor/spatie/laravel-typescript-transformer" />
     </include_path>
   </component>
   <component name="PhpInterpreters">

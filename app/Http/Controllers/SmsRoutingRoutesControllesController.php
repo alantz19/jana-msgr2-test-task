@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Data\SmppConnectionData;
 use App\Data\SmsRoutingRouteCreateData;
 use App\Models\SmsRoute;
 use App\Models\SmsRouteCompany;
+use App\Services\SmppService;
 use Inertia\Inertia;
 
 class SmsRoutingRoutesControllesController extends Controller
@@ -32,5 +34,20 @@ class SmsRoutingRoutesControllesController extends Controller
     public function store(SmsRoutingRouteCreateData $data)
     {
         dd($data);
+    }
+
+    public function testSmppConnection(SmppConnectionData $data)
+    {
+        if (!SmppService::testConnection($data)) {
+            return [
+                'success' => false,
+                'message' => 'Connection to SMPP failed, please verify connection. If the issue persists please contact support.',
+            ];
+        }
+
+        return [
+            'success' => true,
+            'message' => 'Successfully connected to SMPP server.',
+        ];
     }
 }

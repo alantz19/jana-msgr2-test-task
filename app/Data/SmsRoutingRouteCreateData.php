@@ -16,6 +16,8 @@ class SmsRoutingRouteCreateData extends Data
         public ?int                         $selectedCompanyId,
         #[In(['new', 'existing'])]
         public string                       $selectedCompanyOption = 'new',
+
+        public ?SmppConnectionData          $smppConnectionData,
     )
     {
     }

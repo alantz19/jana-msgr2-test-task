@@ -4,6 +4,7 @@ import {defineProps} from "vue";
 interface ButtonProps {
   label?: string;
   loading?: boolean;
+  disabled?: boolean;
   type?: "button" | "submit" | "reset";
 }
 
@@ -15,7 +16,7 @@ const props = withDefaults(defineProps<ButtonProps>(), {
 
 <template>
   <button
-      :class="{'cursor-not-allowed opacity-70': loading}"
+      :class="{'cursor-not-allowed opacity-70': loading || disabled}"
       :type="type"
       class="rounded-md bg-indigo-600 px-4 py-2 text-sm inline-flex text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 content-center"
 

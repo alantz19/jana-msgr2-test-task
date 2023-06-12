@@ -6,10 +6,11 @@ import FormInput from "@/Components/FormInput.vue";
 import {defineProps, PropType, ref} from "vue";
 import {useForm} from "@inertiajs/vue3";
 import axios from "axios";
+import Alert from "../../Components/Alert.vue";
 
 type smppConnectionData = App.Data.SmppConnectionData;
 const processing = ref(false);
-const smppConnectionFail = ref(false);
+const smppConnectionFail = ref('');
 
 let props = defineProps({
   modelValue: {
@@ -25,14 +26,25 @@ const form = useForm({
 
 let errors = ref(props.errors);
 
+const disableConnectionTestButton = ref(false);
+
+function updatedInput(val) {
+  errors.value[val] = '';
+  smppConnectionFail.value = '';
+  smppConnectionSuccess.value = '';
+  disableConnectionTestButton.value = false;
+}
+
 function testSmppConnection() {
-  smppConnectionFail.value = false;
+  smppConnectionFail.value = '';
   processing.value = true;
   axios.post("/api/v1/sms/routing/routes/test-smpp-connection", props.modelValue).then(function (response) {
     errors.value = {};
 
     if (response.data.success) {
       smppConnectionSuccess.value = response.data.message;
+      disableConnectionTestButton.value = true;
+
     } else {
       smppConnectionFail.value = response.data.message;
     }
@@ -55,39 +67,45 @@ function testSmppConnection() {
           :error="errors.url"
           label="URL"
           @change="$emit('update:modelValue.url', $event.target.value);"
-          @input="errors.url = ''"
+          @input="updatedInput('url')"
       />
       <FormInput
           v-model="modelValue.port"
           :error="errors.port"
           label="Port"
+          type="number"
           @change="$emit('update:modelValue.port', $event.target.value);"
-          @input="errors.port = ''"
+          @input="errors.port = ''; smppConnectionFail = ''; smppConnectionSuccess = '';"
       />
       <FormInput
           v-model="modelValue.username"
           :error="errors.username"
           label="Username"
           @change="$emit('update:modelValue.username', $event.target.value);"
-          @input="errors.username = ''"
+          @input="errors.username = ''; smppConnectionFail = ''; smppConnectionSuccess = '';"
       />
       <FormInput
           v-model="modelValue.password"
           :error="errors.password"
           label="Password"
           @change="$emit('update:modelValue.password', $event.target.value);"
-          @input="errors.password = ''"
+          @input="errors.password = ''; smppConnectionFail = ''; smppConnectionSuccess = '';"
       />
     </div>
     <div v-if="smppConnectionFail"
          class="p-3 border-gray-200 bg-rose-100 mt-5 rounded-xl text-gray-900">
       {{ smppConnectionFail }}
     </div>
-    <div v-if="smppConnectionSuccess">
-      {{ smppConnectionSuccess }}
+    <div v-if="smppConnectionSuccess" class="mt-3">
+      <Alert :alert="{
+        message: smppConnectionSuccess,
+        type: 'success',
+        dismissible: true,
+      }"/>
     </div>
     <div class="float-right">
-      <Button :loading="processing"
+      <Button :disabled="disableConnectionTestButton"
+              :loading="processing"
               class="mt-8"
               label="Test connection"
               type="button"

@@ -8,6 +8,6 @@ class SmppService
 {
     public static function testConnection(SmppConnectionData $data)
     {
-        return true; //todo when implementing smpp
+        return false; //todo when implementing smpp
     }
 }

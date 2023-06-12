@@ -6,6 +6,7 @@ username: string;
 password: string;
 dlrUrl: string | null;
 dlrPort: number | null;
+is_tested: boolean | null;
 };
 export type SmsRoutingCompanyCreateData = {
 name: string;

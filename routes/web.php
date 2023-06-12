@@ -50,4 +50,11 @@ Route::middleware([
                 ->name('routes.test-smpp-connection');
         });
     });
+
+
+    Route::group(['prefix' => 'api/v1'], function () {
+        Route::post('/sms/routing/routes/test-smpp-connection',
+            [SmsRoutingRoutesControllesController::class, 'testSmppConnection'])
+            ->name('sms.routing.routes.test-smpp-connection');
+    });
 });

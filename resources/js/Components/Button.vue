@@ -2,7 +2,7 @@
 import {defineProps} from "vue";
 
 interface ButtonProps {
-  label: string;
+  label?: string;
   loading?: boolean;
   type?: "button" | "submit" | "reset";
 }
@@ -17,10 +17,10 @@ const props = withDefaults(defineProps<ButtonProps>(), {
   <button
       :class="{'cursor-not-allowed opacity-70': loading}"
       :type="type"
-      class="rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 content-center"
+      class="rounded-md bg-indigo-600 px-4 py-2 text-sm inline-flex text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 content-center"
 
   >
-    <span v-if="!loading">{{ label }}</span>
+    <span v-if="!loading" class="flex">{{ label }} <slot/></span>
     <span v-else
           class="flex inline-flex items-center leading-6 text-sm transition ease-in-out duration-150 justify-center">
     <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24"

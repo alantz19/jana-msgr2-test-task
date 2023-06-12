@@ -6,7 +6,7 @@ import FormInput from "@/Components/FormInput.vue";
 import {InertiaForm, useForm} from "@inertiajs/vue3";
 import FormRadioGroup from "../../../Components/FormRadioGroup.vue";
 import FormRadio from "../../../Components/FormRadio.vue";
-import Button from "../../../Components/Button.vue";
+import SmppConnectionSetup from "../../../Partials/routes/SmppConnectionSetup.vue";
 
 let props = defineProps({
   routeCompanies: {
@@ -30,26 +30,6 @@ function submitForm() {
   form.post("/sms/routing/routes", {
     onSuccess: () => {
       form.reset();
-    },
-  });
-}
-
-function testSmppConnection() {
-  form.transform((data) => ({
-    ...data.smppConnectionData
-  })).post("/sms/routing/routes/test-smpp-connection", {
-    preserveScroll: true,
-    onSuccess: (res) => {
-      if (res.success) {
-        smppConnectionSuccess.value = res.message;
-      } else {
-        form.setError("smppConnectionData.connection_test", res.message);
-      }
-    },
-    onError: (res) => {
-      for (const [key, value] of Object.entries(res)) {
-        form.setError("smppConnectionData." + key, value);
-      }
     },
   });
 }
@@ -146,45 +126,8 @@ function testSmppConnection() {
           </div>
 
           <Card class="md:col-span-2">
-            <fieldset class="">
-              <div class="space-y-4">
-                <FormInput
-                    v-model="form.smppConnectionData.url"
-                    :error="form.errors['smppConnectionData.url']"
-                    label="URL"
-                />
-                <FormInput
-                    v-model="form.smppConnectionData.port"
-                    :error="form.errors['smppConnectionData.port']"
-                    label="Port"
-                />
-                <FormInput
-                    v-model="form.smppConnectionData.username"
-                    :error="form.errors['smppConnectionData.username']"
-                    label="Username"
-                />
-                <FormInput
-                    v-model="form.smppConnectionData.password"
-                    :error="form.errors['smppConnectionData.password']"
-                    label="Password"
-                />
-              </div>
-              <div v-if="form.errors['smppConnectionData.connection_test']"
-                   class="p-3 border-gray-200 bg-rose-100 mt-5 rounded-xl text-gray-900">
-                {{ form.errors['smppConnectionData.connection_test'] }}
-              </div>
-              <div v-if="smppConnectionSuccess">
-                {{ smppConnectionSuccess }}
-              </div>
-              <div class="float-right">
-                <Button :loading="form.processing"
-                        class="mt-8"
-                        label="Test connection"
-                        type="button"
-                        @click="testSmppConnection"
-                />
-              </div>
-            </fieldset>
+            <SmppConnectionSetup v-model="form.smppConnectionData"
+                                 :errors="form.errors"></SmppConnectionSetup>
           </Card>
         </div>
       </div>

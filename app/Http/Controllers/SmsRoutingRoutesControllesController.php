@@ -41,7 +41,7 @@ class SmsRoutingRoutesControllesController extends Controller
         if (!SmppService::testConnection($data)) {
             return [
                 'success' => false,
-                'message' => 'Connection to SMPP failed, please verify connection. If the issue persists please contact support.',
+                'message' => 'Could not connect to SMPP server.',
             ];
         }
 

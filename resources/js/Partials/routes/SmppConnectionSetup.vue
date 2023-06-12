@@ -1,31 +1,31 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 
 import Button from "../../Components/Button.vue";
 import FormInput from "../../Components/FormInput.vue";
 </script>
 
 <template>
-
-  <FormInput
-      v-model="form.smppConnectionData.url"
-      :error="form.errors['smppConnectionData.url']"
-      label="URL"
-  />
-  <FormInput
-      v-model="form.smppConnectionData.port"
-      :error="form.errors['smppConnectionData.port']"
-      label="Port"
-  />
-  <FormInput
-      v-model="form.smppConnectionData.username"
-      :error="form.errors['smppConnectionData.username']"
-      label="Username"
-  />
-  <FormInput
-      v-model="form.smppConnectionData.password"
-      :error="form.errors['smppConnectionData.password']"
-      label="Password"
-  />
+  <div>
+    <FormInput
+        v-model="form.smppConnectionData.url"
+        :error="form.errors['smppConnectionData.url']"
+        label="URL"
+    />
+    <FormInput
+        v-model="form.smppConnectionData.port"
+        :error="form.errors['smppConnectionData.port']"
+        label="Port"
+    />
+    <FormInput
+        v-model="form.smppConnectionData.username"
+        :error="form.errors['smppConnectionData.username']"
+        label="Username"
+    />
+    <FormInput
+        v-model="form.smppConnectionData.password"
+        :error="form.errors['smppConnectionData.password']"
+        label="Password"
+    />
   </div>
   <div v-if="form.errors['smppConnectionData.connection_test']"
        class="p-3 border-gray-200 bg-rose-100 mt-5 rounded-xl text-gray-900">
@@ -41,6 +41,7 @@ import FormInput from "../../Components/FormInput.vue";
             type="button"
             @click="testSmppConnection"
     />
+  </div>
 </template>
 
 <style scoped>

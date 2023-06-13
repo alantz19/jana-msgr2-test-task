@@ -4,7 +4,7 @@ use App\Http\Controllers\AppController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SmsCampaignsController;
 use App\Http\Controllers\SmsRouteCompanyController;
-use App\Http\Controllers\SmsRoutingRoutesControllesController;
+use App\Http\Controllers\SmsRoutingRoutesController;
 use App\Http\Middleware\RedirectIfAuthenticated;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -44,9 +44,9 @@ Route::middleware([
         Route::prefix('routing')->name('routing.')->group(function () {
             Route::resource('companies', SmsRouteCompanyController::class);
 
-            Route::resource('routes', SmsRoutingRoutesControllesController::class);
+            Route::resource('routes', SmsRoutingRoutesController::class);
             Route::post('routes/test-smpp-connection',
-                [SmsRoutingRoutesControllesController::class, 'testSmppConnection'])
+                [SmsRoutingRoutesController::class, 'testSmppConnection'])
                 ->name('routes.test-smpp-connection');
         });
     });
@@ -54,7 +54,7 @@ Route::middleware([
 
     Route::group(['prefix' => 'api/v1'], function () {
         Route::post('/sms/routing/routes/test-smpp-connection',
-            [SmsRoutingRoutesControllesController::class, 'testSmppConnection'])
+            [SmsRoutingRoutesController::class, 'testSmppConnection'])
             ->name('sms.routing.routes.test-smpp-connection');
     });
 });

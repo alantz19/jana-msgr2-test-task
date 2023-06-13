@@ -13,6 +13,7 @@ class SmsRoute extends Model
 {
     use SoftDeletes, HasFactory, HasUuids;
 
+    public $priceForCountry;
     protected $fillable = [
         'team_id',
         'name',
@@ -20,9 +21,17 @@ class SmsRoute extends Model
         'meta'
     ];
 
-    public $priceForCountry;
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
 
-    public function smppConnection() : MorphTo
+        static::creating(function ($model) {
+            $model->team_id = auth()->user()->currentTeam->id;
+        });
+
+    }
+
+    public function smppConnection(): MorphTo
     {
         return $this->morphTo('connection');
     }
@@ -30,7 +39,7 @@ class SmsRoute extends Model
     /**
      * @return MorphOne - SMPP or Highway connection
      */
-    public function connection() : MorphTo
+    public function connection(): MorphTo
     {
         return $this->morphTo();
     }

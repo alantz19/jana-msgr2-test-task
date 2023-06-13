@@ -16,4 +16,13 @@ class SmsRouteCompany extends Model
         'name',
         'meta'
     ];
+
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+
+        static::creating(function ($model) {
+            $model->team_id = auth()->user()->currentTeam->id;
+        });
+    }
 }

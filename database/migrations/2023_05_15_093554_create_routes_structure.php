@@ -1,12 +1,13 @@
 <?php
 
 use App\Domain\Sms\Routing\Routes\Networks\Models\WorldMobileNetworks;
+use App\Models\WorldMobileNetwork;
+use App\Services\CountryService;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -26,6 +27,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignUuid('team_id')->index();
             $table->string('name');
+            $table->string('description')->nullable();
             $table->foreignUuid('sms_route_company_id')->index();
             $table->nullableUuidMorphs('connection');
             $table->json('meta')->nullable();
@@ -49,7 +51,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('sms_routing_plans', function(Blueprint $table){
+        Schema::create('sms_routing_plans', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('team_id')->index();
             $table->string('name');
@@ -69,7 +71,7 @@ return new class extends Migration
 
         });
 
-        Schema::create('sms_route_rates', function(Blueprint $table){
+        Schema::create('sms_route_rates', function (Blueprint $table) {
             $table->uuid('id')->primary(); //causes error?
             $table->foreignUuid('sms_route_id');
             $table->foreignId('world_country_id');
@@ -80,7 +82,7 @@ return new class extends Migration
 
         });
 
-        Schema::create('sms_routing_plan_rules', function(Blueprint $table){
+        Schema::create('sms_routing_plan_rules', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('sms_route_id')->index();
             $table->foreignUuid('sms_routing_plan_id')->index();
@@ -96,7 +98,7 @@ return new class extends Migration
 
         });
 
-        Schema::create('sms_routing_plan_routes', function(Blueprint $table){
+        Schema::create('sms_routing_plan_routes', function (Blueprint $table) {
             $table->uuid('id')->default(DB::raw('gen_random_uuid()'))->primary();
             $table->foreignUuid('sms_route_id')->index();
             $table->foreignUuid('sms_routing_plan_id')->index();
@@ -8619,13 +8621,13 @@ INSERT INTO v2_mobile_networks (id,mcc,mnc,`type`,country_name,country_code,coun
             if (empty($network['country_code'])) {
                 return false;
             }
-            $network['world_country_id'] = \App\Services\CountryService::guessCountry($network['country_code']);
+            $network['world_country_id'] = CountryService::guessCountry($network['country_code']);
             $network = array_filter($network);
             return $network;
         }, $networks);
         $networks = array_filter($networks);
         foreach ($networks as $network) {
-            \App\Models\WorldMobileNetwork::create($network);
+            WorldMobileNetwork::create($network);
         }
     }
 

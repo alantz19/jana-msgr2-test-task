@@ -5,21 +5,24 @@ namespace App\Http\Controllers;
 use App\Data\SmsRoutingCompanyCreateData;
 use App\Data\SmsRoutingCompanyViewData;
 use App\Models\SmsRouteCompany;
+use Auth;
 use Inertia\Inertia;
 
 class SmsRouteCompanyController extends Controller
 {
     public function index()
     {
-      return Inertia::render('Routing/Companies/Index',[
-        'companies' => SmsRoutingCompanyViewData::from(\App\Models\SmsRouteCompany::where(['team_id' => \Auth::user()->current_team_id])
-            ->get())
-      ]);
+        return Inertia::render('Routing/Companies/Index', [
+            'companies' => SmsRoutingCompanyViewData::collection(
+                SmsRouteCompany::where('team_id', Auth::user()->current_team_id)
+                    ->get()
+            )
+        ]);
     }
 
     public function create()
     {
-        return Inertia::render('Routing/Companies/SmsCompaniesCreate',[
+        return Inertia::render('Routing/Companies/SmsCompaniesCreate', [
             'company' => SmsRoutingCompanyCreateData::empty(),
         ]);
     }
@@ -27,7 +30,7 @@ class SmsRouteCompanyController extends Controller
     public function store(SmsRoutingCompanyCreateData $data)
     {
         $company = SmsRouteCompany::make($data->toArray());
-        $company->team_id = \Auth::user()->current_team_id;
+        $company->team_id = Auth::user()->current_team_id;
         $company->save();
 
         return redirect()->route('sms.routing.companies.index');
@@ -35,17 +38,17 @@ class SmsRouteCompanyController extends Controller
 
     public function edit(SmsRouteCompany $company)
     {
-        if ($company->team_id !== \Auth::user()->current_team_id) {
+        if ($company->team_id !== Auth::user()->current_team_id) {
             abort(403);
         }
-        return Inertia::render('Routing/Companies/SmsCompaniesUpdate',[
+        return Inertia::render('Routing/Companies/SmsCompaniesUpdate', [
             'company' => $company->only(['id', 'name']),
         ]);
     }
 
     public function update(SmsRouteCompany $company, SmsRoutingCompanyCreateData $data)
     {
-        if ($company->team_id !== \Auth::user()->current_team_id) {
+        if ($company->team_id !== Auth::user()->current_team_id) {
             abort(403);
         }
 

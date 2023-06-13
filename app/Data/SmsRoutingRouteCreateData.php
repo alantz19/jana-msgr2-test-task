@@ -10,6 +10,9 @@ use Spatie\LaravelData\Data;
 class SmsRoutingRouteCreateData extends Data
 {
     public function __construct(
+        public string                       $name,
+        public ?string                      $description,
+
         #[RequiredIf('selectedCompanyOption', 'new')]
         public ?SmsRoutingCompanyCreateData $companyCreateData,
         #[RequiredIf('selectedCompanyOption', 'existing')]

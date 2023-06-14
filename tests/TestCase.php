@@ -12,7 +12,7 @@ abstract class TestCase extends BaseTestCase
 
 
 //    if adding refresh database in other tables add this clickhouse drop all tables..
-//    use \Illuminate\Foundation\Testing\RefreshDatabase;
+    use \Illuminate\Foundation\Testing\RefreshDatabase;
 //    protected function beforeRefreshingDatabase()
 //    {
 //        ClickhouseService::dropAllTables();

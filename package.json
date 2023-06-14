@@ -5,9 +5,13 @@
     "dev": "vite",
     "build": "vite build",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "typegen": "laravel-typegen --laravel-enum --form-request",
+    "zodgen": "laravel-zodgen"
   },
   "devDependencies": {
+    "@7nohe/laravel-typegen": "^0.4.1",
+    "@7nohe/laravel-zodgen": "^0.1.5",
     "@storybook/addon-essentials": "^7.0.18",
     "@storybook/addon-interactions": "^7.0.18",
     "@storybook/addon-links": "^7.0.18",

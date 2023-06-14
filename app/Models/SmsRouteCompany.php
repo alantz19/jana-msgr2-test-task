@@ -17,6 +17,8 @@ class SmsRouteCompany extends Model
         'meta'
     ];
 
+    protected $hidden = ['meta'];
+
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);

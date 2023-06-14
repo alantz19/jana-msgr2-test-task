@@ -16,15 +16,11 @@ is_tested: boolean | null;
 export type SmsRoutingCompanyCreateData = {
 name: string;
 };
-export type SmsRoutingCompanyData = {
-id: string;
-name: string;
-};
 export type SmsRoutingRouteCreateData = {
 name: string;
 description: string | null;
 companyCreateData: App.Data.SmsRoutingCompanyCreateData | null;
-selectedCompanyId: number | null;
+selectedCompanyId: string | null;
 selectedCompanyOption: string;
 smppConnectionData: App.Data.SmppConnectionData | null;
 };

@@ -6,6 +6,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.1",
+        "acidjazz/metapi": "^2.2",
         "acpmasquerade/sms-counter-php": "^1.0",
         "glushkovds/phpclickhouse-laravel": "^1.17",
         "guzzlehttp/guzzle": "^7.2",
@@ -19,6 +20,7 @@
         "spatie/laravel-activitylog": "^4.7",
         "spatie/laravel-data": "^3.5",
         "spatie/laravel-typescript-transformer": "^2.3",
+        "tailflow/laravel-orion": "^2.21",
         "tightenco/ziggy": "^1.6",
         "tpetry/laravel-postgresql-enhanced": "^0.30.0"
     },

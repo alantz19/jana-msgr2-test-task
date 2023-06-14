@@ -3,7 +3,7 @@ import {defineProps, PropType, ref} from "vue";
 import PageHeader from "@/Components/PageHeader.vue";
 import Card from "@/Components/Card.vue";
 import FormInput from "@/Components/FormInput.vue";
-import {InertiaForm, useForm} from "@inertiajs/vue3";
+import {useForm} from "@inertiajs/vue3";
 import FormRadioGroup from "../../../Components/FormRadioGroup.vue";
 import FormRadio from "../../../Components/FormRadio.vue";
 import SmppConnectionSetup from "@/Partials/routes/SmppConnectionSetupInlineForm.vue";
@@ -11,31 +11,55 @@ import Link from "@/Components/Link.vue";
 import Button from "../../../Components/Button.vue";
 import Modal from "../../../Components/Modal.vue";
 import FormFieldSet from "../../../Components/FormFieldSet.vue";
-import FormSelect from "../../../Components/FormSelect.vue";
+import FormSelect from "../../../Components/FormSelect2.vue";
+import {SmsRouteCompany} from "@/../ts/types/model.ts";
+import {SmsRoutingCompanyCreateRequest, SmsRoutingRouteCreateRequest} from "@/../ts/types/formRequests.ts";
 
 let props = defineProps({
-  routeCompanies: {
-    type: Object as PropType<App.Data.SmsRoutingCompanyViewData[]>,
+  routeCreateRequest: {
+    type: Object as PropType<SmsRoutingRouteCreateRequest>,
     required: true,
   },
-  smsRoutingRouteCreateData: {
-    type: Object as PropType<App.Data.SmsRoutingRouteCreateData>,
-    // type: Object as PropType<SmsRoutingRouteCreateData>,
+  routeCompanyRequest: {
+    type: Object as PropType<SmsRoutingCompanyCreateRequest>,
     required: true,
+  },
+
+  routeCompanies: {
+    type: Object as PropType<SmsRouteCompany[]>,
+    required: true,
+  },
+  selectedCompanyOption: {
+    type: String,
+    default: 'new',
   },
   errors: Object
 });
-const form: InertiaForm<App.Data.SmsRoutingRouteCreateData> = useForm(
-    props.smsRoutingRouteCreateData
+let formRouteCreate = useForm(
+    props.routeCreateRequest
 );
-form.selectedCompanyOption = "new";
-const smppConnectionSuccess = ref(false);
+let formCompanyCreate = useForm(
+    props.routeCompanyRequest
+);
+
 const submitCount = ref(0);
 
 function submitForm() {
-  form.post("/sms/routing/routes", {
+  if (props.selectedCompanyOption === "new") {
+    formCompanyCreate.post('/api/v1/sms/routing/companies', {
+      onSuccess: () => {
+        formRouteCreate.selectedCompanyId = formCompanyCreate.data.id;
+      },
+      onError: () => {
+        submitCount.value++;
+      },
+    });
+  } else {
+    formRouteCreate.smsRoute.sms_route_company_id = formRouteCreate.selectedCompanyId;
+  }
+  formRouteCreate.post("/sms/routing/routes", {
     onSuccess: () => {
-      form.reset();
+      formRouteCreate.reset();
     },
     onError: () => {
       submitCount.value++;
@@ -49,7 +73,7 @@ const ratesOption = ref('manual');
 <template>
   <div class="text-sm">
     <PageHeader title="New route"/>
-    <form @submit.prevent="submitForm">
+    <form-route-create @submit.prevent="submitForm">
       <div class="">
         <div class="grid grid-cols-1 gap-x-8 gap-y-8 md:grid-cols-3">
           <!--                  SMS company-->
@@ -70,13 +94,13 @@ const ratesOption = ref('manual');
             <fieldset class="">
               <FormRadioGroup>
                 <FormRadio
-                    v-model="form.selectedCompanyOption"
+                    v-model="selectedCompanyOption"
                     label="New company"
                     value="new"
                 >
                   <div class="pl-9 pb-6">
                     <FormInput
-                        v-model="form.companyCreateData.name"
+                        v-model="formRouteCreate.companyCreateData.name"
                         :error="errors['companyCreateData.name']"
                         autofocus
                         label="Company Name"
@@ -86,13 +110,14 @@ const ratesOption = ref('manual');
                 </FormRadio>
 
                 <FormRadio
-                    v-model="form.selectedCompanyOption"
+                    v-model="formRouteCreate.selectedCompanyOption"
                     :disabled="routeCompanies.data.length === 0"
                     label="Existing company"
                     value="existing"
                 >
                   <div class="pl-9 pb-6">
-                    <FormSelect v-model="form.selectedCompany" :error="form.errors.selectedCompany"
+                    <FormSelect v-model="formRouteCreate.selectedCompanyId"
+                                :error="formRouteCreate.errors.selectedCompanyId"
                                 :items="routeCompanies.data"
                                 label="Select company"/>
                   </div>
@@ -114,8 +139,10 @@ const ratesOption = ref('manual');
 
           <Card class="md:col-span-2">
             <FormFieldSet>
-              <FormInput v-model="form.name" :error="form.errors.name" class="mb-3" label="Route Name" required/>
-              <FormInput v-model="form.description" :error="form.errors.description" label="Route Description"/>
+              <FormInput v-model="formRouteCreate.name" :error="formRouteCreate.errors.name" class="mb-3"
+                         label="Route Name" required/>
+              <FormInput v-model="formRouteCreate.description" :error="formRouteCreate.errors.description"
+                         label="Route Description"/>
             </FormFieldSet>
           </Card>
 
@@ -139,9 +166,9 @@ const ratesOption = ref('manual');
           </div>
 
           <Card class="md:col-span-2">
-            <SmppConnectionSetup v-model="form.smppConnectionData"
+            <SmppConnectionSetup v-model="formRouteCreate.smppConnectionData"
                                  :inline_errors="{
-              errors: form.errors,
+              errors: formRouteCreate.errors,
               keyToModify: 'smppConnectionData',
                                  }"/>
             <Modal v-if="!!errors.smppConnectionError"
@@ -191,7 +218,7 @@ const ratesOption = ref('manual');
           </Button>
         </div>
       </div>
-    </form>
+    </form-route-create>
   </div>
 </template>
 

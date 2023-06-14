@@ -56,5 +56,9 @@ Route::middleware([
         Route::post('/sms/routing/routes/test-smpp-connection',
             [SmsRoutingRoutesController::class, 'testSmppConnection'])
             ->name('sms.routing.routes.test-smpp-connection');
+
+        Route::post('/sms/routing/companies',
+            [\App\Http\Controllers\Api\V2\SmsRouteCompaniesController::class, 'store'])
+            ->name('sms.routing.routes.store');
     });
 });

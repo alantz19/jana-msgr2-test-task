@@ -12,14 +12,13 @@ class SmsRoutingRouteCreateData extends Data
     public function __construct(
         public string                       $name,
         public ?string                      $description,
+        public string                       $selectedCompanyOption,
 
         #[RequiredIf('selectedCompanyOption', 'new')]
         public ?SmsRoutingCompanyCreateData $companyCreateData,
         #[RequiredIf('selectedCompanyOption', 'existing')]
-        public ?SmsRoutingCompanyData       $selectedCompanyId,
+        public ?string                      $selectedCompanyId,
         #[In(['new', 'existing'])]
-        public string                       $selectedCompanyOption = 'new',
-
         public ?SmppConnectionData          $smppConnectionData,
     )
     {

@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use acidjazz\metapi\MetApi;
 use App\Data\FlashData;
 use App\Data\SmppConnectionData;
 use App\Data\SmsRouteViewData;
-use App\Data\SmsRoutingCompanyData;
 use App\Data\SmsRoutingRouteCreateData;
 use App\Data\SmsRoutingRouteViewData;
 use App\Http\Resources\SmsRouteCompaniesCollection;
@@ -18,8 +18,24 @@ use Inertia\Inertia;
 
 class SmsRoutingRoutesController extends Controller
 {
+    use MetApi;
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return SmsRoutingRouteCollection
+     */
     public function index()
     {
+        return $this->render(new SmsRoutingRouteCollection
+            (
+                SmsRoute::where('team_id',
+                    auth()->user()->currentTeam->id)
+                    ->with(['smsRouteCompany', 'connection'])
+                    ->get()
+            )
+        );
+
         return Inertia::render('Routing/Routes/Index', [
             'routes' => new SmsRoutingRouteCollection
             (
@@ -59,18 +75,8 @@ class SmsRoutingRoutesController extends Controller
 
     public function create()
     {
-
-        dd(
-            new SmsRouteCompaniesCollection(
-                SmsRoutingCompanyData::collection(
-                    SmsRouteCompany::where([
-                        'team_id' => auth()->user()->currentTeam->id,
-                    ])->get()
-                )
-            )
-        );
         return Inertia::render('Routing/Routes/Create', [
-            'routeCompanies' => SmsRoutingCompanyData::collection(SmsRouteCompany::where([
+            'routeCompanies' => new SmsRouteCompaniesCollection(SmsRouteCompany::where([
                 'team_id' => auth()->user()->currentTeam->id,
             ])->get()),
             'smsRoutingRouteCreateData' => SmsRoutingRouteCreateData::empty(),

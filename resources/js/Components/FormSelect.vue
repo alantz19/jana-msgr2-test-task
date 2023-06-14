@@ -1,7 +1,8 @@
 <template>
   <Listbox v-model="selected"
            :value="modelValue"
-           as="div" @change="$emit('update:modelValue.id', $event.target.value);">
+           as="div"
+           @change="$emit('update:modelValue', $event.target.value)">
     <ListboxLabel class="block text-sm font-medium leading-6 text-gray-900">{{ label }}</ListboxLabel>
     <div class="relative mt-2">
       <ListboxButton
@@ -43,12 +44,14 @@ import {ref} from 'vue'
 import {Listbox, ListboxButton, ListboxLabel, ListboxOption, ListboxOptions} from '@headlessui/vue'
 import {CheckIcon, ChevronUpDownIcon} from '@heroicons/vue/20/solid'
 
+defineEmits(["update:modelValue"]);
+
 type FormSelectProps = {
   items: []
   label: string
   selected?: number
   error?: string
-  modelValue?: string
+  modelValue?: { id: string | null, name: string | null }
 }
 
 const modelValue = ''

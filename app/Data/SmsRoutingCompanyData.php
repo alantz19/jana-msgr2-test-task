@@ -4,7 +4,6 @@ namespace App\Data;
 
 use Spatie\LaravelData\Data;
 
-/** @typescript */
 class SmsRoutingCompanyData extends Data
 {
     public function __construct(

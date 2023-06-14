@@ -175,6 +175,9 @@
       <path value="$PROJECT_DIR$/vendor/laravel/jetstream" />
       <path value="$PROJECT_DIR$/vendor/spatie/typescript-transformer" />
       <path value="$PROJECT_DIR$/vendor/spatie/laravel-typescript-transformer" />
+      <path value="$PROJECT_DIR$/vendor/acidjazz/metapi" />
+      <path value="$PROJECT_DIR$/vendor/jasongrimes/paginator" />
+      <path value="$PROJECT_DIR$/vendor/tailflow/laravel-orion" />
     </include_path>
   </component>
   <component name="PhpInterpreters">

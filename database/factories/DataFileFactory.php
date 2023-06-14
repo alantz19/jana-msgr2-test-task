@@ -17,14 +17,14 @@ class DataFileFactory extends Factory
 
         return [
             'user_id' => $user->id,
-            'type' => DataFile::TYPE_SMS_IMPORT,
+            'type' => DataFile::TYPE_NUMBERS_FILE,
             'name' => $this->faker->word,
             'path' => $this->faker->filePath(),
             'size' => $this->faker->randomNumber(),
             'meta' => [
                 'columns' => [
-                    'numberCol' => 0,
-                    'countryCol' => 1,
+                    'number' => 0,
+                    'country' => 1,
                 ],
             ],
             'created_at' => Carbon::now(),

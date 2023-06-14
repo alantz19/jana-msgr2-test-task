@@ -11,7 +11,7 @@ class DataFile extends Model
 {
     use HasFactory, SoftDeletes, HasUuids;
 
-    const TYPE_SMS_FILE = 1;
+    const TYPE_NUMBERS_FILE = 1;
     const TYPE_EMAIL_FILE = 2;
 
     protected $fillable = [

@@ -2,23 +2,28 @@
 
 namespace Tests\Feature;
 
+use App\Imports\NumbersImport;
 use App\Models\DataFile;
-use App\Services\DataFileService;
 use Tests\TestCase;
 
 class ImportFileTest extends TestCase
 {
     private string $csvFile;
 
-    public function testXls2Csv()
+    public function testNumbersImport()
     {
-        $path = __DIR__ . '/data/demo_list-100.xlsx';;
-        $dataFile = DataFile::factory()->withFile($path)->create();
-
+        $path = storage_path('app/data/demo_list-100.xlsx');
         $this->assertFileExists($path);
 
-        $this->csvFile = DataFileService::xls2csv($dataFile);
+        $dataFile = DataFile::factory()->withFile($path)->create();
 
-        $this->assertFileExists($this->csvFile);
+//        Excel::fake();
+
+        $import = new NumbersImport($dataFile->meta['columns']);
+        $import->import($path);
+
+        dump($import->errors()->toArray());
+        dump($import->failures()->toArray());
+//        Excel::assertImported($path);
     }
 }

@@ -2,16 +2,14 @@
 
 namespace App\Jobs;
 
+use App\Imports\NumbersImport;
 use App\Models\DataFile;
-use App\Services\CountryService;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\LazyCollection;
 
 class FileImportJob implements ShouldQueue
 {
@@ -32,75 +30,36 @@ class FileImportJob implements ShouldQueue
     {
         $dataFile = DataFile::findOrFail($this->fileId);
 
-        $filePath = $dataFile->path;
-        $meta = $dataFile->meta;
+        Log::info('start FileImportJob', [
+            'dataFile' => $dataFile->toArray(),
+        ]);
 
-        if (empty($meta) || empty($meta['columns'])) {
+        if (empty($dataFile->meta) || empty($dataFile->meta['columns'])) {
             Log::critical('FileImportJob', [
                 'message' => 'meta is empty or meta[columns] is empty',
-                'meta' => $meta,
+                'meta' => $dataFile->meta,
             ]);
 
             return;
         }
 
-        LazyCollection::make(function () use ($filePath) {
-            $handle = fopen($filePath, 'r');
+        $import = match ($dataFile->type) {
+            DataFile::TYPE_NUMBERS_FILE => new NumbersImport($dataFile->meta['columns']),
+//            DataFile::TYPE_EMAIL_FILE => $this->importEmailFile($filePath, $meta['columns']),
+        };
 
-            while (($raw_string = fgets($handle)) !== false) {
-                $row = str_getcsv($raw_string, ';');
-                yield $row;
-            }
-        })
-            ->chunk(1000)
-            ->each(function (LazyCollection $chunk) use ($dataFile) {
-                $rows = $chunk->toArray();
+        $import->import($dataFile->path);
 
-                $data = [];
-                $columns = $dataFile->meta['columns'];
+        Log::info('import errors', [
+            'errors' => $import->errors()->toArray(),
+        ]);
 
-                foreach ($rows as $lineNumber => $row) {
-                    if (empty($row)) {
-                        continue;
-                    }
+        Log::info('import failures', [
+            'failures' => $import->failures()->toArray(),
+        ]);
 
-                    $data[] = match ($dataFile->type) {
-                        DataFile::TYPE_SMS_FILE => $this->csvSmsRow($row, $columns, $lineNumber),
-                        DataFile::TYPE_EMAIL_FILE => $this->csvEmailRow($row, $columns, $lineNumber),
-                    };
-                }
-
-                // @TODO save data to database
-            });
-    }
-
-    private function csvSmsRow(array $row, mixed $columns, int $lineNumber): array
-    {
-        $number = null;
-        $countryId = null;
-
-        if (isset($row[$columns['numberCol']])) {
-            $number = preg_replace('/\D/', '', $row[$columns['numberCol']]);
-        }
-
-        if (isset($row[$columns['countryCol']])) {
-            try {
-                $countryId = CountryService::guessCountry($row[$columns['countryCol']]);
-            } catch (\Exception) {
-            }
-        }
-
-        // @TODO implement other columns
-
-        return [
-            'number' => $number,
-            'country_id' => $countryId,
-        ];
-    }
-
-    private function csvEmailRow(array $row, mixed $columns, int $lineNumber): array
-    {
-        // TODO: Implement csvEmailRow() method.
-        return [];
+        Log::info('end FileImportJob', [
+            'dataFile' => $dataFile->id,
+        ]);
     }
 }

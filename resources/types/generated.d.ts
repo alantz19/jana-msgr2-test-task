@@ -1,7 +1,8 @@
 declare namespace App.Data {
 export type FlashData = {
 type: string;
-message: string;
+title: string;
+message: any | string;
 };
 export type SmppConnectionData = {
 url: string;
@@ -15,7 +16,7 @@ is_tested: boolean | null;
 export type SmsRoutingCompanyCreateData = {
 name: string;
 };
-export type SmsRoutingCompanyViewData = {
+export type SmsRoutingCompanyData = {
 id: string;
 name: string;
 };

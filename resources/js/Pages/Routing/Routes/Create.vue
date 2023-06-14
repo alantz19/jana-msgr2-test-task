@@ -11,10 +11,11 @@ import Link from "@/Components/Link.vue";
 import Button from "../../../Components/Button.vue";
 import Modal from "../../../Components/Modal.vue";
 import FormFieldSet from "../../../Components/FormFieldSet.vue";
+import FormSelect from "../../../Components/FormSelect.vue";
 
 let props = defineProps({
   routeCompanies: {
-    type: Array as PropType<App.Data.SmsRoutingCompanyViewData[]>,
+    type: Object as PropType<App.Data.SmsRoutingCompanyViewData[]>,
     required: true,
   },
   smsRoutingRouteCreateData: {
@@ -86,30 +87,14 @@ const ratesOption = ref('manual');
 
                 <FormRadio
                     v-model="form.selectedCompanyOption"
-                    :disabled="routeCompanies.length === 0"
+                    :disabled="routeCompanies.data.length === 0"
                     label="Existing company"
                     value="existing"
                 >
                   <div class="pl-9 pb-6">
-                    <select
-                        v-model="form.selectedCompanyId"
-                        :class="{
-                                                'bg-gray-100':
-                                                    routeCompanies.length === 0,
-                                            }"
-                        :disabled="
-                                                routeCompanies.length === 0
-                                            "
-                        class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-                    >
-                      <option
-                          v-for="company in routeCompanies"
-                          :key="company.id"
-                          :value="company.id"
-                      >
-                        {{ company.name }}
-                      </option>
-                    </select>
+                    <FormSelect v-model="form.selectedCompany" :error="form.errors.selectedCompany"
+                                :items="routeCompanies.data"
+                                label="Select company"/>
                   </div>
                 </FormRadio>
               </FormRadioGroup>

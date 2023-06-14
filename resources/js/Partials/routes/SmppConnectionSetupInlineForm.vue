@@ -65,7 +65,6 @@ watch(() => props.inline_errors, (newValue) => {
         v-model="modelValue.dlrUrl"
         :error="errors.dlrUrl"
         label="DLR URL"
-        required
         @change="$emit('update:modelValue.dlrUrl', $event.target.value);"
         @input="errors.dlrUrl = '';"
     />
@@ -73,7 +72,6 @@ watch(() => props.inline_errors, (newValue) => {
         v-model="modelValue.dlrPort"
         :error="errors.dlrPort"
         label="DLR Port"
-        required
         type="number"
         @change="$emit('update:modelValue.dlrPort', $event.target.value);"
         @input="errors.dlrPort = '';"

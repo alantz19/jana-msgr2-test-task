@@ -1,27 +1,20 @@
-<script setup lang="ts">
-import { Link } from '@inertiajs/vue3'
+<script lang="ts" setup>
 import PageHeader from "@/Components/PageHeader.vue";
 import Table from "@/Components/Table.vue";
 
-defineProps({
-  routes: Array
+let props = defineProps({
+  routes: Object
 });
 
 const headers = [
-  { text: "Name", value: "name" },
-  { text: "Company", value: "smsCompany.name", sortable: true },
+  {text: "Name", value: "name"},
+  {text: "Company", value: "company.name", sortable: true},
 ];
-const buttons = [
-  { text: "New Route", href: "/sms/routing/routes/create" },
-]
 </script>
 
 <template>
-  <PageHeader title="Routes" :buttons="buttons" />
+  <PageHeader :buttons="routes.links" title="Routes"/>
 
-  <Table :items="routes" :headers="headers" :empty-state="{name: 'Route', href: '/sms/routing/routes/create'}">
-    <template #item-name="item">
-      <Link :href="'/' + item.id" class="text-indigo-600 hover:text-indigo-900">{{ item.id }}</Link>
-    </template>
-  </Table>
+  <Table :empty-state="{name: 'Route', href: '/sms/routing/routes/create'}" :headers="headers"
+         :items="routes.data"></Table>
 </template>

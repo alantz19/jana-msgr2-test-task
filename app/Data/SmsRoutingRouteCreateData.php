@@ -16,7 +16,7 @@ class SmsRoutingRouteCreateData extends Data
         #[RequiredIf('selectedCompanyOption', 'new')]
         public ?SmsRoutingCompanyCreateData $companyCreateData,
         #[RequiredIf('selectedCompanyOption', 'existing')]
-        public ?int                         $selectedCompanyId,
+        public ?SmsRoutingCompanyData       $selectedCompanyId,
         #[In(['new', 'existing'])]
         public string                       $selectedCompanyOption = 'new',
 

@@ -4,7 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Data\FlashData;
 use App\Data\SmppConnectionData;
+use App\Data\SmsRouteViewData;
+use App\Data\SmsRoutingCompanyData;
 use App\Data\SmsRoutingRouteCreateData;
+use App\Data\SmsRoutingRouteViewData;
+use App\Http\Resources\SmsRouteCompaniesCollection;
+use App\Http\Resources\SmsRoutingRouteCollection;
 use App\Models\SmsRoute;
 use App\Models\SmsRouteCompany;
 use App\Models\SmsRouteSmppConnection;
@@ -16,11 +21,13 @@ class SmsRoutingRoutesController extends Controller
     public function index()
     {
         return Inertia::render('Routing/Routes/Index', [
-            'routes' => SmsRoute::where(
-                'team_id',
-                auth()->user()->currentTeam->id)
-                ->with(['smsCompany', 'connection'])
-                ->get()
+            'routes' => new SmsRoutingRouteCollection
+            (
+                SmsRoute::where('team_id',
+                    auth()->user()->currentTeam->id)
+                    ->with(['smsRouteCompany', 'connection'])
+                    ->get()
+            )
 //                ->only(['name', 'sms_route_company_id', 'connection_id', 'created_at']),
         ]);
     }
@@ -38,11 +45,12 @@ class SmsRoutingRoutesController extends Controller
         }
 
         $company = SmsRouteCompany::create($data->companyCreateData->toArray());
-        $route->fill($data->toArray());
-        $route->sms_route_company_id = $company->id;
-        $route->save();
         $smppConnection = SmsRouteSmppConnection::create($data->smppConnectionData->toArray());
+
+        $route->fill($data->toArray());
+        $route->smsRouteCompany()->associate($company);
         $route->smppConnection()->associate($smppConnection);
+        $route->save();
 
         return redirect()
             ->route('sms.routing.routes.index')
@@ -51,10 +59,20 @@ class SmsRoutingRoutesController extends Controller
 
     public function create()
     {
+
+        dd(
+            new SmsRouteCompaniesCollection(
+                SmsRoutingCompanyData::collection(
+                    SmsRouteCompany::where([
+                        'team_id' => auth()->user()->currentTeam->id,
+                    ])->get()
+                )
+            )
+        );
         return Inertia::render('Routing/Routes/Create', [
-            'routeCompanies' => SmsRouteCompany::where([
+            'routeCompanies' => SmsRoutingCompanyData::collection(SmsRouteCompany::where([
                 'team_id' => auth()->user()->currentTeam->id,
-            ])->get()->only(['id', 'name']),
+            ])->get()),
             'smsRoutingRouteCreateData' => SmsRoutingRouteCreateData::empty(),
         ]);
     }
@@ -72,5 +90,15 @@ class SmsRoutingRoutesController extends Controller
             'success' => true,
             'message' => 'Successfully connected to SMPP server.',
         ];
+    }
+
+    public function destroy()
+    {
+        $route = SmsRoute::findOrFail(request()->route('route'));
+        $route->delete();
+
+        return redirect()
+            ->route('sms.routing.routes.index')
+            ->with('flash', FlashData::from(['type' => 'success', 'title' => 'Route deleted.']));
     }
 }

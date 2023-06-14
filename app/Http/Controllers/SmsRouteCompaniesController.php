@@ -4,19 +4,31 @@ namespace App\Http\Controllers;
 
 use App\Data\SmsRoutingCompanyCreateData;
 use App\Data\SmsRoutingCompanyViewData;
+use App\Http\Resources\SmsRouteCompaniesCollection;
+use App\Http\Resources\SmsRouteCompanyResource;
 use App\Models\SmsRouteCompany;
 use Auth;
 use Inertia\Inertia;
 
-class SmsRouteCompanyController extends Controller
+class SmsRouteCompaniesController extends Controller
 {
     public function index()
     {
         return Inertia::render('Routing/Companies/Index', [
-            'companies' => SmsRoutingCompanyViewData::collection(
+            'companies' => new SmsRouteCompaniesCollection(
                 SmsRouteCompany::where('team_id', Auth::user()->current_team_id)
                     ->get()
             )
+        ]);
+    }
+
+    public function store(SmsRoutingCompanyCreateData $data)
+    {
+        SmsRouteCompany::create($data->toArray());
+
+        return redirect()->route('sms.routing.companies.index')->with('flash', [
+            'type' => 'success',
+            'title' => 'Company created.',
         ]);
     }
 
@@ -27,22 +39,14 @@ class SmsRouteCompanyController extends Controller
         ]);
     }
 
-    public function store(SmsRoutingCompanyCreateData $data)
-    {
-        $company = SmsRouteCompany::make($data->toArray());
-        $company->team_id = Auth::user()->current_team_id;
-        $company->save();
-
-        return redirect()->route('sms.routing.companies.index');
-    }
-
     public function edit(SmsRouteCompany $company)
     {
         if ($company->team_id !== Auth::user()->current_team_id) {
             abort(403);
         }
+
         return Inertia::render('Routing/Companies/SmsCompaniesUpdate', [
-            'company' => $company->only(['id', 'name']),
+            'company' => new SmsRouteCompanyResource($company),
         ]);
     }
 

@@ -3,7 +3,7 @@
 use App\Http\Controllers\AppController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SmsCampaignsController;
-use App\Http\Controllers\SmsRouteCompanyController;
+use App\Http\Controllers\SmsRouteCompaniesController;
 use App\Http\Controllers\SmsRoutingRoutesController;
 use App\Http\Middleware\RedirectIfAuthenticated;
 use Illuminate\Support\Facades\Route;
@@ -42,7 +42,7 @@ Route::middleware([
 
     Route::prefix('sms')->name('sms.')->group(function () {
         Route::prefix('routing')->name('routing.')->group(function () {
-            Route::resource('companies', SmsRouteCompanyController::class);
+            Route::resource('companies', SmsRouteCompaniesController::class);
 
             Route::resource('routes', SmsRoutingRoutesController::class);
             Route::post('routes/test-smpp-connection',

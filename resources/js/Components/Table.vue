@@ -1,13 +1,20 @@
-<script setup lang="ts">
-import Vue3EasyDataTable from "vue3-easy-data-table";
+<script lang="ts" setup>
+import Vue3EasyDataTable, {BodyItemClassNameFunction} from "vue3-easy-data-table";
 import Button from "./Button.vue";
-import {Link} from "@inertiajs/vue3";
 import {PlusIcon} from "@heroicons/vue/20/solid";
+import {defineProps} from "vue";
+import Link from "./Link.vue";
+
+const bodyItemClassNameFunction: BodyItemClassNameFunction = (column: string, rowNumber: number): string => {
+  if (column === 'links') return 'links-column';
+  return '';
+};
 
 interface EmptyState {
   name: string;
   href: string;
 }
+
 interface Props {
   items: [];
   headers: [];
@@ -16,22 +23,27 @@ interface Props {
 
 const props = defineProps<Props>()
 
+if (props.items.length > 0 && props.items[0].links) {
+  props.headers.push({text: "Actions", value: "links", sortable: false});
+}
 </script>
 
 <template>
-<!--  Empty state-->
+  <!--  Empty state-->
   <div v-if="items.length === 0">
     <div class="text-center">
-      <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-        <path vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+      <svg aria-hidden="true" class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor"
+           viewBox="0 0 24 24">
+        <path d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"
+              stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              vector-effect="non-scaling-stroke"/>
       </svg>
       <h3 class="mt-2 text-sm font-semibold text-gray-900">No {{ emptyState.name }}</h3>
       <p class="mt-1 text-sm text-gray-500">Get started by creating a new {{ emptyState.name }}.</p>
       <div class="mt-6">
         <Link :href="emptyState.href">
-
           <Button>
-            <PlusIcon class="-ml-0.5 mr-1.5 h-5 w-5" />
+            <PlusIcon class="-ml-0.5 mr-1.5 h-5 w-5"/>
             New {{ emptyState.name }}
           </Button>
         </Link>
@@ -39,17 +51,27 @@ const props = defineProps<Props>()
     </div>
   </div>
 
-<!--  Data-->
-  <Vue3EasyDataTable v-else :items="items" :headers="headers"
+  <!--  Data-->
+  <Vue3EasyDataTable v-else
+                     :body-item-class-name="bodyItemClassNameFunction"
+                     :headers="headers" :items="items"
                      :theme-color="'rgb(99 102 241)'"
+                     table-class-name="vue3-easy-data-table"
   >
-    <slot/>
+    <template v-for="(slot, index) of Object.keys($slots)" :key="index" v-slot:[slot]>
+      <slot :name="slot"></slot>
+    </template>
+    <template #item-links="item">
+      <div v-for="(link,key) in item.links">
+        <Link :href="link">{{ key }}</Link>
+      </div>
+    </template>
   </Vue3EasyDataTable>
 </template>
 
-<style scoped>
+<style>
 .vue3-easy-data-table {
-  --easy-table-border: 1px solid #e5e7eb;
+  --easy-table-border: 0;
   --easy-table-row-border: 1px solid #e5e7eb;
 
   --easy-table-header-font-size: 0.875rem;
@@ -88,12 +110,25 @@ const props = defineProps<Props>()
   --easy-table-scrollbar-corner-color: #2d3a4f;
 
   --easy-table-loading-mask-background-color: #2d3a4f;
-  border-radius: 10px;
+//border-radius: 10px;
 }
-.vue3-easy-data-table__main{
+
+.vue3-easy-data-table__main {
   border-radius: 10px 10px 0 0;
 }
-.vue3-easy-data-table__footer{
+
+.vue3-easy-data-table {
   border-radius: 0 0 10px 10px;
+}
+
+.vue3-easy-data-table__footer {
+  border-radius: 0 0 10px 10px;
+}
+
+.links-column {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  text-transform: capitalize;
 }
 </style>

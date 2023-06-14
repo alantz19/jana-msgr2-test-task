@@ -5,7 +5,7 @@ namespace App\Data;
 use Spatie\LaravelData\Data;
 
 /** @typescript */
-class SmsRoutingCompanyViewData extends Data
+class SmsRoutingCompanyData extends Data
 {
     public function __construct(
         public string $id,

@@ -13,7 +13,7 @@ class DataFileFactory extends Factory
 
     public function definition(): array
     {
-        $user = User::factory()->create();
+        $user = User::factory()->withPersonalTeam()->create();
 
         return [
             'user_id' => $user->id,
@@ -41,6 +41,14 @@ class DataFileFactory extends Factory
                 'path' => $filePath,
                 'size' => filesize($filePath),
             ];
+        });
+    }
+
+    public function withLogicalTest(): static
+    {
+        return $this->state(function (array $attributes) {
+            $attributes['meta']['logical_test'] = true;
+            return $attributes;
         });
     }
 }

@@ -12,18 +12,16 @@ class ImportFileTest extends TestCase
 
     public function testNumbersImport()
     {
-        $path = storage_path('app/data/demo_list-100.xlsx');
+        $path = __DIR__ . '/data/demo_list-100.xlsx';
         $this->assertFileExists($path);
 
-        $dataFile = DataFile::factory()->withFile($path)->create();
+        $dataFile = DataFile::factory()
+            ->withFile($path)
+            ->create();
 
-//        Excel::fake();
+        $import = new NumbersImport($dataFile);
+        $import->import();
 
-        $import = new NumbersImport($dataFile->meta['columns']);
-        $import->import($path);
-
-        dump($import->errors()->toArray());
-        dump($import->failures()->toArray());
-//        Excel::assertImported($path);
+        // @TODO check imported data
     }
 }

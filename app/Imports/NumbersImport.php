@@ -2,91 +2,95 @@
 
 namespace App\Imports;
 
+use App\Models\Contact;
 use App\Services\CountryService;
-use Maatwebsite\Excel\Concerns\Importable;
-use Maatwebsite\Excel\Concerns\SkipsErrors;
-use Maatwebsite\Excel\Concerns\SkipsFailures;
-use Maatwebsite\Excel\Concerns\SkipsOnError;
-use Maatwebsite\Excel\Concerns\SkipsOnFailure;
-use Maatwebsite\Excel\Concerns\ToModel;
-use Maatwebsite\Excel\Concerns\WithBatchInserts;
-use Maatwebsite\Excel\Concerns\WithChunkReading;
-use Maatwebsite\Excel\Concerns\WithValidation;
-use Maatwebsite\Excel\Validators\Failure;
+use App\Services\NumberService;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\LazyCollection;
+use Ramsey\Uuid\Nonstandard\Uuid;
 
-class NumbersImport implements
-    ToModel,
-    WithBatchInserts,
-    WithChunkReading,
-    WithValidation,
-    SkipsOnFailure,
-    SkipsOnError
+class NumbersImport extends BaseImport
 {
-    use Importable, SkipsFailures, SkipsErrors;
-
-    public function __construct(private readonly array $cols)
+    public function prepareRow($row): array
     {
-    }
+        // phone_is_good ?
+        // phone_is_good_reason ?
 
-    public function rules(): array
-    {
+        // @TODO add other columns
+        $countryId = $this->getCountryId($row[$this->columns['country']] ?? '');
+        $phone = $this->getNumber($row[$this->columns['number']] ?? '', $countryId);
+
         return [
-            'number' => 'required|string|min:10',
-            'country' => 'numeric|nullable|exists:world_countries,id',
-            // @TODO add validation for other columns
+            'id' => Uuid::uuid4()->toString(),
+            'team_id' => $this->dataFile->user->current_team_id,
+            'list_id' => $this->list->id,
+            'phone_normalized' => $phone,
+            'country_id' => $countryId,
         ];
     }
 
-    public function prepareForValidation($data, $index): array
+    public function import(): void
     {
-        $array = [];
-        $array['number'] = (string) preg_replace('/\D/', '', $data[$this->cols['number']]);
+        $this->lazyRead()
+            ->each(function (LazyCollection $chunk) {
+                $records = $chunk->map(function ($row) {
+                        return $this->prepareRow($row);
+                    })
+                    ->filter(function ($row) {
+                        return !empty($row['phone_normalized']) && !empty($row['country_id']);
+                    })
+                    ->toArray();
+
+                if (!empty($records)) {
+                    $this->saveChunk($records);
+
+                    Contact::insertAssoc($records);
+                } else {
+                    Log::info('Empty chunk', [
+                        'data_file_id' => $this->dataFile->id,
+                    ]);
+                }
+            });
+    }
+
+    private function getNumber(string $rawValue, int $countryId): ?string
+    {
+        $number = (string)preg_replace('/\D/', '', $rawValue);
+
+        if ($this->isLogicalTest()) {
+            if (!NumberService::isLogicalNumber($number)) {
+                Log::info('Number is not logical', [
+                    'data_file_id' => $this->dataFile->id,
+                    'number' => $number,
+                    'raw_value' => $rawValue,
+                ]);
+
+                return null;
+            }
+        }
+
+        // @TODO check with giggsey/libphonenumber-for-php ?
+
+        return $number;
+    }
+
+    private function getCountryId(string $rawValue): int
+    {
+        $countryId = null;
 
         try {
-            $array['country'] = CountryService::guessCountry($data[$this->cols['country']]);
+            if ($this->dataFile->meta['fixedCountryId'] ?? false) {
+                $countryId = $this->dataFile->meta['countryId'];
+            } else {
+                $countryId = CountryService::guessCountry($rawValue);
+            }
         } catch (\Exception) {
         }
 
-        if (empty($array['country'])) {
-            $array['country'] = null;
+        if (empty($countryId)) {
+            $countryId = null;
         }
 
-        // @TODO add other columns
-
-        return $array;
-    }
-
-    public function model(array $row)
-    {
-        dump($row);
-        return null;
-
-        return new Number([
-            'number' => $row['number'],
-            'description' => $row['description'],
-        ]);
-    }
-
-    public function batchSize(): int
-    {
-        return 1000;
-    }
-
-    public function chunkSize(): int
-    {
-        return 1000;
-    }
-
-    public function onError(\Throwable $e)
-    {
-        $this->errors[] = [
-            'message' => $e->getMessage(),
-            'trace' => $e->getTraceAsString(),
-        ];
-    }
-
-    public function onFailure(Failure ...$failures)
-    {
-        $this->failures[] = $failures;
+        return (int) $countryId;
     }
 }

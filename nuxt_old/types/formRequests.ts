@@ -1,8 +1,14 @@
+export type UserSignupCreateRequest = {
+    name: string;
+    website: string;
+    email: string;
+    password: string;
+};
 export type SmsRoutingRouteCreateRequest = {
     name: string;
     description?: string;
-    selectedCompanyId: string;
-    smppConnectionDataId: string;
+    sms_route_company_id: string;
+    smpp_connection_id: string;
 };
 export type SmsRoutingCompanyCreateRequest = {
     name: string;
@@ -20,4 +26,8 @@ export type SmsRouteSmppConnectionCreateRequest = {
 export type SmsCampaignTextCreateRequest = {
     sms_campaign_id: number;
     text: string;
+};
+export type LoginRequest = {
+    email: string;
+    password: string;
 };

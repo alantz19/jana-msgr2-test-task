@@ -6,7 +6,7 @@
     "build": "vite build",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "typegen": "laravel-typegen --laravel-enum --form-request",
+    "typegen": "laravel-typegen --laravel-enum --form-request -o nuxt/types/",
     "zodgen": "laravel-zodgen"
   },
   "devDependencies": {

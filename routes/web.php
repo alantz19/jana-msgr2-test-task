@@ -5,7 +5,6 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SmsCampaignsController;
 use App\Http\Controllers\SmsRouteCompaniesController;
 use App\Http\Controllers\SmsRoutingRoutesController;
-use App\Http\Middleware\RedirectIfAuthenticated;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -19,13 +18,6 @@ use Inertia\Inertia;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
-Route::middleware(RedirectIfAuthenticated::class)
-    ->group(function () {
-        Route::get('/login', [AuthController::class, 'view'])->name('login');
-        Route::get('/signup', [AuthController::class, 'create'])->name('signup');
-        Route::post('/signup', [AuthController::class, 'store'])->name('signup.store');
-    });
 
 Route::middleware([
     'auth',
@@ -62,3 +54,15 @@ Route::middleware([
             ->name('sms.routing.routes.store');
     });
 });
+
+//Route::group([
+//    'middleware' => 'api',
+//    'prefix' => 'auth'
+//], function ($router) {
+//
+//    Route::post('login', 'AuthController@login');
+//    Route::post('logout', 'AuthController@logout');
+//    Route::post('refresh', 'AuthController@refresh');
+//    Route::post('me', 'AuthController@me');
+//
+//});

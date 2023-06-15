@@ -6,7 +6,6 @@ use App\Models\Contact;
 use App\Services\CountryService;
 use App\Services\NumberService;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\LazyCollection;
 use Ramsey\Uuid\Nonstandard\Uuid;
 
 class NumbersImport extends BaseImport
@@ -29,28 +28,17 @@ class NumbersImport extends BaseImport
         ];
     }
 
-    public function import(): void
+    public function filterRow(array $row): bool
     {
-        $this->lazyRead()
-            ->each(function (LazyCollection $chunk) {
-                $records = $chunk->map(function ($row) {
-                        return $this->prepareRow($row);
-                    })
-                    ->filter(function ($row) {
-                        return !empty($row['phone_normalized']) && !empty($row['country_id']);
-                    })
-                    ->toArray();
+        return !empty($row['phone_normalized'])
+            && !empty($row['country_id']);
+    }
 
-                if (!empty($records)) {
-                    $this->saveChunk($records);
+    public function saveChunk(array $records): void
+    {
+        parent::saveChunk($records);
 
-                    Contact::insertAssoc($records);
-                } else {
-                    Log::info('Empty chunk', [
-                        'data_file_id' => $this->dataFile->id,
-                    ]);
-                }
-            });
+        Contact::insertAssoc($records);
     }
 
     private function getNumber(string $rawValue, int $countryId): ?string

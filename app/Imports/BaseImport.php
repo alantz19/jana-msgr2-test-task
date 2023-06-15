@@ -30,32 +30,25 @@ abstract class BaseImport implements ImportInterface
 
         $this->dataFile = $dataFile;
         $this->columns = $dataFile->meta['columns'];
-
-        if (!empty($dataFile->meta['list_id'])) {
-            $this->list = Lists::findOrFail($dataFile->meta['list_id']);
-        } else {
-            $list = new Lists([
-                'team_id' => $dataFile->user->current_team_id,
-                'name' => $dataFile->meta['list_name'] ?? $dataFile->name,
-            ]);
-
-            if (!$list->save()) {
-                throw InvalidAttributesException::for(
-                    $list::class,
-                    $list->toArray(),
-                    $list->getErrors()
-                );
-            }
-
-            Log::info('List created', [
-                'list' => $list->toArray(),
-            ]);
-
-            $this->list = $list;
-        }
+        $this->list = $this->findList();
     }
 
     public function lazyRead($chunkSize = 1000, $skip = 0): LazyCollection
+    {
+        return LazyCollection::make(function () {
+            $handle = fopen($this->filePath, 'r');
+
+            while (($row = fgetcsv($handle, 4096, $this->delimiter)) !== false) {
+                yield $row;
+            }
+
+            fclose($handle);
+        })
+            ->skip($skip)
+            ->chunk($chunkSize);
+    }
+
+    public function import($chunkSize = 1000, $skip = 0): LazyCollection
     {
         try {
             $this->filePath = $this->dataFile->path;
@@ -65,17 +58,24 @@ abstract class BaseImport implements ImportInterface
                 $this->filePath = $this->xls2csv();
             }
 
-            return LazyCollection::make(function () {
-                $handle = fopen($this->filePath, 'r');
+            return $this->lazyRead($chunkSize, $skip)
+                ->each(function (LazyCollection $chunk) {
+                    $records = $chunk->map(function ($row) {
+                        return $this->prepareRow($row);
+                    })
+                        ->filter(function ($row) {
+                            return $this->filterRow($row);
+                        })
+                        ->toArray();
 
-                while (($row = fgetcsv($handle, 4096, $this->delimiter)) !== false) {
-                    yield $row;
-                }
-
-                fclose($handle);
-            })
-                ->skip($skip)
-                ->chunk($chunkSize);
+                    if (!empty($records)) {
+                        $this->saveChunk($records);
+                    } else {
+                        Log::info('Empty chunk', [
+                            'data_file_id' => $this->dataFile->id,
+                        ]);
+                    }
+                });
         } catch (\Exception $e) {
             Log::error('Error while reading file', [
                 'dataFile' => $this->dataFile->toArray(),
@@ -106,6 +106,31 @@ abstract class BaseImport implements ImportInterface
         }
 
         fclose($fp);
+    }
+
+    public function getList(): Lists
+    {
+        return $this->list;
+    }
+
+    private function findList(): Lists
+    {
+        if (!empty($this->dataFile->meta['list_id'])) {
+            return Lists::findOrFail($this->dataFile->meta['list_id']);
+        }
+
+        $list = new Lists([
+            'team_id' => $this->dataFile->user->current_team_id,
+            'name' => $dataFile->meta['list_name'] ?? $this->dataFile->name,
+        ]);
+
+        $list->saveOrFail();
+
+        Log::info('List created', [
+            'list' => $list->toArray(),
+        ]);
+
+        return $list;
     }
 
     private function xls2csv(): string

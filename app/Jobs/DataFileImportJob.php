@@ -12,7 +12,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 
-class FileImportJob implements ShouldQueue
+class DataFileImportJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -29,11 +29,11 @@ class FileImportJob implements ShouldQueue
      */
     public function handle(): void
     {
-        $dataFile = DataFile::findOrFail($this->fileId);
-
-        Log::info('FileImportJob start', [
-            'dataFile' => $dataFile->toArray(),
+        Log::info('DataFileImportJob start', [
+            'data_file_id' => $this->fileId,
         ]);
+
+        $dataFile = DataFile::findOrFail($this->fileId);
 
         $import = match ($dataFile->type) {
             DataFile::TYPE_NUMBERS_FILE => new NumbersImport($dataFile),
@@ -42,8 +42,8 @@ class FileImportJob implements ShouldQueue
 
         $import->import();
 
-        Log::info('FileImportJob end', [
-            'dataFile' => $dataFile->id,
+        Log::info('DataFileImportJob end', [
+            'data_file_id' => $dataFile->id,
         ]);
     }
 }

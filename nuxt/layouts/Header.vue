@@ -44,14 +44,19 @@
                       leave-active-class="transition ease-in duration-75"
                       leave-from-class="transform opacity-100 scale-100" leave-to-class="transform opacity-0 scale-95">
             <MenuItems
+                as="div"
                 class="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none">
-              <MenuItem v-for="item in userNavigation" :key="item.name" v-slot="{ active }">
+              <MenuItem v-for="item in userNavigation" :key="item.name" v-slot="{ active }" as="div">
                 <a :class="[active ? 'bg-gray-50' : '', 'block px-3 py-1 text-sm leading-6 text-gray-900']"
                    :href="item.href">{{
                     item.name
                   }}</a>
-                <a class="block px-3 py-1 text-sm leading-6 text-gray-900" @click="logout">Logout</a>
               </MenuItem>
+              <MenuItem v-for="item in userNavigation" :key="item.name" v-slot="{ active }" as="div">
+                <a :class="[active ? 'bg-gray-50' : '', 'block px-3 py-1 text-sm leading-6 text-gray-900']"
+                   href="#" @click="logout">Logout</a>
+              </MenuItem>
+
             </MenuItems>
           </transition>
         </Menu>
@@ -61,12 +66,12 @@
 </template>
 
 <script setup>
-import {Menu, MenuButton, MenuItem, MenuItems} from "@headlessui/vue";
 import {ChevronDownIcon, MagnifyingGlassIcon} from "@heroicons/vue/20/solid";
 import {Bars3Icon, BellIcon} from "@heroicons/vue/24/outline";
 import {useAppStore} from "@/stores/app.js";
 
 const {logout} = useAuth();
+const active = false;
 
 const appStore = useAppStore()
 

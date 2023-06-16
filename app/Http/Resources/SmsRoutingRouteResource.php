@@ -12,11 +12,16 @@ class SmsRoutingRouteResource extends JsonResource
 {
     use WhenMorphToLoaded;
 
+    /**
+     * @param Request $request
+     * @return array
+     */
     public function toArray(Request $request): array
     {
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'company_id' => $this->company_id,
             'company' => new SmsRouteCompanyResource($this->whenLoaded('smsRouteCompany')),
             'connection' => $this->whenMorphToLoaded('connection', [
                 SmsRouteSmppConnection::class => SmsRouteSmppConnectionResource::class,

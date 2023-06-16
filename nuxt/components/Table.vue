@@ -3,7 +3,6 @@ import Vue3EasyDataTable, {BodyItemClassNameFunction} from "vue3-easy-data-table
 import Button from "./Button.vue";
 import {PlusIcon} from "@heroicons/vue/20/solid";
 import {defineProps} from "vue";
-import Link from "./Link.vue";
 
 const bodyItemClassNameFunction: BodyItemClassNameFunction = (column: string, rowNumber: number): string => {
   if (column === 'links') return 'links-column';
@@ -47,12 +46,12 @@ if (props.items.length > 0 && props.items[0].links) {
       <h3 class="mt-2 text-sm font-semibold text-gray-900">No {{ emptyState.name }}</h3>
       <p class="mt-1 text-sm text-gray-500">Get started by creating a new {{ emptyState.name }}.</p>
       <div class="mt-6">
-        <Link :href="emptyState.href">
+        <LinkC :href="emptyState.href">
           <Button>
             <PlusIcon class="-ml-0.5 mr-1.5 h-5 w-5"/>
             New {{ emptyState.name }}
           </Button>
-        </Link>
+        </LinkC>
       </div>
     </div>
   </div>
@@ -69,7 +68,7 @@ if (props.items.length > 0 && props.items[0].links) {
     </template>
     <template #item-links="item">
       <div v-for="(link,key) in item.links">
-        <Link :href="link">{{ key }}</Link>
+        <LinkC :href="link">{{ key }}</LinkC>
       </div>
     </template>
   </Vue3EasyDataTable>

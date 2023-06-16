@@ -11,6 +11,10 @@ class SmsRouteCompany extends Model
 {
     use SoftDeletes, HasFactory, HasUuids;
 
+    public static array $rules = [
+        'name' => 'required|string|max:255',
+    ];
+
     protected $fillable = [
         'team_id',
         'name',

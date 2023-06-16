@@ -40,9 +40,8 @@
       <Header/>
 
       <main class="py-10 bg-slate-100">
-        <div v-if="$page.props.flash">
-          <Flash :message="$page.props.flash.message" :title="$page.props.flash.title" :type="$page.props.flash.type"/>
-        </div>
+        <FlashMessages/>
+        
         <div class="px-4 sm:px-6 lg:px-8">
           <slot/>
         </div>
@@ -57,7 +56,6 @@ import {Dialog, DialogPanel, TransitionChild, TransitionRoot,} from '@headlessui
 import {XMarkIcon,} from '@heroicons/vue/24/outline'
 import Sidebar from "./Sidebar.vue";
 import Header from "./Header.vue";
-import Flash from "@/Components/Flash.vue";
 
 const appStore = useAppStore();
 </script>

@@ -4,7 +4,8 @@
     "build": "nuxt build",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
-    "preview": "nuxt preview"
+    "preview": "nuxt preview",
+    "sta": "swagger-typescript-api --axios --route-types --extract-request-body --modular -p http://localhost/docs/api.json -o types/"
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",
@@ -19,6 +20,12 @@
   },
   "dependencies": {
     "@headlessui/vue": "^1.7.14",
-    "@heroicons/vue": "^2.0.18"
+    "@heroicons/vue": "^2.0.18",
+    "@iconify/vue": "^4.1.1",
+    "@tailvue/nuxt": "^1.0.0",
+    "nuxt-proxy": "^0.4.1",
+    "openapi-fetch": "^0.2.1",
+    "swagger-typescript-api": "^12.0.4",
+    "vue3-easy-data-table": "^1.5.45"
   }
 }

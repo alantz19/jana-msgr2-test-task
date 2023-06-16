@@ -2,11 +2,9 @@
 
 namespace App\Http\Resources;
 
-use App\Models\SmsRouteCompany;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-/** @mixin SmsRouteCompany */
 class SmsRouteCompanyResource extends JsonResource
 {
     public function toArray(Request $request): array
@@ -17,6 +15,10 @@ class SmsRouteCompanyResource extends JsonResource
             'name' => $this->name,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'links' => [
+//                "delete" => action([SmsRouteCompaniesController::class, 'destroy'], $this, false),
+            ],
         ];
     }
+
 }

@@ -19,7 +19,6 @@ class SmsRoute extends Model
         'team_id',
         'name',
         'sms_route_company_id',
-        'meta'
     ];
 
     protected $hidden = ['meta'];

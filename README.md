@@ -1,6 +1,10 @@
 # MSGR - SMS and Email marketing platform.
 
-> project docs are at http://v2.local/docs you can access them after starting the project
+API docs are automatically generated at
+
+- http://localhost/docs/api#/ (using [scramble package](https://scramble.dedoc.co/installation))
+- generate api's into typescript:
+  run `npx openapi-typescript http://localhost/docs/api.json -o ./nuxt/types/openapi_types.ts`
 
 # Starting project
 
@@ -50,4 +54,5 @@ run `php artisan typescript:transform` to generate the typescript interface for 
 in `App/Data/SmsRoutingRouteCreateData` and `resources/types/generated.ts`)
 
 To generate typescript from models we use `https://github.com/7nohe/laravel-typegen`
-run `sail npm run typegen --form-requests` to generate typescript interfaces for models.
+run `sail npm run typegen --form-requests` to generate typescript interfaces for models. **Note** you need to run it in
+Sail cause it connects to DB.

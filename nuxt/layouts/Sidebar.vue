@@ -64,52 +64,6 @@ var appStore = useAppStore();
 let router = useRouter();
 appStore.navBarActive(useRoute().path);
 router.afterEach((to, from) => {
-  console.log('called - ', to);
   appStore.navBarActive(to.path);
-
-  // appStore.navigation = [
-  //   {name: 'Dashboard', href: '/', icon: HomeIcon, current: to.path === '/'},
-  //   {
-  //     name: 'Campaigns',
-  //     icon: UsersIcon,
-  //     current: to.path.startsWith('/campaigns'),
-  //     href: '/campaigns',
-  //     children: [
-  //       {name: 'Campaigns', href: '/campaigns', current: to.path.startsWith('/campaigns')},
-  //       {name: 'Plans', href: '#'},
-  //       {name: 'Offers', href: '#'},
-  //       {name: 'Texts', href: '#'},
-  //     ],
-  //   },
-  //   {
-  //     name: 'Audience',
-  //     icon: FolderIcon,
-  //     current: false,
-  //     children: [
-  //       {name: 'Contacts', href: '#'},
-  //       {name: 'Upload', href: '#'},
-  //     ],
-  //   },
-  //   {
-  //     name: 'Routes',
-  //     href: '#',
-  //     icon: CalendarIcon,
-  //     current: to.path.startsWith('/sms/routing/'),
-  //     children: [
-  //       {
-  //         name: 'Companies',
-  //         href: '/sms/routing/companies',
-  //         current: to.path.startsWith('/sms/routing/companies')
-  //       },
-  //       {name: 'Routes', href: '/sms/routing/routes', current: to.path.startsWith('/sms/routing/routes')},
-  //       {name: 'Rates', href: '#'},
-  //       {name: 'Reports', href: '#'},
-  //     ]
-  //   }
-  // ]
-
-  // appStore.navigation.forEach(item => {
-  //   item.current = to.path.startsWith(item.href)
-  // })
 })
 </script>

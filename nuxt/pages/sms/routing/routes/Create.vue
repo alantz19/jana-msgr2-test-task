@@ -182,9 +182,7 @@ api.smsRoutingCompaniesList().then((response) => {
               </template>
               <template #content>
                 <SmppConnectionSetupInlineForm v-model="smppCreate"
-                                               :errors="{
-                            errors: smppCreateError
-                                 }"/>
+                                               :errors="smppCreateError"/>
               </template>
             </HorizontalForm>
 

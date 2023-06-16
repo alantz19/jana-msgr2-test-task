@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Imports\NumbersImport;
+use App\Imports\NumbersFileImport;
 use App\Models\Contact;
 use App\Models\DataFile;
 use Illuminate\Bus\Queueable;
@@ -36,7 +36,7 @@ class DataFileImportJob implements ShouldQueue
         $dataFile = DataFile::findOrFail($this->fileId);
 
         $import = match ($dataFile->type) {
-            DataFile::TYPE_NUMBERS_FILE => new NumbersImport($dataFile),
+            DataFile::TYPE_NUMBERS_FILE => new NumbersFileImport($dataFile),
 //            DataFile::TYPE_EMAIL_FILE => $this->importEmailFile($filePath, $meta['columns']),
         };
 

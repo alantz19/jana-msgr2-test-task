@@ -11,26 +11,20 @@ use Illuminate\Support\LazyCollection;
 abstract class BaseImport implements ImportInterface
 {
     protected DataFile $dataFile;
-    protected Lists $list;
+    protected ?Lists $list;
     protected string $filePath;
     protected array $columns;
-    protected string $delimiter = ';';
+    protected int $chunkIterator = 0;
+    protected string $storagePath;
+    protected string $delimiter = ',';
+    protected array $firstRows = [];
 
     public function __construct(DataFile $dataFile)
     {
-        if (empty($dataFile->meta) || empty($dataFile->meta['columns'])) {
-            throw InvalidAttributesException::for(
-                $dataFile::class,
-                $dataFile->toArray(),
-                [
-                    'meta' => 'meta is empty or meta[columns] is empty'
-                ]
-            );
-        }
-
         $this->dataFile = $dataFile;
-        $this->columns = $dataFile->meta['columns'];
-        $this->list = $this->findList();
+        $this->columns = $dataFile->meta['columns'] ?? [];
+        $this->list = $this->findOrNewList();
+        $this->storagePath = storage_path('app/users/' . $this->dataFile->user_id . '/data-files');
     }
 
     public function lazyRead($chunkSize = 1000, $skip = 0): LazyCollection
@@ -50,13 +44,23 @@ abstract class BaseImport implements ImportInterface
 
     public function import($chunkSize = 1000, $skip = 0): LazyCollection
     {
-        try {
-            $this->filePath = $this->dataFile->path;
-            $ext = pathinfo($this->dataFile->path, PATHINFO_EXTENSION);
+        if (empty($this->columns)) {
+            throw InvalidAttributesException::for(
+                $this->dataFile::class,
+                $this->dataFile->toArray(),
+                [
+                    'meta' => 'meta is empty or meta[columns] is empty'
+                ]
+            );
+        }
 
-            if (in_array($ext, ['xls', 'xlsx'])) {
-                $this->filePath = $this->xls2csv();
-            }
+        Log::info('Start import', [
+            'data_file_id' => $this->dataFile->id,
+            'columns' => $this->columns,
+        ]);
+
+        try {
+            $this->filePath = $this->csvFilePath();
 
             return $this->lazyRead($chunkSize, $skip)
                 ->each(function (LazyCollection $chunk) {
@@ -71,8 +75,9 @@ abstract class BaseImport implements ImportInterface
                     if (!empty($records)) {
                         $this->saveChunk($records);
                     } else {
-                        Log::info('Empty chunk', [
+                        Log::info('Empty chunk after filter', [
                             'data_file_id' => $this->dataFile->id,
+                            'chunk' => $chunk->toArray(),
                         ]);
                     }
                 });
@@ -95,17 +100,24 @@ abstract class BaseImport implements ImportInterface
     public function saveChunk(array $records): void
     {
         $pathInfo = pathinfo($this->filePath);
-        $fileName = $pathInfo['filename'] . '_chunks.csv';
+        $fileName = $pathInfo['filename'] . '_chunk' . $this->chunkIterator . '.csv';
+        $filePath = $this->storagePath . '/chunks/' . $this->dataFile->id;
 
-        $fp = fopen($pathInfo['dirname'] . '/' . $fileName, 'w');
-
-        fputcsv($fp, ['### chunk ###'], $this->delimiter);
-
-        foreach ($records as $record) {
-            fputcsv($fp, $record, $this->delimiter);
+        if (!file_exists($filePath)) {
+            mkdir($filePath, 0775, true);
         }
 
-        fclose($fp);
+        $file = $filePath . '/' . $fileName;
+
+        $handle = fopen($file, 'w');
+
+        foreach ($records as $record) {
+            fputcsv($handle, $record, $this->delimiter);
+        }
+
+        fclose($handle);
+
+        $this->chunkIterator++;
     }
 
     public function getList(): Lists
@@ -113,8 +125,82 @@ abstract class BaseImport implements ImportInterface
         return $this->list;
     }
 
-    private function findList(): Lists
+    public function xls2csv(): string
     {
+        $filePath = storage_path('app/' . $this->dataFile->path);
+
+        if (!file_exists($filePath)) {
+            throw new \Exception('File not found');
+        }
+
+        if (!is_readable($filePath)) {
+            throw new \Exception('File not readable');
+        }
+
+        $fileInfo = pathinfo($filePath);
+
+        if (!in_array($fileInfo['extension'], ['xls', 'xlsx'])) {
+            throw new \Exception('File is not xls');
+        }
+
+        Log::debug('Converting file to csv', [
+            'file' => $filePath,
+        ]);
+
+        $csvFileName = $fileInfo['filename'] . '_' . time() . '.csv';
+
+        if (!file_exists($this->storagePath)) {
+            mkdir($this->storagePath, 0775, true);
+        }
+
+        $csvFile = $this->storagePath . '/' . $csvFileName;
+
+        $reader = match ($fileInfo['extension']) {
+            'xls' => new \PhpOffice\PhpSpreadsheet\Reader\Xls(),
+            'xlsx' => new \PhpOffice\PhpSpreadsheet\Reader\Xlsx(),
+        };
+        $reader->setReadDataOnly(true);
+        $spreadsheet = $reader->load($filePath);
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Csv($spreadsheet);
+        $writer->setDelimiter(',');
+        $writer->setEnclosure('');
+        $writer->setLineEnding("\r\n");
+        $writer->save($csvFile);
+
+        Log::debug('File converted', [
+            'file' => $csvFile,
+        ]);
+
+        return str_replace(storage_path('app/'), '', $csvFile);
+    }
+
+    private function getFirstRows($num = 15): array
+    {
+        if (!empty($this->firstRows)) {
+            return $this->firstRows;
+        }
+
+        $file = new \SplFileObject($this->filePath);
+        $file->seek(PHP_INT_MAX);
+        $total = $file->key();
+        $size = min($num, $total);
+
+        for ($i = 0; $i <= $size; $i++) {
+            $file->seek($i);
+            $this->firstRows[] = $file->current();
+        }
+
+        $file = null;
+
+        return $this->firstRows;
+    }
+
+    private function findOrNewList(): ?Lists
+    {
+        if (empty($this->dataFile->meta['list_id']) && empty($this->dataFile->meta['list_name'])) {
+            return null;
+        }
+
         if (!empty($this->dataFile->meta['list_id'])) {
             return Lists::findOrFail($this->dataFile->meta['list_id']);
         }
@@ -133,51 +219,19 @@ abstract class BaseImport implements ImportInterface
         return $list;
     }
 
-    private function xls2csv(): string
+    private function csvFilePath(): string
     {
-        if (!file_exists($this->dataFile->path)) {
-            throw new \Exception('File not found');
+        $ext = pathinfo($this->dataFile->path, PATHINFO_EXTENSION);
+
+        if (in_array($ext, ['xls', 'xlsx']) && !empty($this->dataFile['meta']['csv_file'])) {
+            return storage_path('app/' . $this->dataFile['meta']['csv_file']);
         }
 
-        if (!is_readable($this->dataFile->path)) {
-            throw new \Exception('File not readable');
-        }
-
-        $fileInfo = pathinfo($this->dataFile->path);
-
-        if (!in_array($fileInfo['extension'], ['xls', 'xlsx'])) {
-            throw new \Exception('File is not xls');
-        }
-
-        Log::debug('Converting file to csv', [
-            'file' => $this->dataFile->path
-        ]);
-
-        $csvFileName = $fileInfo['filename'] . '_' . time() . '.csv';
-        $csvFilePath = storage_path('app/data/xls2csv/' . $this->dataFile->user_id);
-
-        if (!file_exists($csvFilePath)) {
-            mkdir($csvFilePath, 0775, true);
-        }
-
-        $csvFile = $csvFilePath . '/' . $csvFileName;
-
-        $reader = match ($fileInfo['extension']) {
-            'xls' => new \PhpOffice\PhpSpreadsheet\Reader\Xls(),
-            'xlsx' => new \PhpOffice\PhpSpreadsheet\Reader\Xlsx(),
+        $path =  match ($ext) {
+            'xls', 'xlsx' => $this->xls2csv(),
+            default => $this->dataFile->path,
         };
-        $reader->setReadDataOnly(true);
-        $spreadsheet = $reader->load($this->dataFile->path);
-        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Csv($spreadsheet);
-        $writer->setDelimiter(';');
-        $writer->setEnclosure('');
-        $writer->setLineEnding("\r\n");
-        $writer->save($csvFile);
 
-        Log::debug('File converted', [
-            'file' => $csvFile,
-        ]);
-
-        return $csvFile;
+        return storage_path('app/' . $path);
     }
 }

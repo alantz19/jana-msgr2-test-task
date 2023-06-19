@@ -9,6 +9,16 @@ API docs are automatically generated at
 
 Create a .env file from .env.example
 
+# Github
+
+- we use (https://nvie.com/posts/a-successful-git-branching-model/) branching model
+-
+    - working on feature/<feature> name
+-
+    - create a PR to merge to development branch when done
+-
+    - we deploy to production from master branch
+
 ```bash
 cp .env.example .env
 ```

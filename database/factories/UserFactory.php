@@ -12,7 +12,6 @@ use App\Models\User;
 use App\Services\CountryService;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
-use Laravel\Jetstream\Features;
 
 class UserFactory extends Factory
 {
@@ -112,7 +111,7 @@ class UserFactory extends Factory
                             ];
                         })
                     )
-                )->afterCreating(function (SmsRoutingPlan $plan) use($customerTeam) {
+                )->afterCreating(function (SmsRoutingPlan $plan) use ($customerTeam) {
                     SmsRoutePlatformConnection::create([
                         'sms_routing_plan_id' => $plan->id,
                         'customer_team_id' => $customerTeam->id,
@@ -122,5 +121,12 @@ class UserFactory extends Factory
             )
         );
         return $this;
+    }
+
+    public function withSanctumToken(): static
+    {
+        return $this->afterCreating(function (User $user) {
+            $user->createToken('test-token');
+        });
     }
 }

@@ -84,8 +84,23 @@ services:
             - '${FORWARD_MAILHOG_DASHBOARD_PORT:-8025}:8025'
         networks:
             - sail
+#    selenium:
+#        image: 'selenium/standalone-chrome'
+#        image: 'seleniarm/standalone-chromium'
+#        ports:
+#            - '4444:4444'
+#        volumes:
+#            - '/dev/shm:/dev/shm'
+#        networks:
+#            - sail
     selenium:
         image: 'seleniarm/standalone-chromium'
+        environment:
+            LARAVEL_SAIL: 1
+            LOG_LEVEL: FINE
+        ports:
+            - '${FORWARD_SELENIUM_PORT:-4444}:4444'
+            - '${FORWARD_SELENIUM_HEADFUL_PORT:-7900}:7900'
         volumes:
             - '/dev/shm:/dev/shm'
         networks:

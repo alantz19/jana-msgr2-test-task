@@ -11,7 +11,7 @@ class BuildSmsData
     public SmsCampaignText $selectedCampaignText;
     public $sms_shortlink;
     public $segment_id; //todo
-    public \App\Dto\buildSmsDto $dto;
+    public \App\Data\buildSmsData $dto;
     /**
      * @var \App\Models\Offer|mixed
      */
@@ -28,6 +28,9 @@ class BuildSmsData
      * @var array|string|string[]|null
      */
     public string|array|null $finalText;
+
+    public array $keyword_data = [];
+    public string $scheme;
 
     public function getReplacementParams()
     {
@@ -79,5 +82,15 @@ class BuildSmsData
 
         $this->_cache['replacement_params'] =  array_merge($customParams, $metaParams, $stateParams, $params);
         return $this->_cache['replacement_params'];
+    }
+
+    public function getShortLink()
+    {
+        return $this->scheme . '://' . $this->keyword_data['url'];
+    }
+
+    public function getOptOutLink()
+    {
+        return $this->scheme . '://' . $this->keyword_data['opt-out'];
     }
 }

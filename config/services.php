@@ -34,4 +34,7 @@ return [
     'namecheap' => [
         'api_url' => env('NAMECHEAP_API_URL'),
     ],
+    'shortener' => [
+        'url' => env('SHORTENER_URL'),
+    ],
 ];

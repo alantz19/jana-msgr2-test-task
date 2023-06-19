@@ -2,6 +2,8 @@
 
 namespace Tests;
 
+use Config;
+use Dotenv\Dotenv;
 use Illuminate\Support\Collection;
 use Facebook\WebDriver\Chrome\ChromeOptions;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
@@ -11,6 +13,12 @@ use Laravel\Dusk\TestCase as BaseTestCase;
 abstract class DuskTestCase extends BaseTestCase
 {
     use CreatesApplication;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        Config::set('database.default', 'pgsql_local');
+    }
 
     /**
      * Prepare for Dusk test execution.
@@ -22,6 +30,14 @@ abstract class DuskTestCase extends BaseTestCase
         if (! static::runningInSail()) {
             static::startChromeDriver();
         }
+
+//        $env = new Dotenv();
+//        $env->changeEnv([
+//            'DB_HOST' => $request['hostname'],
+//            'DB_DATABASE' => $request['dbname'],
+//            'DB_USERNAME' => $request['username'],
+//            'DB_PASSWORD' => $request['dbpassword'],
+//        ]);
     }
 
     /**
@@ -35,6 +51,7 @@ abstract class DuskTestCase extends BaseTestCase
             return $items->merge([
                 '--disable-gpu',
                 '--headless=new',
+                '--no-sandbox',
             ]);
         })->all());
 

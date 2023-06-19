@@ -1,19 +1,35 @@
-import { defineConfig } from 'vite';
-import laravel, { refreshPaths } from 'laravel-vite-plugin';
+import {defineConfig} from 'vite';
+import laravel, {refreshPaths} from 'laravel-vite-plugin';
+import vue from '@vitejs/plugin-vue'
 
 export default defineConfig({
     plugins: [
+        vue(),
         laravel({
             input: [
-                'resources/css/app.css',
                 'resources/js/app.js',
-                'resources/css/filament.js'
             ],
-            refresh: true
-            // refresh: [
-            //     ...refreshPaths,
-            //     'app/Http/Livewire/**',
-            // ],
+            // refresh: true
+            refresh: [
+                'resources/**',
+                'resources/**/*.vue',
+            ],
         }),
     ],
+    resolve: {
+        alias: {
+            '@': '/resources/js',
+            '@resources': '/resources',
+        },
+    },
+    server: {
+        watch: {
+            usePolling: true,
+        }
+    },
+    build: {
+        commonjsOptions: {
+            transformMixedEsModules: true,
+        },
+    }
 });

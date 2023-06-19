@@ -8,19 +8,9 @@ use App\Models\Offer;
 use App\Models\SmsCampaign;
 use App\Models\SmsCampaignSenderid;
 use App\Models\SmsCampaignText;
-use App\Models\SmsRoute;
-use App\Models\SmsRouteCompany;
-use App\Models\SmsRoutePlatformConnection;
-use App\Models\SmsRouteRate;
-use App\Models\SmsRouteSmppConnection;
-use App\Models\SmsRoutingPlan;
-use App\Models\SmsRoutingPlanRoutes;
 use App\Models\User;
 use App\Services\CountryService;
 use App\Services\SendCampaignService;
-use App\Services\UserRoutesService;
-use Database\Factories\ContactFactory;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
 
 class SendSmsCampaignTest extends TestCase
@@ -42,7 +32,7 @@ class SendSmsCampaignTest extends TestCase
             'team_id' => $user->currentTeam->id,
             'list_id' => $list->id,
             'country_id' => CountryService::guessCountry('UK'),
-            'phone_normalized' => '447'.rand(10000000, 99999999),
+            'phone_normalized' => '447' . rand(10000000, 99999999),
             'phone_is_good' => true,
         ]);
         $contact->save();
@@ -66,7 +56,7 @@ class SendSmsCampaignTest extends TestCase
 
         Offer::factory()->count(5)->create([
             'team_id' => $user->currentTeam->id,
-        ])->each(function($model) use ($campaign) {
+        ])->each(function ($model) use ($campaign) {
             $campaign->offers()->attach($model->id);
         });
 
@@ -76,6 +66,6 @@ class SendSmsCampaignTest extends TestCase
         ]);
 
         SendCampaignService::send($campaign);
-        $this->assertEquals(true,true); //todo: continue after campagin creator/autosender
+        $this->assertEquals(true, true); //todo: continue after campagin creator/autosender
     }
 }

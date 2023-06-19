@@ -11,9 +11,24 @@ class SmsRouteCompany extends Model
 {
     use SoftDeletes, HasFactory, HasUuids;
 
+    public static array $rules = [
+        'name' => 'required|string|max:255',
+    ];
+
     protected $fillable = [
         'team_id',
         'name',
         'meta'
     ];
+
+    protected $hidden = ['meta'];
+
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+
+        static::creating(function ($model) {
+            $model->team_id = auth()->user()->currentTeam->id;
+        });
+    }
 }

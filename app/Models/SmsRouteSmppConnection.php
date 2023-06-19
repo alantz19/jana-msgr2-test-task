@@ -11,6 +11,17 @@ class SmsRouteSmppConnection extends Model
 {
     use SoftDeletes, HasFactory, HasUuids;
 
+    static array $rules = [
+        'url' => ['required'],
+        'username' => ['required'],
+        'password' => ['required'],
+        'port' => ['integer', 'required'],
+        'dlr_url' => ['nullable'],
+        'dlr_port' => ['nullable', 'integer'],
+        'workers_count' => ['nullable', 'integer'],
+        'workers_delay' => ['nullable', 'numeric'],
+    ];
+
     protected $fillable = [
         'url',
         'username',

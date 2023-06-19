@@ -1,74 +1,106 @@
-import defaultTheme from 'tailwindcss/defaultTheme';
-import forms from '@tailwindcss/forms';
-import typography from '@tailwindcss/typography';
-const colors = require('tailwindcss/colors')
-
-/** @type {import('tailwindcss').Config} */
+const plugin = require("tailwindcss/plugin");
 export default {
-    content: [
-        './resources/**/*.blade.php',
-        './vendor/filament/**/*.blade.php',
-    ],
+    // important: true,
+    content: ["./resources/**/*.{vue,js,ts,jsx,tsx}"],
 
     theme: {
         extend: {
-            colors: {
-                danger: colors.rose,
-                primary: colors.blue,
-                success: colors.green,
-                warning: colors.yellow,
-                // primary: {
-                //     DEFAULT: "#4361ee",
-                //     light: "#eaf1ff",
-                //     "dark-light": "rgba(67,97,238,.15)",
-                // },
-                secondary: { //used in vristo template
-                    DEFAULT: "#805dca",
-                    light: "#ebe4f7",
-                    "dark-light": "rgb(128 93 202 / 15%)",
-                },
-                // success: {
-                //     DEFAULT: "#00ab55",
-                //     light: "#ddf5f0",
-                //     "dark-light": "rgba(0,171,85,.15)",
-                // },
-                // danger: {
-                //     DEFAULT: "#e7515a",
-                //     light: "#fff5f5",
-                //     "dark-light": "rgba(231,81,90,.15)",
-                // },
-                // warning: {
-                //     DEFAULT: "#e2a03f",
-                //     light: "#fff9ed",
-                //     "dark-light": "rgba(226,160,63,.15)",
-                // },
-                info: {
-                    DEFAULT: "#2196f3",
-                    light: "#e7f7ff",
-                    "dark-light": "rgba(33,150,243,.15)",
-                },
-                dark: {
-                    DEFAULT: "#3b3f5c",
-                    light: "#eaeaec",
-                    "dark-light": "rgba(59,63,92,.15)",
-                },
-                black: {
-                    DEFAULT: "#0e1726",
-                    light: "#e3e4eb",
-                    "dark-light": "rgba(14,23,38,.15)",
-                },
-                white: {
-                    DEFAULT: "#ffffff",
-                    light: "#e0e6ed",
-                    dark: "#888ea8",
-                },
+            boxShadow: {
+                DEFAULT:
+                    "0 1px 3px 0 rgba(0, 0, 0, 0.08), 0 1px 2px 0 rgba(0, 0, 0, 0.02)",
+                md: "0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.02)",
+                lg: "0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.01)",
+                xl: "0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 10px 10px -5px rgba(0, 0, 0, 0.01)",
+            },
+            outline: {
+                blue: "2px solid rgba(0, 112, 244, 0.5)",
             },
             fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                inter: ["Inter", "sans-serif"],
             },
-
+            fontSize: {
+                xs: ["0.75rem", {lineHeight: "1.5"}],
+                sm: ["0.875rem", {lineHeight: "1.5715"}],
+                base: ["1rem", {lineHeight: "1.5", letterSpacing: "-0.01em"}],
+                lg: [
+                    "1.125rem",
+                    {lineHeight: "1.5", letterSpacing: "-0.01em"},
+                ],
+                xl: [
+                    "1.25rem",
+                    {lineHeight: "1.5", letterSpacing: "-0.01em"},
+                ],
+                "2xl": [
+                    "1.5rem",
+                    {lineHeight: "1.33", letterSpacing: "-0.01em"},
+                ],
+                "3xl": [
+                    "1.88rem",
+                    {lineHeight: "1.33", letterSpacing: "-0.01em"},
+                ],
+                "4xl": [
+                    "2.25rem",
+                    {lineHeight: "1.25", letterSpacing: "-0.02em"},
+                ],
+                "5xl": [
+                    "3rem",
+                    {lineHeight: "1.25", letterSpacing: "-0.02em"},
+                ],
+                "6xl": [
+                    "3.75rem",
+                    {lineHeight: "1.2", letterSpacing: "-0.02em"},
+                ],
+            },
+            screens: {
+                xs: "480px",
+            },
+            borderWidth: {
+                3: "3px",
+            },
+            minWidth: {
+                36: "9rem",
+                44: "11rem",
+                56: "14rem",
+                60: "15rem",
+                72: "18rem",
+                80: "20rem",
+            },
+            maxWidth: {
+                "8xl": "88rem",
+                "9xl": "96rem",
+            },
+            zIndex: {
+                60: "60",
+            },
         },
     },
 
-    plugins: [forms, typography],
+    plugins: [
+        // eslint-disable-next-line global-require
+        // require("@tailwindcss/forms"),
+        // add custom variant for expanding sidebar
+        plugin(({addVariant, e}) => {
+            addVariant("sidebar-expanded", ({modifySelectors, separator}) => {
+                modifySelectors(
+                    ({className}) =>
+                        `.sidebar-expanded .${e(
+                            `sidebar-expanded${separator}${className}`
+                        )}`
+                );
+            });
+        }),
+        require("daisyui"),
+    ],
+    daisyui: {
+        themes: false,
+        base: false,
+        styled: false,
+        utils: false,
+        prefix: "daisy-",
+    },
+    build: {
+        commonjsOptions: {
+            transformMixedEsModules: true,
+        },
+    },
 };

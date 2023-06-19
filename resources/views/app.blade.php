@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full bg-white">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -11,10 +11,10 @@
     <link rel="shortcut icon" href="{{ asset('favicon.png') }}">
 
     <link href="https://fonts.googleapis.com/css?family=Nunito:400,600,700" rel="stylesheet">
-    @vite(['resources/js/app.js'])
+    @vite(['resources/js/app.ts'])
     @inertiaHead
 </head>
-<body class="font-inter antialiased bg-slate-100 text-slate-600">
+<body class="h-full bg-slate-100">
 <script>
     // if (localStorage.getItem('sidebar-expanded') == 'true') {
     //     document.querySelector('body').classList.add('sidebar-expanded');

@@ -10,7 +10,6 @@ use App\Models\SmsRouteSmppConnection;
 use App\Models\SmsRoutingPlan;
 use App\Models\SmsRoutingPlanRoutes;
 use App\Models\User;
-use App\Services\ClickhouseService;
 use App\Services\CountryService;
 use App\Services\PlatformRoutesService;
 use App\Services\UserRoutesService;
@@ -57,6 +56,7 @@ class RoutingTest extends TestCase
             'port' => 2775,
         ]);
         $route->smppConnection()->associate($connection);
+        $route->smsRouteCompany()->associate($company);
         $route->saveOrFail();
 
         $rate = SmsRouteRate::create([
@@ -76,6 +76,9 @@ class RoutingTest extends TestCase
         $this->assertEquals($routes['private'][0]->id, $route->id);
         $prices = UserRoutesService::getAvailableRoutesForCountry($this->user, 'UK');
         $this->assertEquals($prices['private'][0]->priceForCountry, 0.01);
+        $route->refresh();
+        $this->assertNotEmpty($route->smppConnection);
+        $this->assertNotEmpty($route->smsRouteCompany);
     }
 
     public function testUserCanConnectPlatformRoutes()
@@ -133,7 +136,7 @@ class RoutingTest extends TestCase
         $routes = UserRoutesService::getAvailableRoutesForCountry($this->customer, 'UK');
         $this->assertEquals($routes['platform'][0]->id, $route->id);
         $this->assertEquals($routes['platform'][0]->platformConnection->name, 'SMSEdge');
-        $this->assertEquals(0.011, round($routes['platform'][0]->priceForCountry*10000)/10000 );
+        $this->assertEquals(0.011, round($routes['platform'][0]->priceForCountry * 10000) / 10000);
         $this->assertEquals('SMSEdge::Test Route', $routes['platform'][0]->getCustomerRouteName());
     }
 
@@ -225,6 +228,6 @@ class RoutingTest extends TestCase
         $this->assertNotEmpty($routes['platform']);
 
         $prices = UserRoutesService::getAvailableRoutesForCountry($customer, 'UK');
-        $this->assertEquals(0.015, round($prices['platform'][0]->priceForCountry*10000)/10000);
+        $this->assertEquals(0.015, round($prices['platform'][0]->priceForCountry * 10000) / 10000);
     }
 }

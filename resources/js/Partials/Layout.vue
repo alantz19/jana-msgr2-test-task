@@ -1,28 +1,63 @@
-<script setup>
-
-import Header from "./Header.vue";
-import {ref} from "vue";
-import Sidebar from "./Sidebar.vue";
-const sidebarOpen = ref(false)
-</script>
-
 <template>
-  <div class="flex h-screen overflow-hidden">
+  <div>
+    <TransitionRoot :show="appStore.sidebarOpen" as="template">
+      <Dialog as="div" class="relative z-50 lg:hidden" @close="appStore.sidebarOpen">
+        <TransitionChild as="template" enter="transition-opacity ease-linear duration-300" enter-from="opacity-0"
+                         enter-to="opacity-100" leave="transition-opacity ease-linear duration-300"
+                         leave-from="opacity-100" leave-to="opacity-0">
+          <div class="fixed inset-0 bg-gray-900/80"/>
+        </TransitionChild>
 
-    <!-- Sidebar -->
-    <Sidebar :sidebarOpen="sidebarOpen" @close-sidebar="sidebarOpen = false" />
+        <div class="fixed inset-0 flex">
+          <TransitionChild as="template" enter="transition ease-in-out duration-300 transform"
+                           enter-from="-translate-x-full" enter-to="translate-x-0"
+                           leave="transition ease-in-out duration-300 transform" leave-from="translate-x-0"
+                           leave-to="-translate-x-full">
+            <DialogPanel class="relative mr-16 flex w-full max-w-xs flex-1">
+              <TransitionChild as="template" enter="ease-in-out duration-300" enter-from="opacity-0"
+                               enter-to="opacity-100" leave="ease-in-out duration-300" leave-from="opacity-100"
+                               leave-to="opacity-0">
+                <div class="absolute left-full top-0 flex w-16 justify-center pt-5">
+                  <button class="-m-2.5 p-2.5" type="button" @click="appStore.sidebarOpen = false">
+                    <span class="sr-only">Close sidebar</span>
+                    <XMarkIcon aria-hidden="true" class="h-6 w-6 text-white"/>
+                  </button>
+                </div>
+              </TransitionChild>
+              <Sidebar/>
+            </DialogPanel>
+          </TransitionChild>
+        </div>
+      </Dialog>
+    </TransitionRoot>
 
-    <!-- Content area -->
-    <div class="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
+    <!-- Static sidebar for desktop -->
+    <div class="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
+      <Sidebar/>
+    </div>
 
-      <!-- Site header -->
-      <Header :sidebarOpen="sidebarOpen" @toggle-sidebar="sidebarOpen = !sidebarOpen" />
+    <div class="lg:pl-72">
+      <Header/>
 
-      <main>
-        <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
-          <slot />
+      <main class="py-10 bg-slate-100">
+        <div v-if="$page.props.flash">
+          <Flash :message="$page.props.flash.message" :title="$page.props.flash.title" :type="$page.props.flash.type"/>
+        </div>
+        <div class="px-4 sm:px-6 lg:px-8">
+          <slot/>
         </div>
       </main>
     </div>
   </div>
 </template>
+
+<script setup>
+import {useAppStore} from "../stores/app.js";
+import {Dialog, DialogPanel, TransitionChild, TransitionRoot,} from '@headlessui/vue'
+import {XMarkIcon,} from '@heroicons/vue/24/outline'
+import Sidebar from "./Sidebar.vue";
+import Header from "./Header.vue";
+import Flash from "@/Components/Flash.vue";
+
+const appStore = useAppStore();
+</script>

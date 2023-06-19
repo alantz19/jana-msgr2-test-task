@@ -173,6 +173,16 @@
       <path value="$PROJECT_DIR$/vendor/inertiajs/inertia-laravel" />
       <path value="$PROJECT_DIR$/vendor/symfony/polyfill-php83" />
       <path value="$PROJECT_DIR$/vendor/laravel/jetstream" />
+      <path value="$PROJECT_DIR$/vendor/spatie/typescript-transformer" />
+      <path value="$PROJECT_DIR$/vendor/spatie/laravel-typescript-transformer" />
+      <path value="$PROJECT_DIR$/vendor/acidjazz/metapi" />
+      <path value="$PROJECT_DIR$/vendor/jasongrimes/paginator" />
+      <path value="$PROJECT_DIR$/vendor/tailflow/laravel-orion" />
+      <path value="$PROJECT_DIR$/vendor/laravel/breeze" />
+      <path value="$PROJECT_DIR$/vendor/psr/clock" />
+      <path value="$PROJECT_DIR$/vendor/lcobucci/clock" />
+      <path value="$PROJECT_DIR$/vendor/lcobucci/jwt" />
+      <path value="$PROJECT_DIR$/vendor/tymon/jwt-auth" />
     </include_path>
   </component>
   <component name="PhpInterpreters">

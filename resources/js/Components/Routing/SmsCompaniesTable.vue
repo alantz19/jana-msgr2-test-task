@@ -5,6 +5,7 @@ defineProps(['companies'])
 </script>
 
 <template>
+<!--  Empty state-->
   <div v-if="companies.length === 0" class="flex min-h-full justify-center flex-1 flex-col">
     <div class="text-center">
       <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"
@@ -25,7 +26,8 @@ defineProps(['companies'])
       </div>
     </div>
   </div>
-  <div class="bg-white shadow-lg rounded-xl border border-slate-200 relative" v-if="companies.length > 0">
+<!--  Table state-->
+  <div v-else class="bg-white shadow-lg rounded-xl border border-slate-200 relative">
     <div class="px-4 sm:px-6 lg:px-8">
       <div class="mt-8 flow-root">
         <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -42,7 +44,8 @@ defineProps(['companies'])
               <tr v-for="company in companies" :key="company.id">
                 <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">{{ company.name }}</td>
                 <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-                  <Link :href="'/sms/routing/companies/' + company.id + '/edit'" class="text-indigo-600 hover:text-indigo-900">Edit</Link>
+                  <Link :href="'/sms/routing/routes/create'" class="text-indigo-600 hover:text-indigo-900">Add account</Link>
+                  <Link :href="'/sms/routing/companies/' + company.id + '/edit'" class="text-indigo-600 hover:text-indigo-900 ml-3">Edit</Link>
                 </td>
               </tr>
               </tbody>

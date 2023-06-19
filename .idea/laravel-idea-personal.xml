@@ -3,6 +3,7 @@
   <component name="LaravelIdeaPersonalSettings">
     <option name="generationStringOptionValues">
       <map>
+        <entry key="createFormRequest.generateAuthorize" value="" />
         <entry key="createNotification.type" value="database" />
         <entry key="newModelSimpleOption:timestampsFields" value="" />
         <entry key="postGeneration:migration" value="" />

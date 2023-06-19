@@ -2,64 +2,81 @@
 
 namespace App\Http\Controllers;
 
-
-use App\Data\LoginData;
-use App\Data\SignupData;
-use Illuminate\Http\Request;
-use Inertia\Inertia;
+use Illuminate\Http\JsonResponse;
 
 class AuthController extends Controller
 {
-    public function view()
+    /**
+     * Create a new AuthController instance.
+     *
+     * @return void
+     */
+    public function __construct()
     {
-        return Inertia::render('Auth/Login', ['formData' => LoginData::empty()]);
+        $this->middleware('auth:api', ['except' => ['login']]);
     }
 
-    public function login(LoginData $data)
+    /**
+     * Get a JWT via given credentials.
+     *
+     * @return JsonResponse
+     */
+    public function login()
     {
-        if (\Auth::guard('web')->attempt($data->toArray(), $data->remember)) {
-            return to_route('home');
-        };
+        $credentials = request(['email', 'password']);
 
-        return Inertia::render('Auth/Login', [
-            'formData' => $data,
-            'errors' => [
-                'auth' => 'The provided credentials do not match our records.',
-            ],
+        if (!$token = auth()->attempt($credentials)) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        return $this->respondWithToken($token);
+    }
+
+    /**
+     * Get the token array structure.
+     *
+     * @param string $token
+     *
+     * @return JsonResponse
+     */
+    protected function respondWithToken($token)
+    {
+        return response()->json([
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => auth()->factory()->getTTL() * 60
         ]);
     }
 
-    public function destroy(Request $request)
+    /**
+     * Get the authenticated User.
+     *
+     * @return JsonResponse
+     */
+    public function me()
     {
-        \Auth::guard('web')->logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
-        return redirect()->route('login');
+        return response()->json(auth()->user());
     }
 
-    public function create()
+    /**
+     * Log the user out (Invalidate the token).
+     *
+     * @return JsonResponse
+     */
+    public function logout()
     {
-        return Inertia::render('Auth/Signup', [
-            'formData' => \App\Data\SignupData::empty()
-        ]);
+        auth()->logout();
+
+        return response()->json(['message' => 'Successfully logged out']);
     }
 
-    public function store(\App\Data\SignupData $data)
+    /**
+     * Refresh a token.
+     *
+     * @return JsonResponse
+     */
+    public function refresh()
     {
-        $user = \App\Models\User::create($data->toArray());
-        $team = \App\Models\Team::make([
-            'user_id' => $user->id,
-            'name' => $user->name,
-            'personal_team' => false
-        ]);
-        $team->user_id = $user->id;
-        $team->save();
-
-        $user->current_team_id = $team->id;
-        $user->save();
-        \Auth::guard('web')->login($user);
-
-        return to_route('home');
+        return $this->respondWithToken(auth()->refresh());
     }
 }

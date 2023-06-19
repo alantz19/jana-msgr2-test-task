@@ -24,13 +24,17 @@ class NumbersFileImport extends BaseImport
     {
         $fields = [];
 
-        $fields['country_id'] = $this->getCountryId($row[$this->columns['country']] ?? '');
+        $fields['country_id'] = $this->getCountryId($row[$this->columns['country'] ?? -1] ?? '');
 
         if (empty($fields['country_id'])) {
             return [];
         }
 
-        $fields['phone_normalized'] = $this->getNumber($row[$this->columns['number']] ?? '', $fields['country_id']);
+        $fields['phone_normalized'] = $this->getNumber($row[$this->columns['number'] ?? -1] ?? '', $fields['country_id']);
+
+        if (empty($fields['phone_normalized'])) {
+            return [];
+        }
 
         $isLogical = true;
         $isMobile = NumberService::isMobile($fields['phone_normalized'], $fields['country_id']);
@@ -44,7 +48,7 @@ class NumbersFileImport extends BaseImport
         }
 
         if ($row[$this->columns['name'] ?? -1] ?? false) {
-            $fields['name'] = $row[$this->columns['name'] ?? -1] ?? '';
+            $fields['name'] = $row[$this->columns['name']];
         }
 
         $customStrArray = $this->getCustomStrArray($row, $this->columns);
@@ -66,8 +70,16 @@ class NumbersFileImport extends BaseImport
 
     public function filterRow(array $row): bool
     {
-        return !empty($row['phone_normalized'])
+        $res = !empty($row['phone_normalized'])
             && !empty($row['country_id']);
+
+        if (empty($res)) {
+            $this->log('Empty phone or country', [
+                'row' => $row,
+            ]);
+        }
+
+        return $res;
     }
 
     public function saveChunk(array $records): void

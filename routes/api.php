@@ -21,6 +21,9 @@ Route::prefix('v1')->group(function(){
             return $request->user();
         });
 
+        Route::get('/data-files/{id:uuid}/sample', [DataFilesController::class, 'sample']);
+
         Route::post('/data-files/contacts', [DataFilesController::class, 'uploadContacts']);
+        Route::post('/data-files/{id:uuid}/import', [DataFilesController::class, 'startImport']);
     });
 });

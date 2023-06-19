@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\DataFileTypeEnum;
 use App\Models\DataFile;
 use App\Models\User;
 use Carbon\Carbon;
@@ -14,7 +15,7 @@ class DataFileFactory extends Factory
     public function definition(): array
     {
         return [
-            'type' => DataFile::TYPE_NUMBERS_FILE,
+            'type' => DataFileTypeEnum::numbers()->value,
             'name' => $this->faker->word,
             'path' => $this->faker->filePath(),
             'size' => $this->faker->randomNumber(),

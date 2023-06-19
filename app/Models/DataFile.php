@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\DataFileStatusEnum;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -12,15 +13,13 @@ class DataFile extends Model
 {
     use HasFactory, SoftDeletes, HasUuids;
 
-    const TYPE_NUMBERS_FILE = 1;
-    const TYPE_EMAIL_FILE = 2;
-
     protected $fillable = [
         'user_id',
         'type',
         'name',
         'path',
         'size',
+        'status_id',
         'meta',
     ];
 
@@ -33,5 +32,15 @@ class DataFile extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function getColumns(): array
+    {
+        return $this->meta['columns'] ?? [];
+    }
+
+    public function isPending(): bool
+    {
+        return $this->status_id === DataFileStatusEnum::pending()->value;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Imports;
 
+use App\Enums\DataFileStatusEnum;
 use App\Exceptions\InvalidAttributesException;
 use App\Models\DataFile;
 use App\Models\Lists;
@@ -17,14 +18,15 @@ abstract class BaseImport implements ImportInterface
     protected int $chunkIterator = 0;
     protected string $storagePath;
     protected string $delimiter = ',';
-    protected array $firstRows = [];
 
     public function __construct(DataFile $dataFile)
     {
         $this->dataFile = $dataFile;
         $this->columns = $dataFile->meta['columns'] ?? [];
-        $this->list = $this->findOrNewList();
+        $this->list = $this->findOrCreateList();
         $this->storagePath = storage_path('app/users/' . $this->dataFile->user_id . '/data-files');
+
+        $this->autoDetectDelimiter();
     }
 
     public function lazyRead($chunkSize = 1000, $skip = 0): LazyCollection
@@ -45,6 +47,8 @@ abstract class BaseImport implements ImportInterface
     public function import($chunkSize = 1000, $skip = 0): LazyCollection
     {
         if (empty($this->columns)) {
+            $this->setDataFileStatus(DataFileStatusEnum::failed());
+
             throw InvalidAttributesException::for(
                 $this->dataFile::class,
                 $this->dataFile->toArray(),
@@ -54,15 +58,17 @@ abstract class BaseImport implements ImportInterface
             );
         }
 
-        Log::info('Start import', [
-            'data_file_id' => $this->dataFile->id,
+        $this->setDataFileStatus(DataFileStatusEnum::processing());
+
+        $this->log('Start import', [
             'columns' => $this->columns,
+            'dataFile' => $this->dataFile->toArray(),
         ]);
 
         try {
             $this->filePath = $this->csvFilePath();
 
-            return $this->lazyRead($chunkSize, $skip)
+            $res = $this->lazyRead($chunkSize, $skip)
                 ->each(function (LazyCollection $chunk) {
                     $records = $chunk->map(function ($row) {
                         return $this->prepareRow($row);
@@ -75,18 +81,22 @@ abstract class BaseImport implements ImportInterface
                     if (!empty($records)) {
                         $this->saveChunk($records);
                     } else {
-                        Log::info('Empty chunk after filter', [
-                            'data_file_id' => $this->dataFile->id,
+                        $this->log('Empty chunk after filter', [
                             'chunk' => $chunk->toArray(),
                         ]);
                     }
                 });
+
+            $this->setDataFileStatus(DataFileStatusEnum::completed());
+
+            return $res;
         } catch (\Exception $e) {
-            Log::error('Error while reading file', [
-                'dataFile' => $this->dataFile->toArray(),
+            $this->setDataFileStatus(DataFileStatusEnum::failed());
+
+            $this->log('Error while reading file', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
-            ]);
+            ], 'error');
 
             throw $e;
         }
@@ -125,6 +135,11 @@ abstract class BaseImport implements ImportInterface
         return $this->list;
     }
 
+    public function getDelimiter(): string
+    {
+        return $this->delimiter;
+    }
+
     public function xls2csv(): string
     {
         $filePath = storage_path('app/' . $this->dataFile->path);
@@ -143,7 +158,7 @@ abstract class BaseImport implements ImportInterface
             throw new \Exception('File is not xls');
         }
 
-        Log::debug('Converting file to csv', [
+        $this->log('Start converting file to csv', [
             'file' => $filePath,
         ]);
 
@@ -167,35 +182,66 @@ abstract class BaseImport implements ImportInterface
         $writer->setLineEnding("\r\n");
         $writer->save($csvFile);
 
-        Log::debug('File converted', [
+        $this->log('File converted', [
             'file' => $csvFile,
         ]);
 
-        return str_replace(storage_path('app/'), '', $csvFile);
+        // assign to temp meta variable due to "Indirect modification of overloaded property" error
+        $meta = $this->dataFile->meta;
+        $meta['csv_file'] = str_replace(storage_path('app/'), '', $csvFile);
+        $this->dataFile->meta = $meta;
+        $this->dataFile->save();
+
+        return $this->dataFile->meta['csv_file'];
+    }
+
+    public function getSampleRows(): array
+    {
+        $firstRows = $this->getFirstRows();
+
+        if (empty($firstRows)) {
+            return [];
+        }
+
+        $response = [
+            'rows' => [],
+            'cols' => 0,
+        ];
+
+        foreach ($firstRows as $row) {
+            $arr = str_getcsv($row, $this->delimiter);
+            $response['cols'] = max($response['cols'], count($arr));
+            $response['rows'][] = $arr;
+        }
+
+        return $response;
     }
 
     private function getFirstRows($num = 15): array
     {
-        if (!empty($this->firstRows)) {
-            return $this->firstRows;
+        $filePath = $this->csvFilePath();
+
+        if (!file_exists($filePath)) {
+            return [];
         }
 
-        $file = new \SplFileObject($this->filePath);
+        $file = new \SplFileObject($filePath);
         $file->seek(PHP_INT_MAX);
         $total = $file->key();
         $size = min($num, $total);
+        $firstRows = [];
 
-        for ($i = 0; $i <= $size; $i++) {
+        for ($i = 0; $i < $size; $i++) {
             $file->seek($i);
-            $this->firstRows[] = $file->current();
+            $firstRows[] = $file->current();
         }
 
         $file = null;
 
-        return $this->firstRows;
+        return $firstRows;
     }
 
-    private function findOrNewList(): ?Lists
+    private function findOrCreateList(): ?Lists
     {
         if (empty($this->dataFile->meta['list_id']) && empty($this->dataFile->meta['list_name'])) {
             return null;
@@ -212,11 +258,38 @@ abstract class BaseImport implements ImportInterface
 
         $list->saveOrFail();
 
-        Log::info('List created', [
+        $this->log('List created', [
             'list' => $list->toArray(),
         ]);
 
         return $list;
+    }
+
+    private function autoDetectDelimiter(): void
+    {
+        $ext = pathinfo($this->dataFile->path, PATHINFO_EXTENSION);
+
+        // delimiter auto detect only for csv files
+        if (in_array($ext, ['xls', 'xlsx'])) {
+            return;
+        }
+
+        $delimiters = [',', ';', "\t", '|'];
+
+        $firstRows = $this->getFirstRows();
+
+        $delimitersCount = array_map(function ($delimiter) use ($firstRows) {
+            return count(array_filter($firstRows, function ($row) use ($delimiter) {
+                return substr_count($row, $delimiter) > 0;
+            }));
+        }, $delimiters);
+
+        $delimiterIdx = array_keys($delimitersCount, max($delimitersCount))[0];
+        $this->delimiter = $delimiters[$delimiterIdx];
+
+        $this->log('Delimiter auto detected', [
+            'delimiter' => $this->delimiter,
+        ]);
     }
 
     private function csvFilePath(): string
@@ -233,5 +306,18 @@ abstract class BaseImport implements ImportInterface
         };
 
         return storage_path('app/' . $path);
+    }
+
+    protected function setDataFileStatus(DataFileStatusEnum $status): void
+    {
+        $this->dataFile->status_id = $status->value;
+        $this->dataFile->save();
+    }
+
+    protected function log(string $message, array $context = [], string $level = 'info'): void
+    {
+        Log::$level($message, array_merge([
+            'data_file_id' => $this->dataFile->id,
+        ], $context));
     }
 }

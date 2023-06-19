@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('path');
             $table->string('size');
             $table->jsonb('meta')->nullable();
+            $table->tinyInteger('status_id')->default(1);
             $table->timestamps();
             $table->softDeletes();
         });

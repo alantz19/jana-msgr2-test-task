@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 // use Illuminate\Support\Facades\Gate;
+use App\Models\DataFile;
 use App\Models\SmsCampaignText;
+use App\Policies\DataFilePolicy;
 use App\Policies\SmsCampaignTextPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
@@ -17,6 +19,7 @@ class AuthServiceProvider extends ServiceProvider
     protected $policies = [
         //
         SmsCampaignText::class => SmsCampaignTextPolicy::class,
+        DataFile::class => DataFilePolicy::class,
     ];
 
     /**
@@ -24,6 +27,6 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        $this->registerPolicies();
     }
 }

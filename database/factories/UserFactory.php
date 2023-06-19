@@ -108,4 +108,10 @@ class UserFactory extends Factory
         return $this;
     }
 
+    public function withSanctumToken(): static
+    {
+        return $this->afterCreating(function (User $user) {
+            $user->createToken('test-token');
+        });
+    }
 }

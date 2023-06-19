@@ -8,9 +8,7 @@ const token = ref('' as any);
 
 
 const api = new Api();
-api.smsRoutingCompaniesList().then((response) => {
-  items.value = response.data.data;
-});
+items.value = (await api.smsRoutingCompaniesList()).data.data;
 </script>
 
 <template>

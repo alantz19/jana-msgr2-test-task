@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 
 import PageHeader from "~/components/PageHeader.vue";
+import {Api} from "~/types/Api";
 
 const items = ref([])
-const buttons = ref([])
-$larafetch('/api/v1/sms/routing/routes').then((data) => {
-  items.value = data.data;
-  buttons.value = data.links;
-});
+
+const api = new Api();
+
+items.value = (await api.smsRoutingCompaniesList()).data.data;
 </script>
 
 <template>

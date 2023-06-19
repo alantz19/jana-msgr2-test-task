@@ -46,11 +46,15 @@ export const useAppStore =
             }
         ]);
         const navBarActive = function (path) {
+            if (!path.startsWith('/')) {
+                return;
+            }
+
             navigation.value.forEach((item) => {
                 if (item.children) {
                     item.current = path.startsWith(item.href);
                     item.children.forEach((child) => {
-                        if (child.href === path) {
+                        if (path.startsWith(child.href)) {
                             item.current = true;
                             child.current = true;
                         } else {

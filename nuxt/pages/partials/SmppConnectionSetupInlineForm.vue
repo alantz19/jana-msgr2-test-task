@@ -10,8 +10,7 @@ let props = defineProps({
     required: true,
   },
   errors: {
-    type: Object as PropType<any>,
-    required: true,
+    type: Object as PropType<any> || null,
   },
 });
 
@@ -21,51 +20,45 @@ let props = defineProps({
   <FormFieldSet>
     <FormInput
         v-model="modelValue.url"
-        :error="errors.url"
+        :error="errors?.url"
         label="URL"
         required
         @change="$emit('update:modelValue.url', $event.target.value);"
-        @input="errors.url = ''"
     />
     <FormInput
         v-model="modelValue.port"
-        :error="errors.port"
+        :error="errors?.port"
         label="Port"
         required
         type="number"
         @change="$emit('update:modelValue.port', $event.target.value);"
-        @input="errors.port = '';"
     />
     <FormInput
         v-model="modelValue.username"
-        :error="errors.username"
+        :error="errors?.username"
         label="Username"
         required
         @change="$emit('update:modelValue.username', $event.target.value);"
-        @input="errors.username = '';;"
     />
     <FormInput
         v-model="modelValue.password"
-        :error="errors.password"
+        :error="errors?.password"
         label="Password"
         required
         @change="$emit('update:modelValue.password', $event.target.value);"
-        @input="errors.password = '';"
     />
     <FormInput
         v-model="modelValue.dlr_url"
-        :error="errors.dlr_url"
+        :error="errors?.dlr_url"
         label="DLR URL"
         @change="$emit('update:modelValue.dlrUrl', $event.target.value);"
-        @input="errors.dlr_url = '';"
     />
     <FormInput
         v-model="modelValue.dlr_port"
-        :error="errors.dlr_port"
+        :error="errors?.dlr_port"
         label="DLR Port"
         type="number"
         @change="$emit('update:modelValue.dlrPort', $event.target.value);"
-        @input="errors.dlr_port = '';"
     />
   </FormFieldSet>
 </template>

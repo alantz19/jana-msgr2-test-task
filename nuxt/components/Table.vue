@@ -21,21 +21,21 @@ interface headerItem {
 }
 
 interface Props {
-  items: [];
+  items: [] | null;
   headers: headerItem[];
   emptyState: EmptyState
 }
 
 const props = defineProps<Props>()
 
-if (props.items.length > 0 && props.items[0].links) {
+if (props.items?.length > 0 && props.items?.[0].links?.length > 0) {
   props.headers.push({text: "Actions", value: "links", sortable: false});
 }
 </script>
 
 <template>
   <!--  Empty state-->
-  <div v-if="items.length === 0">
+  <div v-if="items?.length === 0">
     <div class="text-center">
       <svg aria-hidden="true" class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor"
            viewBox="0 0 24 24">

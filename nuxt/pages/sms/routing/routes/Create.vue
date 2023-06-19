@@ -3,77 +3,51 @@ import {
   SmsRouteCompaniesCollection,
   SmsRoutingCompaniesCreatePayload,
   SmsRoutingRoutesCreatePayload,
-  SmsRouteCompanyResource,
   SmsRoutingRoutesSmppConnectionsCreatePayload
 } from "~/types/data-contracts";
 import {useModal, useToast} from "tailvue";
 import {Api} from "~/types/Api";
-
-const title = 'Create route';
-
-const selectedCompanyOption = ref('new');
-const routeCreate = ref({} as SmsRoutingRoutesCreatePayload)
-const routeCreateErrors = ref({})
-const companyCreate = ref({} as SmsRoutingCompaniesCreatePayload)
-const companyCreateErrors = ref({})
-const smppCreate = ref({} as SmsRoutingRoutesSmppConnectionsCreatePayload)
-const smppCreateError = ref({})
-const routeCompanies = ref({} as SmsRouteCompaniesCollection);
-const ratesOption = ref('manual')
+import {useApi} from "~/composables/useApi";
 
 const api = new Api();
 
 function submit() {
   if (selectedCompanyOption.value === 'new') {
-    createCompany(
-        testSmppConnection
-    );
+    submitCompanyCreate()
   } else {
-    testSmppConnection();
+    submitSmppTest();
   }
 }
 
-let createRoute = () => {
-  api.smsRoutingRoutesCreate(routeCreate.value).then((data) => {
+const {
+  error: errorRouteCreate,
+  submit: submitRouteCreate,
+  loading: isLoadingRouteCreate,
+  succeeded: isSuccessRouteCreate,
+} = useApi(() => {
+  return api.smsRoutingRoutesCreate({...routeCreate.value, connection_type: 'smpp'});
+}, {
+  onSuccess: (response) => {
     useToast().success('Route created!')
     useRouter().push("/sms/routing/routes")
-  }).catch((error) => {
-    routeCreateErrors.value = error.data.errors;
-  });
-}
+  },
+});
 
-let createSmppConnection = (callback) => {
-  api.smsRoutingRoutesSmppConnectionsCreate(smppCreate.value).then((response) => {
+
+const {
+  submit: submitSmppConnectionCreate,
+  error: errorSmppConnectionCreate,
+  loading: isLoadingSmppConnectionCreate,
+  succeeded: isSuccessSmppConnectionCreate,
+} = useApi(() => {
+  return api.smsRoutingRoutesSmppConnectionsCreate(smppCreate.value);
+}, {
+  onSuccess: (response) => {
     useToast().success('SMPP connection created!')
-    routeCreate.value.connection_id = response.data.id
-    callback();
-  }).catch((error) => {
-    smppCreateError.value = error.data.errors
-  });
-}
-const refCreateCompanyNameInput = ref(null)
-
-let createCompany = (callback) => {
-  api.smsRoutingCompaniesCreate(companyCreate.value).then((response) => {
-    useToast().success('Company created!')
-    routeCreate.value.sms_route_company_id = response.data.id
-    console.log(routeCreate.value.sms_route_company_id)
-    selectedCompanyOption.value = 'existing';
-
-    callback();
-  }).catch((error) => {
-    companyCreateErrors.value = error.data.errors;
-    console.log('refCreateCompanyNameInput', refCreateCompanyNameInput.value)
-    refCreateCompanyNameInput.value.focus();
-  });
-}
-
-let testSmppConnection = () => {
-  api.smsRoutingRoutesSmppConnectionsTestCreate(smppCreate.value).then((data) => {
-    console.log(data)
-    createSmppConnection(createRoute);
-  }).catch((response) => {
-    smppCreateError.value = response.data.errors
+    routeCreate.value.connection_id = response.data.data.id
+    submitRouteCreate();
+  },
+  onError: (response) => {
     useModal().show({
       type: 'danger',
       title: 'SMPP Connection Error',
@@ -85,14 +59,66 @@ let testSmppConnection = () => {
         },
       }
     });
-  });
-}
-
-api.smsRoutingCompaniesList().then((response) => {
-  routeCompanies.value = response;
-}).catch((error) => {
-  useToast().warning('Error fetching companies')
+  }
 });
+
+
+const {
+  error: errorCompanyCreate,
+  submit: submitCompanyCreate,
+  loading: isLoadingCompanyCreate,
+  succeeded: isSuccessCompanyCreate,
+} = useApi(() => {
+  return api.smsRoutingCompaniesCreate(companyCreate.value);
+}, {
+  onSuccess: (response) => {
+    api.smsRoutingCompaniesList().then((res) => {
+      routeCompanies.value = res.data.data;
+    })
+    useToast().success('Company created!')
+    routeCreate.value.sms_route_company_id = response.data.data.id
+    selectedCompanyOption.value = 'existing';
+    submitSmppTest();
+  }
+});
+
+
+const {
+  error: errorSmppTest,
+  submit: submitSmppTest,
+  loading: isLoadingSmppTest,
+  succeeded: isSuccessSmppTest,
+} = useApi(() => {
+  return api.smsRoutingRoutesSmppConnectionsTestCreate(smppCreate.value);
+}, {
+  onSuccess: (response) => {
+    submitSmppConnectionCreate();
+  },
+  onError: (response) => {
+    useModal().show({
+      type: 'danger',
+      title: 'SMPP Connection Error',
+      body: 'There was an error with the SMPP connection. Please check the credentials and try again.',
+      primary: {
+        label: 'OK',
+        theme: 'red',
+        action: () => {
+        },
+      }
+    });
+  }
+});
+
+const title = 'Create route';
+
+const selectedCompanyOption = ref('new');
+const routeCreate = ref({} as SmsRoutingRoutesCreatePayload)
+const companyCreate = ref({} as SmsRoutingCompaniesCreatePayload)
+const smppCreate = ref({} as SmsRoutingRoutesSmppConnectionsCreatePayload)
+const routeCompanies = ref({} as SmsRouteCompaniesCollection);
+const ratesOption = ref('manual')
+
+routeCompanies.value = (await api.smsRoutingCompaniesList()).data.data;
 </script>
 
 <template>
@@ -114,6 +140,7 @@ api.smsRoutingCompaniesList().then((response) => {
                 The route will belong to this SMS company. The
                 company will be used to calculate balances,
                 communbications via email and similar.
+
               </template>
               <template #content>
                 <fieldset class="">
@@ -126,7 +153,7 @@ api.smsRoutingCompaniesList().then((response) => {
                       <div ref="refCreateCompanyNameInput" class="pl-9 pb-6" tabindex="0">
                         <FormInput
                             v-model="companyCreate.name"
-                            :error="companyCreateErrors.name?.[0]"
+                            :error="errorCompanyCreate?.name?.[0]"
                             autofocus
                             label="Company Name"
                             required
@@ -136,14 +163,14 @@ api.smsRoutingCompaniesList().then((response) => {
 
                     <FormRadio
                         v-model="selectedCompanyOption"
-                        :disabled="routeCompanies.data?.length === 0"
+                        :disabled="routeCompanies?.data?.length === 0"
                         label="Existing company"
                         value="existing"
                     >
                       <div class="pl-9 pb-6">
                         <FormSelect v-model="routeCreate.sms_route_company_id"
-                                    :error="routeCreateErrors.sms_route_company_id"
-                                    :items="routeCompanies.data"
+                                    :error="errorRouteCreate?.sms_route_company_id"
+                                    :items="routeCompanies"
                                     label="Select company"/>
                       </div>
                     </FormRadio>
@@ -160,7 +187,7 @@ api.smsRoutingCompaniesList().then((response) => {
               </template>
               <template #content>
                 <FormFieldSet>
-                  <FormInput v-model="routeCreate.name" :error="routeCreateErrors.name" class="mb-3"
+                  <FormInput v-model="routeCreate.name" :error="errorRouteCreate?.name" class="mb-3"
                              label="Route Name" required/>
                 </FormFieldSet>
               </template>
@@ -182,7 +209,7 @@ api.smsRoutingCompaniesList().then((response) => {
               </template>
               <template #content>
                 <SmppConnectionSetupInlineForm v-model="smppCreate"
-                                               :errors="smppCreateError"/>
+                                               :errors="errorSmppTest"/>
               </template>
             </HorizontalForm>
 

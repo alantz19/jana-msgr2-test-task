@@ -11,9 +11,9 @@ class SmsRoutingSmppConnectionsController extends Controller
 {
     public function store(Request $request): SmsRouteSmppConnectionResource
     {
-        return SmsRouteSmppConnectionResource::create(
+        return SmsRouteSmppConnectionResource::make(SmsRouteSmppConnection::create(
             $request->validate(SmsRouteSmppConnection::$rules)
-        );
+        ));
     }
 
     public function test(Request $request)
@@ -30,7 +30,7 @@ class SmsRoutingSmppConnectionsController extends Controller
         if ($smsRouteSmppConnection->smsRoute->team_id !== auth()->user()->currentTeam->id) {
             abort(403);
         }
-        
+
         return $smsRouteSmppConnection;
     }
 }

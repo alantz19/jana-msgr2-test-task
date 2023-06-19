@@ -8,7 +8,7 @@
           <div class="fixed inset-0 bg-gray-900/80"/>
         </TransitionChild>
 
-        <div class="fixed inset-0 flex">
+        <div class="fixed inset-0 flex" @click.away="appStore.sidebarOpen = false">
           <TransitionChild as="template" enter="transition ease-in-out duration-300 transform"
                            enter-from="-translate-x-full" enter-to="translate-x-0"
                            leave="transition ease-in-out duration-300 transform" leave-from="translate-x-0"

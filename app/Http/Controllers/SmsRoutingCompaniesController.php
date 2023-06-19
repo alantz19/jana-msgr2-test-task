@@ -13,7 +13,7 @@ class SmsRoutingCompaniesController extends Controller
     {
         return new SmsRouteCompaniesCollection(
             SmsRouteCompany::query()
-                ->where(['team_id' => auth()->user()->currentTeam->id])
+                ->where(['team_id' => auth()->user()->current_team_id])
                 ->orderBy('created_at', 'desc')
                 ->get()
         );

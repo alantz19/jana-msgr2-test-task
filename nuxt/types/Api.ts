@@ -16,7 +16,7 @@ export class Api<SecurityDataType = unknown> extends V1<SecurityDataType> {
 
         this.instance.interceptors.response.use(
             response => {
-                return Promise.resolve(response.data);
+                return Promise.resolve(response);
             },
             error => {
                 const status = error.response?.status ?? -1;
@@ -32,21 +32,6 @@ export class Api<SecurityDataType = unknown> extends V1<SecurityDataType> {
                 if ([500].includes(status)) {
                     console.error("[API Error]", error.data?.message, error.data);
                 }
-                /**
-                 // Handle error responses here
-                 if (error.response) {
-                    // The request was made and the server responded with a status code
-                    console.log('Status code:', error.response.status);
-                    console.log('Response data:', error.response.data);
-                } else if (error.request) {
-                    // The request was made but no response was received
-                    console.log('No response received:', error.request);
-                } else {
-                    // Something happened in setting up the request that triggered an error
-                    console.log('Error:', error.message);
-                }
-                 **/
-                // Return a rejected Promise to propagate the error to the next `catch` block
                 return Promise.reject(error.response);
             }
         );

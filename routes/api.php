@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\DataFilesController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SmsRoutingCompaniesController;
 use App\Http\Controllers\SmsRoutingRoutesController;
 use App\Http\Controllers\SmsRoutingSmppConnectionsController;
@@ -19,6 +20,14 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::prefix('v1')->group(function () {
+
+    Route::prefix('token')->group(function () {
+        Route::post('login', [AuthController::class, 'login']);
+        Route::post('refresh', [AuthController::class, 'refresh']);
+        Route::post('logout', [AuthController::class, 'logout']);
+        Route::post('logout', [AuthController::class, 'me']);
+    });
+
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('/user', function (Request $request) {
             return $request->user();
@@ -27,7 +36,7 @@ Route::prefix('v1')->group(function () {
         Route::get('/data-files/{id:uuid}/sample', [DataFilesController::class, 'sample']);
         Route::post('/data-files/contacts', [DataFilesController::class, 'uploadContacts']);
         Route::post('/data-files/{id:uuid}/import', [DataFilesController::class, 'startImport']);
-        
+
 
         Route::prefix('sms')->name('sms.')->group(function () {
             Route::prefix('routing')->name('routing.')->group(function () {

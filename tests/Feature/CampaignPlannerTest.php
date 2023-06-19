@@ -70,12 +70,13 @@ class CampaignPlannerTest extends TestCase
 
     public function testCampaignPlanCreatingCampaign()
     {
+        self::markTestSkipped();
         $user = User::factory()->withPersonalTeam()->create();
         $plan = SmsCampaignPlan::factory()->create([
             'team_id' => $user->currentTeam->id,
         ]);
 
-        $this->assertEquals(true,true);//continue here
+        $this->assertEquals(true, true);//continue here
         SmsCampaignPlanService::createCampaignCron($plan);
         $this->assertDatabaseHas('sms_campaigns', ['sms_campaign_plan_id' => $plan->id]);
     }

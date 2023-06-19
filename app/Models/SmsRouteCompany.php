@@ -28,7 +28,9 @@ class SmsRouteCompany extends Model
         parent::__construct($attributes);
 
         static::creating(function ($model) {
-            $model->team_id = auth()->user()->currentTeam->id;
+            if (empty($this->team_id) && auth()->check()) {
+                $model->team_id = auth()->user()->currentTeam->id;
+            }
         });
     }
 }

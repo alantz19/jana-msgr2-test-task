@@ -8,7 +8,6 @@ defineEmits(["update:modelValue"]);
 
 interface FormInputProps {
   label: string;
-  modelValue: Null;
   error: string | Null;
   required?: boolean;
   autofocus?: boolean;
@@ -19,6 +18,7 @@ const props = defineProps<FormInputProps>();
 const vFocus = {
   mounted: (el) => el.focus(),
 };
+const modelValue = ''
 onMounted(() => { //not working :/
   if (props.autofocus) {
     const input = document.getElementById(id);

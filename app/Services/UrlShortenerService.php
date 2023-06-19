@@ -7,6 +7,7 @@ use api\v2\sms\sends\campaigns\sending_services\models\CampaignSmsMessage;
 use App\Services\SendingProcess\Data\BuildSmsData;
 use common\components\Shorty;
 use Exception;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class UrlShortenerService
@@ -14,38 +15,45 @@ class UrlShortenerService
     private static function callUrlShortener(BuildSmsData $msg, $shortyParams = [])
     {
         $i = 0;
+        $res = null;
         do {
-            return "local.dev/abc";
-            //todo:call url shortener endpoint with domain data and params
+//            return "local.dev/abc";
             //no need to create model.. i think can be called from here.
 
-            $shorty = new Shorty();
-            $kw = $shorty->createKeyword(
-                $msg->lapObj->getGroup()->foreign_id,
-                $msg->random_key,
-                $msg->lapObj->list_id,
-                $shortyParams,
-                $msg->domain->domain
+            $res = self::createKeyword(
+                $msg->selectedOffer->url,
+                $msg->domain->domain,
+                $msg->dto->sms_campaign_id,
+                [
+                    'sms_id' => $msg->sms_id,
+                    ...$shortyParams,
+                ],
             );
-            if ($kw !== false) {
+
+            if ($res) {
                 break;
             }
-            echo '.';
+
+//            echo '.';
             usleep(rand(200000, 700000));
 
             if ($i == 50) {
                 throw new Exception("Failed to short link");
             }
+
             $i++;
-        } while ($kw === false);
+        } while (!$res);
+
+        $msg->keyword_data = $res['data'];
+        $msg->scheme = 'http';
 
         if (!isset($shortyParams['is_http'])) {
             if ($msg->domain->https_support) {
-                return "https://{$msg->domain->domain}/$kw";
+                $msg->scheme = 'https';
             }
         }
 
-        return "http://{$msg->domain->domain}/$kw";
+        return $msg->getShortLink();
     }
 
     /**
@@ -83,6 +91,7 @@ class UrlShortenerService
 
         Log::debug("Received shortlink: $link");
         $msg->sms_shortlink = $link;
+        $msg->sms_optout_link = $msg->getOptOutLink();
 
         return true;
     }//end getShortlink()
@@ -130,5 +139,29 @@ class UrlShortenerService
         }
 
         return $offers[$msg->dto->counter % count($offers)];
+    }
+
+    private static function createKeyword($link, $domain, $campaignId, $meta)
+    {
+        $data = [
+            'link' => $link,
+            'domain' => $domain,
+            'campaign_id' => $campaignId,
+            'meta' => $meta,
+        ];
+
+        $response = Http::withBody(json_encode($data))
+            ->post(rtrim(config('services.shortener.url'), '/') . '/api/short-url');
+
+        if ($response->ok()) {
+            return $response->json();
+        }
+
+        Log::error('Failed to create keyword', [
+            'request_data' => $data,
+            'response' => $response->json(),
+        ]);
+
+        return null;
     }
 }

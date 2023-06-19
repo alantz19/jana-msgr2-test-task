@@ -161,6 +161,5 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="tailwindcss" level="project" />
-    <orderEntry type="library" name="@types/tailwindcss" level="application" />
   </component>
 </module>

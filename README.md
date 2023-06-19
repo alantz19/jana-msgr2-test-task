@@ -3,8 +3,7 @@
 API docs are automatically generated at
 
 - http://localhost/docs/api#/ (using [scramble package](https://scramble.dedoc.co/installation))
-- generate api's into typescript:
-  run `npx openapi-typescript http://localhost/docs/api.json -o ./nuxt/types/openapi_types.ts`
+- generate api's into typescript (runs from frontend) with `openapi-typescript` (further reading at nuxt/readme.md)
 
 # Starting project
 
@@ -44,15 +43,3 @@ Start storybook by running `npm run storybook` (outside of sail) and access it a
 - run `npm run dev` from outside sail (not - `sail npm run dev`) as the changes won't be reflected in the webpage.
 - in `http://v2.local/sms/routing/routes/create` the select FormSelect doesn't update modelValue, maybe because it's an
   object?
-
-# tips #
-
-**Converting Data PHP objects to TypeScript**
-
-when creating a form on frontend create a data object (App/Data/*) add `/** @typescript */` to the top of the class then
-run `php artisan typescript:transform` to generate the typescript interface for the data object. (example
-in `App/Data/SmsRoutingRouteCreateData` and `resources/types/generated.ts`)
-
-To generate typescript from models we use `https://github.com/7nohe/laravel-typegen`
-run `sail npm run typegen --form-requests` to generate typescript interfaces for models. **Note** you need to run it in
-Sail cause it connects to DB.

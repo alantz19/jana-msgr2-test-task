@@ -9,6 +9,7 @@ use Spatie\Enum\Enum;
  * @method static self processing()
  * @method static self completed()
  * @method static self failed()
+ * @method static self queued()
  */
 class DataFileStatusEnum extends Enum
 {
@@ -19,6 +20,7 @@ class DataFileStatusEnum extends Enum
             'processing' => 2,
             'completed' => 3,
             'failed' => 4,
+            'queued' => 5,
         ];
     }
 }

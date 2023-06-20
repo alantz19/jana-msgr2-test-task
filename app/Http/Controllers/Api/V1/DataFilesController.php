@@ -13,6 +13,15 @@ use Symfony\Component\HttpFoundation\Response;
 
 class DataFilesController extends Controller
 {
+    public function index()
+    {
+        $dataFiles = DataFile::where('user_id', auth()->id())
+            ->orderByDesc('created_at')
+            ->paginate(25);
+
+        return DataFileResource::collection($dataFiles);
+    }
+
     public function uploadContacts(Request $request)
     {
         $request->validate([
@@ -81,6 +90,7 @@ class DataFilesController extends Controller
             'list_id' => 'prohibits:list_name|required_without:list_name|uuid|exists:lists,id',
         ]));
 
+        $dataFile->status_id = DataFileStatusEnum::queued()->value;
         $dataFile->meta = array_merge($dataFile->meta, [
             'list_name' => $request->get('list_name') ?? null,
             'list_id' => $request->get('list_id') ?? null,

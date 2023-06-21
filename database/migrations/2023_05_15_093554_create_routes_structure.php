@@ -34,7 +34,20 @@ return new class extends Migration {
             $table->timestamps();
             $table->softDeletes();
             $table->boolean('is_active')->default(true);
+        });
 
+        Schema::create('sms_routing_logs', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->foreignId('world_country_id')->nullable()->index();
+            $table->foreignId('world_mobile_networks')->nullable()->index();
+            $table->foreignUuid('user_id')->index();
+            $table->foreignUuid('team_id')->index();
+            $table->foreignUuid('sms_route_id')->nullable()->index();
+            $table->float('new_rate')->nullable();
+            $table->float('old_rate')->nullable();
+            $table->string('action')->nullable();
+            $table->json('meta')->nullable();
+            $table->timestamps();
         });
 
         Schema::create('sms_route_smpp_connections', function (Blueprint $table) {

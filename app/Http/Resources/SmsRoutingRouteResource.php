@@ -21,11 +21,12 @@ class SmsRoutingRouteResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'company_id' => $this->company_id,
+            'sms_route_company_id' => $this->sms_route_company_id,
             'company' => new SmsRouteCompanyResource($this->whenLoaded('smsRouteCompany')),
             'connection' => $this->whenMorphToLoaded('connection', [
                 SmsRouteSmppConnection::class => SmsRouteSmppConnectionResource::class,
             ]),
+            'rates' => SmsRoutingRateResource::collection($this->whenLoaded('smsRouteRates')),
             'created_at' => $this->created_at,
             'links' => [
 //                "edit" => action([SmsRoutingRoutesController::class, 'edit'], $this),

@@ -5,7 +5,7 @@
       <map>
         <entry key="createFormRequest.generateAuthorize" value="" />
         <entry key="createNotification.type" value="database" />
-        <entry key="newModelSimpleOption:timestampsFields" value="" />
+        <entry key="postGeneration:jsonResource" value="1" />
         <entry key="postGeneration:migration" value="" />
       </map>
     </option>

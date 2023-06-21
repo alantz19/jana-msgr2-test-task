@@ -17,4 +17,9 @@ class SmsRouteRate extends Model
         'rate',
         'meta'
     ];
+
+    public function smsRoute()
+    {
+        return $this->belongsTo(SmsRoute::class);
+    }
 }

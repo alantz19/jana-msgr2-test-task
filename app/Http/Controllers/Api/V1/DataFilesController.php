@@ -25,7 +25,7 @@ class DataFilesController extends Controller
     public function uploadContacts(Request $request)
     {
         $request->validate([
-            'file' => 'required|file|mimes:txt,csv,xlsx,xls|max:' . (50 * 1024),
+            'file' => 'required|file|mimes:csv,xlsx,xls|max:' . (50 * 1024),
             'type' => 'required|string|in:' . implode(',', DataFileTypeEnum::toArray()),
         ]);
 

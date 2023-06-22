@@ -9,34 +9,28 @@ use App\Models\Contact;
 use App\Models\DataFile;
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Queue;
+use Laravel\Sanctum\Sanctum;
 use PhpClickHouseLaravel\RawColumn;
+use Tests\Feature\Api\BaseApiTest;
 use Tests\TestCase;
 
-class ImportFileTest extends TestCase
+class ImportFileTest extends BaseApiTest
 {
-    private static User $user;
-
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        $this->createTestUser();
-    }
-
     public function testNumbersImportXlsx()
     {
         $path = __DIR__ . '/data/demo_list-20.xlsx';
 
         // copy to data-files storage directory
-        $targetPath = storage_path('app/users/' . self::$user->id . '/data-files');
+        $targetPath = storage_path('app/users/' . $this->user->id . '/data-files');
         $targetFile = $targetPath . '/demo_list-20.xlsx';
         File::makeDirectory($targetPath, 0775, true, true);
         File::copy($path, $targetFile);
 
         $dataFile = DataFile::factory()
-            ->withUser(self::$user)
+            ->withUser($this->user)
             ->withFile($targetFile)
             ->withLogicalTest()
             ->create();
@@ -57,13 +51,13 @@ class ImportFileTest extends TestCase
         $path = __DIR__ . '/data/demo_list-custom-fields.csv';
 
         // copy to data-files storage directory
-        $targetPath = storage_path('app/users/' . self::$user->id . '/data-files');
+        $targetPath = storage_path('app/users/' . $this->user->id . '/data-files');
         $targetFile = $targetPath . '/demo_list-custom-fields.csv';
         File::makeDirectory($targetPath, 0775, true, true);
         File::copy($path, $targetFile);
 
         $dataFile = DataFile::factory()
-            ->withUser(self::$user)
+            ->withUser($this->user)
             ->withFile($targetFile)
             ->withLogicalTest()
             ->withCustomColumns()
@@ -98,13 +92,13 @@ class ImportFileTest extends TestCase
         $path = __DIR__ . '/data/demo_list-auto-detect-delimiter.csv';
 
         // copy to data-files storage directory
-        $targetPath = storage_path('app/users/' . self::$user->id . '/data-files');
+        $targetPath = storage_path('app/users/' . $this->user->id . '/data-files');
         $targetFile = $targetPath . '/demo_list-auto-detect-delimiter.csv';
         File::makeDirectory($targetPath, 0775, true, true);
         File::copy($path, $targetFile);
 
         $dataFile = DataFile::factory()
-            ->withUser(self::$user)
+            ->withUser($this->user)
             ->withFile($targetFile)
             ->withLogicalTest()
             ->create();
@@ -125,6 +119,7 @@ class ImportFileTest extends TestCase
 
     public function testUnauthorizedRequest()
     {
+        $this->actingAsGuest();
         $path = __DIR__ . '/data/demo_list-custom-fields.csv';
 
         $res = $this->postJson(
@@ -139,9 +134,8 @@ class ImportFileTest extends TestCase
 
     public function testApiUploadFile()
     {
+        $this->actingAs($this->user);
         $path = __DIR__ . '/data/demo_list-custom-fields.csv';
-        $this->actingAs(self::$user);
-
         $res = $this->postJson(
             '/api/v1/data-files/contacts', [
                 'type' => DataFileTypeEnum::numbers()->label,
@@ -163,11 +157,10 @@ class ImportFileTest extends TestCase
             ->withPersonalTeam()
             ->withSanctumToken()
             ->create();
-
         $this->actingAs($user);
 
         $res = $this->getJson('/api/v1/data-files/' . $data['id'] . '/sample');
-        $res->assertStatus(403);
+        $res->assertStatus(404);
     }
 
     /**
@@ -175,8 +168,7 @@ class ImportFileTest extends TestCase
      */
     public function testApiGetSample($data)
     {
-        $this->actingAs(self::$user);
-
+        $this->actingAs($this->user);
         $res = $this->getJson('/api/v1/data-files/' . $data['id'] . '/sample');
         $res->assertStatus(200);
         $sample = $res->json();
@@ -195,8 +187,6 @@ class ImportFileTest extends TestCase
      */
     public function testStartImportWrongData($data)
     {
-        $this->actingAs(self::$user);
-
         $res = $this->postJson('/api/v1/data-files/' . $data['id'] . '/import', [
             'columns' => [
                 'number' => 0,
@@ -218,8 +208,6 @@ class ImportFileTest extends TestCase
         Queue::fake();
         Queue::assertNothingPushed();
 
-        $this->actingAs(self::$user);
-
         $res = $this->postJson('/api/v1/data-files/' . $data['id'] . '/import', [
             'columns' => [
                 'number' => 0,
@@ -235,8 +223,8 @@ class ImportFileTest extends TestCase
 
     private function createTestUser(): void
     {
-        if (empty(self::$user)) {
-            self::$user = User::factory()
+        if (empty($this->user)) {
+            $this->user = User::factory()
                 ->withPersonalTeam()
                 ->withSanctumToken()
                 ->create();

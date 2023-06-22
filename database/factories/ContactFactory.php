@@ -3,7 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Contact;
-use App\Models\WorldMobileNetwork;
+use App\Models\MobileNetwork;
 use App\Services\ClickhouseService;
 use App\Services\CountryService;
 use App\Services\SmsContactMobileNetworksService;
@@ -35,7 +35,7 @@ class ContactFactory extends Factory
                 //todo:add test
                 $network_id = SmsContactMobileNetworksService::getNetworkCacheForNumber($contact->phone_normalized);
                 if (!$network_id) { //random network
-                    $network_id = WorldMobileNetwork::where(['country_id' => $contact->country_id])
+                    $network_id = MobileNetwork::where(['country_id' => $contact->country_id])
                         ->whereNotNull('brand')
                         ->whereNot('brand', '')
                         ->inRandomOrder()->first()->id;

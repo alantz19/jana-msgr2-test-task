@@ -1,7 +1,7 @@
 <?php
 
 use App\Domain\Sms\Routing\Routes\Networks\Models\WorldMobileNetworks;
-use App\Models\WorldMobileNetwork;
+use App\Models\MobileNetwork;
 use App\Services\CountryService;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -97,13 +97,13 @@ return new class extends Migration {
 
         Schema::create('sms_routing_plan_rules', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('sms_route_id')->index();
+            $table->foreignUuid('sms_route_id')->nullable()->index();
             $table->foreignUuid('sms_routing_plan_id')->index();
-            $table->foreignId('country_id')->index();
-            $table->foreignId('world_network_id')->index();
+            $table->foreignId('country_id')->nullable()->index();
+            $table->foreignId('network_id')->nullable()->index();
             $table->boolean('is_active')->default(true);
             $table->string('priority')->default(0);
-            $table->string('action')->default('send');
+            $table->string('action');
             $table->json('action_vars')->nullable();
 //            $table->boolean('is_platform_plan')->index()->default(false);
             $table->timestamps();
@@ -8640,7 +8640,7 @@ INSERT INTO v2_mobile_networks (id,mcc,mnc,`type`,country_name,country_code,coun
         }, $networks);
         $networks = array_filter($networks);
         foreach ($networks as $network) {
-            WorldMobileNetwork::create($network);
+            MobileNetwork::create($network);
         }
     }
 

@@ -6,8 +6,11 @@ use App\Enums\DataFileStatusEnum;
 use App\Enums\DataFileTypeEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\DataFileResource;
+use App\Imports\EmailFileImport;
+use App\Imports\NumbersFileImport;
 use App\Jobs\DataFileImportJob;
 use App\Models\DataFile;
+use App\Services\AuthService;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -40,11 +43,11 @@ class DataFilesController extends Controller
     {
         $dataFile = DataFile::findOrFail($id);
 
-        $this->authorize('view', $dataFile);
+        AuthService::isModelOwner($dataFile);
 
         $import = match ($dataFile->type) {
-            DataFileTypeEnum::numbers()->value => new \App\Imports\NumbersFileImport($dataFile),
-            DataFileTypeEnum::emails()->value => new \App\Imports\EmailFileImport($dataFile),
+            DataFileTypeEnum::numbers()->value => new NumbersFileImport($dataFile),
+            DataFileTypeEnum::emails()->value => new EmailFileImport($dataFile),
         };
 
         return $import->getSampleRows();

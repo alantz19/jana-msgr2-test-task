@@ -5,7 +5,7 @@ namespace Tests\Feature;
 use App\Enums\DataFileTypeEnum;
 use App\Imports\NumbersFileImport;
 use App\Jobs\DataFileImportJob;
-use App\Models\Contact;
+use App\Models\Clickhouse\Contact;
 use App\Models\DataFile;
 use App\Models\User;
 use Illuminate\Http\UploadedFile;

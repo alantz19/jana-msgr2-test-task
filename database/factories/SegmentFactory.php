@@ -29,7 +29,7 @@ class SegmentFactory extends Factory
         });
     }
 
-    public function withNumbersMeta(): static
+    public function withNumbersSample1(): static
     {
         return $this->state(function (array $attributes) {
             return [
@@ -53,6 +53,35 @@ class SegmentFactory extends Factory
                                 'input' => 'select',
                                 'operator' => 'equal',
                                 'value' => 13,
+                            ],
+                            [
+                                'condition' => 'OR',
+                                'rules' => [
+                                    [
+                                        'id' => 'number_network_id',
+                                        'field' => 'number_network_id',
+                                        'type' => 'integer',
+                                        'input' => 'number',
+                                        'operator' => 'equal',
+                                        'value' => 1,
+                                    ],
+                                    [
+                                        'id' => 'number_network_brand',
+                                        'field' => 'number_network_brand',
+                                        'type' => 'string',
+                                        'input' => 'text',
+                                        'operator' => 'equal',
+                                        'value' => 'AT&T',
+                                    ],
+                                ],
+                            ],
+                            [
+                                'id' => 'number_date_created',
+                                'field' => 'number_date_created',
+                                'type' => 'date',
+                                'input' => 'text',
+                                'operator' => 'equal',
+                                'value' => '2021/06/22',
                             ],
                         ],
                     ],

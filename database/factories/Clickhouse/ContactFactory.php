@@ -1,8 +1,8 @@
 <?php
 
-namespace Database\Factories;
+namespace Database\Factories\Clickhouse;
 
-use App\Models\Contact;
+use App\Models\Clickhouse\Contact;
 use App\Models\WorldMobileNetwork;
 use App\Services\ClickhouseService;
 use App\Services\CountryService;

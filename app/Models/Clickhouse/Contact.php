@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Clickhouse;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use PhpClickHouseLaravel\BaseModel;

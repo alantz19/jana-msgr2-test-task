@@ -61,7 +61,7 @@ class RoutingTest extends TestCase
 
         $rate = SmsRouteRate::create([
             'sms_route_id' => $route->id,
-            'world_country_id' => CountryService::guessCountry('UK'),
+            'country_id' => CountryService::guessCountry('UK'),
             'rate' => 0.01,
         ]);
 
@@ -111,7 +111,7 @@ class RoutingTest extends TestCase
 
         $rate = SmsRouteRate::create([
             'sms_route_id' => $route->id,
-            'world_country_id' => CountryService::guessCountry('UK'),
+            'country_id' => CountryService::guessCountry('UK'),
             'rate' => 0.01,
         ]);
 
@@ -187,7 +187,7 @@ class RoutingTest extends TestCase
 
         $rate = SmsRouteRate::create([
             'sms_route_id' => $route->id,
-            'world_country_id' => CountryService::guessCountry('UK'),
+            'country_id' => CountryService::guessCountry('UK'),
             'rate' => 0.01,
         ]);
 

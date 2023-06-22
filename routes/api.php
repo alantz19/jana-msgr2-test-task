@@ -54,7 +54,7 @@ Route::prefix('v1')->group(function () {
                         ->name('smpp-connections.show');
                 });
 
-                Route::resource('rates', SmsRoutingRatesController::class)->only(['store', 'index']);
+                Route::resource('rates', SmsRoutingRatesController::class)->only(['store', 'index', 'update']);
                 Route::get('rates/logs', [SmsRoutingRatesController::class, 'logs'])->name('rates.logs');
             });
 

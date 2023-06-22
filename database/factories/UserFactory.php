@@ -106,7 +106,7 @@ class UserFactory extends Factory
                         SmsRouteRate::factory()->state(function (array $atts, SmsRoute $route) {
                             return [
                                 'sms_route_id' => $route->id,
-                                'world_country_id' => CountryService::guessCountry('UK'),
+                                'country_id' => CountryService::guessCountry('UK'),
                                 'rate' => '0.01',
                             ];
                         })

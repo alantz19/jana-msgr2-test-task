@@ -10,7 +10,8 @@ class SmsRoutingRateResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'country_id' => $this->world_country_id,
+            'id' => $this->id,
+            'country_id' => $this->country_id,
             'rate' => $this->rate,
             'sms_route_id' => $this->sms_route_id,
             'sms_route' => SmsRoutingRouteResource::make($this->smsRoute),

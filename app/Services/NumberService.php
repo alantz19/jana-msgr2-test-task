@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\WorldCountry;
+use App\Models\Country;
 use libphonenumber\NumberParseException;
 use libphonenumber\PhoneNumber;
 use libphonenumber\PhoneNumberType;
@@ -57,21 +57,6 @@ class NumberService
         return true;
     }
 
-    public static function phoneUtilParse($numberString, $country): ?PhoneNumber
-    {
-        $iso = self::getCountryISO($country);
-
-        if (empty(self::$phoneUtil)) {
-            self::$phoneUtil = PhoneNumberUtil::getInstance();
-        }
-
-        try {
-            return self::$phoneUtil->parse($numberString, $iso);
-        } catch (NumberParseException) {
-            return null;
-        }
-    }
-
     /**
      * @param string $number phone number string
      * @param string $country ISO or country name or country id
@@ -112,6 +97,41 @@ class NumberService
         return null;
     }
 
+    public static function phoneUtilParse($numberString, $country): ?PhoneNumber
+    {
+        $iso = self::getCountryISO($country);
+
+        if (empty(self::$phoneUtil)) {
+            self::$phoneUtil = PhoneNumberUtil::getInstance();
+        }
+
+        try {
+            return self::$phoneUtil->parse($numberString, $iso);
+        } catch (NumberParseException) {
+            return null;
+        }
+    }
+
+    private static function getCountryISO(?string $value): ?string
+    {
+        if (empty($value) || $value == 'fixed') {
+            return null;
+        }
+
+        if (isset(self::$isoCache[$value])) {
+            return self::$isoCache[$value];
+        }
+
+        if ($countryId = CountryService::guessCountry($value)) {
+            $model = Country::find($countryId);
+            self::$isoCache[$model->id] = $model->iso;
+
+            return $model->iso;
+        }
+
+        return null;
+    }
+
     public static function isMobile($normalized, $country): ?bool
     {
         if (preg_match('/^[a-zA-Z]{2}$/', $country)) {
@@ -140,25 +160,5 @@ class NumberService
         }
 
         return (bool)preg_match(self::$good_countries_verify[$iso], trim($normalized));
-    }
-
-    private static function getCountryISO(?string $value): ?string
-    {
-        if (empty($value) || $value == 'fixed') {
-            return null;
-        }
-
-        if (isset(self::$isoCache[$value])) {
-            return self::$isoCache[$value];
-        }
-
-        if ($countryId = CountryService::guessCountry($value)) {
-            $model = WorldCountry::find($countryId);
-            self::$isoCache[$model->id] = $model->iso;
-
-            return $model->iso;
-        }
-
-        return null;
     }
 }

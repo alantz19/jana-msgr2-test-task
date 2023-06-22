@@ -69,6 +69,19 @@ class Team extends JetstreamTeam
 
     public function smsRoutingPlatformRoutes()
     {
-        return $this->hasManyThrough(CustomerRoute::class, SmsRoutePlatformConnection::class, 'team_id', 'platform_connection_id' );
+        return $this->hasManyThrough(CustomerRoute::class,
+            SmsRoutePlatformConnection::class,
+            'team_id',
+            'platform_connection_id');
+    }
+
+    public function smsRoutes()
+    {
+        return $this->hasMany(SmsRoute::class);
+    }
+
+    public function smsRouteRates()
+    {
+        return $this->hasManyThrough(SmsRouteRate::class, SmsRoute::class);
     }
 }

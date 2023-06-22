@@ -2,9 +2,10 @@
 
 namespace App\Services;
 
-use App\Models\WorldCountry;
+use App\Models\Country;
 use Carbon\Carbon;
 use DateTimeZone;
+use Exception;
 use Nnjeim\World\World;
 
 class CountryService
@@ -21,7 +22,7 @@ class CountryService
         }
 
         if (is_numeric($countryName)) {
-            $country = WorldCountry::where(['id' => $countryName])->first();
+            $country = Country::where(['id' => $countryName])->first();
 
             if (!empty($country)) {
                 return $country->id;
@@ -29,7 +30,7 @@ class CountryService
         }
 
         if (strlen($countryName) === 2) {
-            $country = WorldCountry::where(['iso' => strtoupper($countryName)])->first();
+            $country = Country::where(['iso' => strtoupper($countryName)])->first();
 
             if (!empty($country)) {
                 return $country->id;
@@ -37,25 +38,25 @@ class CountryService
         }
 
         if (strlen($countryName) === 3) {
-            $country = WorldCountry::where(['iso3' => strtoupper($countryName)])->first();
+            $country = Country::where(['iso3' => strtoupper($countryName)])->first();
 
             if (!empty($country)) {
                 return $country->id;
             }
         }
 
-        $country = WorldCountry::where(['nicename' => ucwords($countryName)])->first();
+        $country = Country::where(['nicename' => ucwords($countryName)])->first();
 
         if (!empty($country)) {
             return $country->id;
         }
 
-        throw new \Exception("Country [{$countryName}] not found");
+        throw new Exception("Country [{$countryName}] not found");
     }
 
     public static function timeHasPassed(string $timezone, string $time): bool
     {
         return Carbon::parse($time, new DateTimeZone($timezone))->isPast();
     }
-    
+
 }

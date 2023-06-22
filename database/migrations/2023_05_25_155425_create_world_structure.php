@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Country;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -8,14 +9,14 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::disableForeignKeyConstraints();
-        Schema::create('world_mobile_networks', function(Blueprint $table){
+        Schema::create('mobile_networks', function (Blueprint $table) {
             $table->id();
             $table->smallInteger('mcc')->nullable();
             $table->smallInteger('mnc')->nullable();
             $table->string('type')->nullable();
             $table->string('country_name')->nullable();
             $table->string('country_code')->nullable();
-            $table->foreignId('world_country_id')->nullable()->index();
+            $table->foreignId('country_id')->nullable()->index();
             $table->string('brand')->nullable();
             $table->string('operator')->nullable();
             $table->string('status')->nullable();
@@ -41,7 +42,7 @@ return new class extends Migration {
         //  KEY `idx_countries_nicename` (`nicename`)
         //) ENGINE=InnoDB AUTO_INCREMENT=260 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
         //create the countries table as above in laravel
-        Schema::create('world_countries', function(Blueprint $table){
+        Schema::create('countries', function (Blueprint $table) {
             $table->id();
             $table->string('iso')->nullable();
             $table->string('name')->nullable();
@@ -67,18 +68,18 @@ return new class extends Migration {
         //  KEY `state_country_id` (`country_id`)
         //) ENGINE=InnoDB AUTO_INCREMENT=73 DEFAULT CHARSET=utf8;
         //create the states table as above in laravel
-        Schema::create('world_states', function(Blueprint $table){
+        Schema::create('states', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('world_country_id')->nullable()->index();
+            $table->foreignId('country_id')->nullable()->index();
             $table->string('code')->nullable();
             $table->string('name')->nullable();
-            $table->foreignId('world_timezone_id')->nullable()->index();
+            $table->foreignId('timezone_id')->nullable()->index();
             $table->timestamps();
         });
         $this->insertStates();
 
 
-        //CREATE TABLE `world_timezones` (
+        //CREATE TABLE `timezones` (
         //  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
         //  `country_id` int(11) unsigned NOT NULL,
         //  `utc` varchar(8) DEFAULT NULL,
@@ -91,9 +92,9 @@ return new class extends Migration {
         //  KEY `timezone_country_id` (`country_id`)
         //) ENGINE=InnoDB AUTO_INCREMENT=607 DEFAULT CHARSET=utf8;
         //create the timezones table as above in laravel
-        Schema::create('world_timezones', function(Blueprint $table){
+        Schema::create('timezones', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(\App\Models\WorldCountry::class)->nullable()->index();
+            $table->foreignId('country_id')->nullable()->index();
             $table->string('utc')->nullable();
             $table->string('code')->nullable();
             $table->string('name')->nullable();
@@ -113,7 +114,7 @@ return new class extends Migration {
     private function insertNetworks()
     {
         DB::statement("
-        INSERT INTO world_mobile_networks (id,mcc,mnc, type,country_name,country_code,world_country_id,brand,operator,status,bands,notes) VALUES
+        INSERT INTO mobile_networks (id,mcc,mnc, type,country_name,country_code,country_id,brand,operator,status,bands,notes) VALUES
 	 (8624,289,67,'National','Abkhazia','GE-AB',NULL,'Aquafon','Aquafon JSC','Operational','GSM 900 / GSM 1800 / UMTS 2100 / LTE 800','MCC is not listed by ITU; LTE band 20'),
 	 (8625,289,88,'National','Abkhazia','GE-AB',NULL,'A-Mobile','A-Mobile LLSC','Operational','GSM 900 / GSM 1800 / UMTS 2100 / LTE 800 / LTE 1800','MCC is not listed by ITU'),
 	 (8626,412,1,'National','Afghanistan','AF',1,'AWCC','Afghan Wireless Communication Company','Operational','GSM 900 / GSM 1800 / UMTS 2100 / LTE 1800',NULL),
@@ -2743,9 +2744,10 @@ Wanderers Móvil','Telestar Móvil S.A.','Operational','MVNO','Uses movistar'),
 ");
     }
 
-    private function insertCountries(){
+    private function insertCountries()
+    {
         DB::statement("
-        INSERT INTO world_countries (id,iso,name,nicename,iso3,numcode,phonecode,has_states,sender_id) VALUES
+        INSERT INTO countries (id,iso,name,nicename,iso3,numcode,phonecode,has_states,sender_id) VALUES
 	 (1,'AF','AFGHANISTAN','Afghanistan','AFG',4,93,0,0),
 	 (2,'AL','ALBANIA','Albania','ALB',8,355,0,1),
 	 (3,'DZ','ALGERIA','Algeria','DZA',12,213,0,0),
@@ -3003,9 +3005,10 @@ Wanderers Móvil','Telestar Móvil S.A.','Operational','MVNO','Uses movistar'),
         ");
     }
 
-    private function insertStates(){
+    private function insertStates()
+    {
         DB::statement("
-        INSERT INTO world_states (world_country_id,code,name,world_timezone_id) VALUES
+        INSERT INTO states (country_id,code,name,timezone_id) VALUES
 	 (226,'AL','Alabama',534),
 	 (226,'AK','Alaska',530),
 	 (226,'AZ','Arizona',540),
@@ -3080,8 +3083,9 @@ Wanderers Móvil','Telestar Móvil S.A.','Operational','MVNO','Uses movistar'),
         ");
     }
 
-    private function insertTimezones(){
-        DB::statement("INSERT INTO world_timezones (id,world_country_id,utc,code,name,is_main,created_at) VALUES
+    private function insertTimezones()
+    {
+        DB::statement("INSERT INTO timezones (id,country_id,utc,code,name,is_main,created_at) VALUES
 	 (2,1,'+04:30','AFT','Afghanistan Time',1,'2018-12-03 15:23:51.0'),
 	 (4,2,'+02:00','CET','Central European Time',1,'2018-12-03 15:23:51.0'),
 	 (6,3,'+01:00','CET','Central European Time',1,'2018-12-03 15:23:51.0'),

@@ -5,6 +5,7 @@
       <map>
         <entry key="createFormRequest.generateAuthorize" value="" />
         <entry key="createNotification.type" value="database" />
+        <entry key="createResourceController.apiOnly" value="1" />
         <entry key="postGeneration:jsonResource" value="1" />
         <entry key="postGeneration:migration" value="" />
       </map>

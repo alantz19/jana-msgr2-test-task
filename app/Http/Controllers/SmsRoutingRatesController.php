@@ -5,13 +5,11 @@ namespace App\Http\Controllers;
 use App\Enums\SmsRoutingLogActionsEnum;
 use App\Http\Resources\SmsRoutingLogsCollection;
 use App\Http\Resources\SmsRoutingRateResource;
-use App\Http\Resources\SmsRoutingRouteResource;
 use App\Models\SmsRoute;
 use App\Models\SmsRouteRate;
 use App\Models\SmsRoutingLogs;
 use App\Services\AuthService;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Response;
 
 class SmsRoutingRatesController extends Controller

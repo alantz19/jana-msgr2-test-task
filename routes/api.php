@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\V1\DataFilesController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SmsRoutingCompaniesController;
+use App\Http\Controllers\SmsRoutingPlansController;
 use App\Http\Controllers\SmsRoutingRatesController;
 use App\Http\Controllers\SmsRoutingRoutesController;
 use App\Http\Controllers\SmsRoutingSmppConnectionsController;
@@ -53,6 +54,9 @@ Route::prefix('v1')->group(function () {
                         [SmsRoutingSmppConnectionsController::class, 'show'])
                         ->name('smpp-connections.show');
                 });
+
+                Route::resource('plans', SmsRoutingPlansController::class)
+                    ->only(['index', 'store', 'destroy', 'update', 'show']);
 
                 Route::resource('rates', SmsRoutingRatesController::class)->only(['store', 'index', 'update']);
                 Route::get('rates/logs', [SmsRoutingRatesController::class, 'logs'])->name('rates.logs');

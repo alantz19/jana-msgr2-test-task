@@ -21,7 +21,7 @@ class DataFilesController extends Controller
         ]);
 
         $file = $request->file('file');
-        $filePath = $file->store('users/' . auth()->id() . '/data-files');
+        $filePath = $file->store('teams/' . auth()->user()->current_team_id . '/data-files');
 
         $dataFile = DataFile::create([
             'team_id' => auth()->user()->current_team_id,

@@ -20,7 +20,7 @@ class ImportFileTest extends BaseApiTest
         $path = __DIR__ . '/data/demo_list-20.xlsx';
 
         // copy to data-files storage directory
-        $targetPath = storage_path('app/users/' . self::$user->id . '/data-files');
+        $targetPath = storage_path('app/teams/' . self::$user->id . '/data-files');
         $targetFile = $targetPath . '/demo_list-20.xlsx';
         File::makeDirectory($targetPath, 0775, true, true);
         File::copy($path, $targetFile);
@@ -47,7 +47,7 @@ class ImportFileTest extends BaseApiTest
         $path = __DIR__ . '/data/demo_list-custom-fields.csv';
 
         // copy to data-files storage directory
-        $targetPath = storage_path('app/users/' . self::$user->id . '/data-files');
+        $targetPath = storage_path('app/teams/' . self::$user->id . '/data-files');
         $targetFile = $targetPath . '/demo_list-custom-fields.csv';
         File::makeDirectory($targetPath, 0775, true, true);
         File::copy($path, $targetFile);
@@ -88,7 +88,7 @@ class ImportFileTest extends BaseApiTest
         $path = __DIR__ . '/data/demo_list-auto-detect-delimiter.csv';
 
         // copy to data-files storage directory
-        $targetPath = storage_path('app/users/' . self::$user->id . '/data-files');
+        $targetPath = storage_path('app/teams/' . self::$user->id . '/data-files');
         $targetFile = $targetPath . '/demo_list-auto-detect-delimiter.csv';
         File::makeDirectory($targetPath, 0775, true, true);
         File::copy($path, $targetFile);

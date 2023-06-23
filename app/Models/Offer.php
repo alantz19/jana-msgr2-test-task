@@ -13,6 +13,12 @@ class Offer extends Model
     use HasFactory;
     use HasUuids;
 
+    protected $fillable = [
+        'name',
+        'url',
+        'profit',
+    ];
+
     public function getNeededParams()
     {
         $matches = [];

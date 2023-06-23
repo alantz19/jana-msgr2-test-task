@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Models\Clickhouse\Contact;
+use App\Models\Contact;
 use App\Services\CountryService;
 use App\Services\SmsContactMobileNetworksService;
 use PhpClickHouseLaravel\RawColumn;

@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Enums\SegmentStatusEnum;
 use App\Enums\SegmentTypeEnum;
 use App\Models\Segment;
+use App\Models\Team;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -20,11 +21,11 @@ class SegmentFactory extends Factory
         ];
     }
 
-    public function withUser(User $user): static
+    public function withTeam(Team $team): static
     {
-        return $this->state(function (array $attributes) use ($user) {
+        return $this->state(function (array $attributes) use ($team) {
             return [
-                'user_id' => $user->id,
+                'team_id' => $team->id,
             ];
         });
     }
@@ -43,7 +44,47 @@ class SegmentFactory extends Factory
                                 'field' => 'number_clicks_count',
                                 'type' => 'integer',
                                 'input' => 'number',
+                                'operator' => 'greater_or_equal',
+                                'value' => 0,
+                            ],
+                            [
+                                'id' => 'number_country',
+                                'field' => 'number_country',
+                                'type' => 'integer',
+                                'input' => 'select',
                                 'operator' => 'equal',
+                                'value' => 225,
+                            ],
+                            [
+                                'id' => 'number_date_created',
+                                'field' => 'number_date_created',
+                                'type' => 'date',
+                                'input' => 'text',
+                                'operator' => 'equal',
+                                'value' => now()->toDateString(),
+                            ],
+                        ],
+                    ],
+                ],
+            ];
+        });
+    }
+
+    public function withNumbersSample2(): static
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'type' => SegmentTypeEnum::numbers()->value,
+                'meta' => [
+                    'query' => [
+                        'condition' => 'AND',
+                        'rules' => [
+                            [
+                                'id' => 'number_clicks_count',
+                                'field' => 'number_clicks_count',
+                                'type' => 'integer',
+                                'input' => 'number',
+                                'operator' => 'greater_or_equal',
                                 'value' => 0,
                             ],
                             [
@@ -70,7 +111,7 @@ class SegmentFactory extends Factory
                                         'field' => 'number_network_brand',
                                         'type' => 'string',
                                         'input' => 'text',
-                                        'operator' => 'equal',
+                                        'operator' => 'contains',
                                         'value' => 'AT&T',
                                     ],
                                 ],

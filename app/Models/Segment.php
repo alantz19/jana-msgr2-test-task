@@ -6,15 +6,14 @@ use ClickHouseDB\Query\Query;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Segment extends Model
 {
     use HasFactory, HasUuids;
 
-    protected ?Query $query = null;
-
     protected $fillable = [
-        'user_id',
+        'team_id',
         'type',
         'name',
         'meta',
@@ -24,4 +23,9 @@ class Segment extends Model
     protected $casts = [
         'meta' => 'array',
     ];
+
+    public function team(): BelongsTo
+    {
+        return $this->belongsTo(Team::class);
+    }
 }

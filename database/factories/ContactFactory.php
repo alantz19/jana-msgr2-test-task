@@ -1,8 +1,9 @@
 <?php
 
-namespace Database\Factories\Clickhouse;
+namespace Database\Factories;
 
-use App\Models\Clickhouse\Contact;
+use App\Models\Contact;
+use App\Models\Team;
 use App\Models\WorldMobileNetwork;
 use App\Services\ClickhouseService;
 use App\Services\CountryService;
@@ -12,6 +13,8 @@ use Illuminate\Support\Collection;
 
 class ContactFactory extends Factory
 {
+    protected static Team $team;
+
     public function definition(): array
     {
         return [
@@ -22,24 +25,30 @@ class ContactFactory extends Factory
             'phone_normalized' => str_replace('+', '', $this->faker->e164PhoneNumber()),
             'phone_is_good' => true,
             'phone_is_good_reason' => $this->faker->randomNumber(1, 5),
-            'country_id' => $this->faker->uuid,
+            'country_id' => 225,
+            'date_created' => now()->toDateTimeString(),
 //            'state_id' => 1,
         ];
     }
 
-    public function saveAndReturn($list_id = false, $country = 'uk', $withNetworks = false):Collection
+    public function saveAndReturn($list_id = false, $country = 'uk', $withNetworks = false): Collection
     {
         $contacts = new Collection();
         if (!$list_id) {
             $list_id = \Ramsey\Uuid\Uuid::uuid4()->toString();//use same list of all contacts..
         }
-        $i=0;
+        $i = 0;
         while ($i < 100) {
             $i++;
             $contact = new Contact();
             $contact->fill($this->definition());
             $contact->list_id = $list_id;
             $contact->country_id = CountryService::guessCountry($country);
+
+            if (!empty(self::$team)) {
+                $contact->team_id = self::$team->id;
+            }
+
             $contacts->add($contact);
         }
         ClickhouseService::batchInsertModelCollection($contacts);
@@ -60,5 +69,16 @@ class ContactFactory extends Factory
         }
 
         return $contacts;
+    }
+
+    public function withTeam(Team $team): static
+    {
+        self::$team = $team;
+
+        return $this->state(function (array $attributes) use ($team) {
+            return [
+                'team_id' => $team->id,
+            ];
+        });
     }
 }

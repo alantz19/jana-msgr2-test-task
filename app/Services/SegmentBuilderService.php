@@ -4,41 +4,51 @@ namespace App\Services;
 
 use App\Enums\JqBuilderFieldEnum;
 use App\Enums\JqBuilderOperatorEnum;
+use App\Enums\SegmentTypeEnum;
 use App\Models\Segment;
 use ClickHouseDB\Query\Degeneration\Bindings;
 use ClickHouseDB\Query\Query;
 use Illuminate\Support\Facades\Log;
 use PhpClickHouseLaravel\Builder;
+use PhpClickHouseLaravel\RawColumn;
 
 class SegmentBuilderService
 {
     private static int $ruleIdx = 0;
 
-    public static function buildQuery(Segment $segment): ?Builder
+    public static function create(Segment $segment): ?Builder
     {
         $data = $segment->meta['query'] ?? [];
 
         if (empty($data)) {
-            throw new \Exception('Empty segment query');
+            Log::warning('Empty segment query', [
+                'segment' => $segment->toArray(),
+            ]);
+            return null;
         }
 
-        // @TODO write base query
-        $sql = '';
         $res = self::parse($data);
 
-        if (empty($res)) {
-            throw new \Exception('Empty segment query');
+        if (empty($res) || empty($res['sql'])) {
+            Log::warning("Can't parse segment query", [
+                'segment' => $segment->toArray(),
+            ]);
+            return null;
         }
-
-        $builder = new Builder();
-        // @TODO rewrite to Builder
 
         $bindings = new Bindings();
         foreach ($res['binds'] as $col => $value) {
             $bindings->bindParam($col, $value);
         }
 
-        return new Query($sql . $res['sql'], [$bindings]);
+        $builder = match ($segment->type) {
+            SegmentTypeEnum::numbers()->value => self::getBuilderBaseNumbers($segment),
+            SegmentTypeEnum::emails()->value => self::getBuilderBaseEmails($segment),
+        };
+        $builder->whereRaw('(`is_deleted` is null or `is_deleted` = 0)');
+        $builder->whereRaw(new Query($res['sql'], [$bindings]));
+
+        return $builder;
     }
 
     public static function parse(array $conditions): array
@@ -75,6 +85,63 @@ class SegmentBuilderService
         return $data;
     }
 
+    private static function getBuilderBaseNumbers(Segment $segment): Builder
+    {
+        $sub = (new Builder())
+            ->select([
+                'phone_normalized',
+                new RawColumn('anyLast(last_sent)', 'last_sent'),
+                new RawColumn('anyLast(last_clicked)', 'last_clicked'),
+                new RawColumn('sum(sent_count)', 'sent_count'),
+                new RawColumn('sum(clicked_count)', 'clicked_count'),
+                new RawColumn('sum(leads_count)', 'leads_count'),
+                new RawColumn('sum(sales_count)', 'sales_count'),
+                new RawColumn('sum(profit_sum)', 'profit_sum'),
+                new RawColumn('anyLast(network_brand)', 'network_brand'),
+                new RawColumn('anyLast(network_id)', 'network_id'),
+                new RawColumn('anyLast(network_reason)', 'network_reason'),
+                new RawColumn('anyLast(phone_is_good)', 'phone_is_good'),
+                new RawColumn('anyLast(phone_is_good_reason)', 'phone_is_good_reason'),
+                new RawColumn('anyLast(name)', 'name'),
+                new RawColumn('anyLast(country_id)', 'country_id'),
+                new RawColumn('anyLast(state_id)', 'state_id'),
+                new RawColumn('anyLast(state_id_reason)', 'state_id_reason'),
+                new RawColumn('anyLast(custom1_str)', 'custom1_str'),
+                new RawColumn('anyLast(custom2_str)', 'custom2_str'),
+                new RawColumn('anyLast(custom3_str)', 'custom3_str'),
+                new RawColumn('anyLast(custom4_str)', 'custom4_str'),
+                new RawColumn('anyLast(custom5_str)', 'custom5_str'),
+                new RawColumn('anyLast(custom1_int)', 'custom1_int'),
+                new RawColumn('anyLast(custom2_int)', 'custom2_int'),
+                new RawColumn('anyLast(custom3_int)', 'custom3_int'),
+                new RawColumn('anyLast(custom4_int)', 'custom4_int'),
+                new RawColumn('anyLast(custom5_int)', 'custom5_int'),
+                new RawColumn('anyLast(custom1_dec)', 'custom1_dec'),
+                new RawColumn('anyLast(custom2_dec)', 'custom2_dec'),
+                new RawColumn('anyLast(custom1_datetime)', 'custom1_datetime'),
+                new RawColumn('anyLast(custom2_datetime)', 'custom2_datetime'),
+                new RawColumn('anyLast(custom3_datetime)', 'custom3_datetime'),
+                new RawColumn('anyLast(custom4_datetime)', 'custom4_datetime'),
+                new RawColumn('anyLast(custom5_datetime)', 'custom5_datetime'),
+                new RawColumn('any(date_created)', 'date_created'),
+                new RawColumn('anyLast(date_updated)', 'date_updated'),
+                new RawColumn('anyLast(is_deleted)', 'is_deleted'),
+            ])
+            ->from('contacts_sms_materialized')
+            ->where('team_id', $segment->team_id)
+            ->groupBy('phone_normalized');
+
+        return (new Builder())
+            ->from(function($from) use ($sub) {
+                $from->query($sub);
+            });
+    }
+
+    private static function getBuilderBaseEmails(Segment $segment): Builder
+    {
+        // @TODO
+    }
+
     private static function isGroup($value): bool
     {
         return is_array($value) && array_key_exists('condition', $value);
@@ -90,40 +157,21 @@ class SegmentBuilderService
 
     private static function parseRule(array $rule): ?array
     {
-        $op = JqBuilderOperatorEnum::from($rule['operator'])->value;
-        $field = JqBuilderFieldEnum::from($rule['field'])->value;
+        $op = JqBuilderOperatorEnum::from($rule['operator']);
+        $field = JqBuilderFieldEnum::from($rule['field']);
         $bindKey = 'rule_' . self::$ruleIdx;
+        $value = $rule['value'];
 
-        // @TODO format date, replace field with dictGet if required
+        if ($op->equals(JqBuilderOperatorEnum::contains(), JqBuilderOperatorEnum::not_contains())) {
+            $value = "%$value%";
+        }
 
-        $sql = match ($op) {
-            JqBuilderOperatorEnum::equal()->value,
-            JqBuilderOperatorEnum::not_equal()->value,
-            JqBuilderOperatorEnum::less()->value,
-            JqBuilderOperatorEnum::less_or_equal()->value,
-            JqBuilderOperatorEnum::greater()->value,
-            JqBuilderOperatorEnum::greater_or_equal()->value,
-            JqBuilderOperatorEnum::begins_with()->value,
-            JqBuilderOperatorEnum::not_begins_with()->value,
-            JqBuilderOperatorEnum::ends_with()->value,
-            JqBuilderOperatorEnum::not_ends_with()->value => "$op($field, :$bindKey)",
-
-            JqBuilderOperatorEnum::contains()->value,
-            JqBuilderOperatorEnum::not_contains()->value => "$field $op %:$bindKey%",
-
-            JqBuilderOperatorEnum::in()->value,
-            JqBuilderOperatorEnum::not_in()->value => "$field $op(:$bindKey)",
-
-            JqBuilderOperatorEnum::is_empty()->value,
-            JqBuilderOperatorEnum::is_not_empty()->value,
-            JqBuilderOperatorEnum::is_null()->value,
-            JqBuilderOperatorEnum::is_not_null()->value => "$op($field)",
-        };
+        $sql = $op->toSql($field, $bindKey);
 
         return [
             'field' => $field,
-            'operator' => $op,
-            'value' => $rule['value'],
+            'operator' => $op->value,
+            'value' => $value,
             'sql' => $sql,
             'bind_key' => $bindKey,
         ];

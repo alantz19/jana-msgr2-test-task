@@ -6,7 +6,7 @@ use App\Models\SmsCampaign;
 use App\Models\SmsCampaignPlan;
 use App\Models\SmsCampaignSenderid;
 use App\Models\SmsCampaignText;
-use Database\Factories\Clickhouse\ContactFactory;
+use Database\Factories\ContactFactory;
 use Illuminate\Support\Collection;
 use Nnjeim\World\Models\Country;
 use Nnjeim\World\Models\Timezone;

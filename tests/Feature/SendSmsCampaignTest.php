@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Models\Clickhouse\Contact;
+use App\Models\Contact;
 use App\Models\Lists;
 use App\Models\Offer;
 use App\Models\SmsCampaign;

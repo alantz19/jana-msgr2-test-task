@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Clickhouse;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

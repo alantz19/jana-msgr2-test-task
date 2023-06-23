@@ -49,4 +49,40 @@ class JqBuilderOperatorEnum extends Enum
             'is_not_null' => 'isNotNull',
         ];
     }
+
+    public function toSql(JqBuilderFieldEnum $field, string $bindKey): string
+    {
+        $fieldValue = $field->value;
+
+        if ($field->equals(JqBuilderFieldEnum::number_date_created())) {
+            $fieldValue = "toDate($fieldValue)";
+            $bindKey = "parseDateTime32BestEffort(:$bindKey)";
+        } else {
+            $bindKey = ":$bindKey";
+        }
+
+        return match ($this->value) {
+            self::equal()->value,
+            self::not_equal()->value,
+            self::less()->value,
+            self::less_or_equal()->value,
+            self::greater()->value,
+            self::greater_or_equal()->value,
+            self::begins_with()->value,
+            self::not_begins_with()->value,
+            self::ends_with()->value,
+            self::not_ends_with()->value => "$this->value($fieldValue, $bindKey)",
+
+            self::contains()->value,
+            self::not_contains()->value => "$fieldValue $this->value $bindKey",
+
+            self::in()->value,
+            self::not_in()->value => "$fieldValue $this->value($bindKey)",
+
+            self::is_empty()->value,
+            self::is_not_empty()->value,
+            self::is_null()->value,
+            self::is_not_null()->value => "$this->value($fieldValue)",
+        };
+    }
 }

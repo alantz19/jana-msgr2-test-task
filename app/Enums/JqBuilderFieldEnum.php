@@ -16,10 +16,11 @@ class JqBuilderFieldEnum extends Enum
     public static function values()
     {
         return [
-            'number_clicks_count' => 'clicks_count',
+            'number_clicks_count' => 'clicked_count',
             'number_country' => 'country_id',
             'number_network_id' => 'network_id',
             'number_network_brand' => 'network_brand',
+            'number_date_created' => 'date_created',
         ];
     }
 }

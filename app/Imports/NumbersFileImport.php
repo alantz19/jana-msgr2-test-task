@@ -2,7 +2,7 @@
 
 namespace App\Imports;
 
-use App\Models\Clickhouse\Contact;
+use App\Models\Contact;
 use App\Services\CountryService;
 use App\Services\NumberService;
 use App\Traits\HasContactCustomDatetime;

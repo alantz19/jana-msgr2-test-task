@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('segments', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('user_id');
+            $table->foreignUuid('team_id');
             $table->tinyInteger('type');
             $table->string('name');
             $table->jsonb('meta');

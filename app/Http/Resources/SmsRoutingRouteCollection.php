@@ -16,10 +16,7 @@ class SmsRoutingRouteCollection extends ResourceCollection
         return [
             'data' => $this->collection,
             'links' => [
-                'create' => [
-                    'url' => action([SmsRoutingRoutesController::class, 'create']),
-                    'label' => 'New Route',
-                ],
+                'store' => action([SmsRoutingRoutesController::class, 'store'])
             ],
         ];
     }

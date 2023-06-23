@@ -2,12 +2,12 @@
 
 namespace Database\Factories;
 
-use App\Models\WorldMobileNetwork;
+use App\Models\MobileNetwork;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class WorldMobileNetworkFactory extends Factory
+class NetworkFactory extends Factory
 {
-    protected $model = WorldMobileNetwork::class;
+    protected $model = MobileNetwork::class;
 
     public function definition(): array
     {

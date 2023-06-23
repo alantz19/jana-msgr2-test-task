@@ -14,7 +14,7 @@ class SmsRouteRateFactory extends Factory
     {
         return [
             'sms_route_id' => $this->faker->uuid(),
-            'world_country_id' => CountryService::guessCountry($this->faker->countryCode()),
+            'country_id' => CountryService::guessCountry($this->faker->countryCode()),
             'rate' => $this->faker->randomFloat(2, 0, 1),
         ];
     }

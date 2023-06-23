@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use acidjazz\metapi\MetApi;
 use App\Http\Resources\SmsRoutingRouteCollection;
 use App\Http\Resources\SmsRoutingRouteResource;
 use App\Models\SmsRoute;
@@ -15,8 +14,6 @@ use Response;
  */
 class SmsRoutingRoutesController extends Controller
 {
-    use MetApi;
-
     /**
      * @return SmsRoutingRouteCollection
      */
@@ -25,7 +22,7 @@ class SmsRoutingRoutesController extends Controller
         return new SmsRoutingRouteCollection(
             SmsRoute::where('team_id',
                 auth()->user()->currentTeam->id)
-                ->with(['smsRouteCompany', 'connection'])
+                ->with(['smsRouteCompany', 'connection', 'smsRouteRates'])
                 ->get()
         );
     }

@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\WorldMobileNetwork;
+use App\Models\MobileNetwork;
 
 class SmsContactMobileNetworksService
 {
@@ -28,18 +28,18 @@ class SmsContactMobileNetworksService
 
     public static function saveNumberNetwork(int $phone_normalized, int $network_id): void
     {
-        $network = WorldMobileNetwork::find($network_id);
+        $network = MobileNetwork::find($network_id);
         if (empty($network->brand)) {
             $network->brand = 'Unknown brand';
         }
         ClickhouseService::getClient()
             ->write("INSERT INTO v2_numbers_networks (normalized, network_id, network_brand) 
                             VALUES (:phone, :network_id, :brand )",
-            [
-                'phone' => $phone_normalized,
-                'network_id' => $network_id,
-                'brand' => $network->brand,
-            ]);
+                [
+                    'phone' => $phone_normalized,
+                    'network_id' => $network_id,
+                    'brand' => $network->brand,
+                ]);
     }
 
     public static function getNetworkCacheForNumber($phone_normalized)
@@ -73,9 +73,9 @@ select team_id,
 from contacts_sms_materialized
 where list_id = :list_id
 group by phone_normalized, list_id, team_id",
-        [
-            'list_id' => $list_id,
-        ])->rows();
+            [
+                'list_id' => $list_id,
+            ])->rows();
     }
 
     public static function getNetworksCountByList($list_id)
@@ -95,8 +95,8 @@ where list_id = :list_id
 group by network_brand
 order by count desc
 ",
-        [
-            'list_id' => $list_id,
-        ])->rows();
+            [
+                'list_id' => $list_id,
+            ])->rows();
     }
 }

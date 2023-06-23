@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class WorldCountry extends Model
+class Country extends Model
 {
     public $timestamps = false;
 }

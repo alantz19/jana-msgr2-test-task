@@ -19,19 +19,19 @@ class RoutingRatesTest extends TestCase
         $route->smsRouteRates()->saveMany([
             new SmsRouteRate([
                 'rate' => 0.01,
-                'world_country_id' => CountryService::guessCountry('US'),
+                'country_id' => CountryService::guessCountry('US'),
                 'sms_route_id' => $route->id,
             ]),
             new SmsRouteRate([
                 'rate' => 0.02,
-                'world_country_id' => CountryService::guessCountry('UK'),
+                'country_id' => CountryService::guessCountry('UK'),
                 'sms_route_id' => $route->id,
             ]),
         ]);
 
         $this->assertEquals(0.01,
             $route->smsRouteRates()
-                ->where('world_country_id', CountryService::guessCountry('US'))
+                ->where('country_id', CountryService::guessCountry('US'))
                 ->first()->rate);
     }
 

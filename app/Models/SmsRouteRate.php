@@ -13,8 +13,13 @@ class SmsRouteRate extends Model
 
     protected $fillable = [
         'sms_route_id',
-        'world_country_id',
+        'country_id',
         'rate',
         'meta'
     ];
+
+    public function smsRoute()
+    {
+        return $this->belongsTo(SmsRoute::class);
+    }
 }

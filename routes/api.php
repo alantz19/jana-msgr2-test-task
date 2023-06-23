@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\V1\DataFilesController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CountriesController;
 use App\Http\Controllers\MobileNetworksController;
+use App\Http\Controllers\OffersController;
 use App\Http\Controllers\SmsRoutingCompaniesController;
 use App\Http\Controllers\SmsRoutingPlanRulesController;
 use App\Http\Controllers\SmsRoutingPlansController;
@@ -75,6 +76,8 @@ Route::prefix('v1')->group(function () {
 
         });
 
+        Route::resource('offers', OffersController::class)->only(['index', 'store', 'update',
+            'destroy']);
     });
 });
 

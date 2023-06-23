@@ -1,5 +1,4 @@
 import {$fetch, FetchOptions, FetchError} from "ofetch";
-import {V1} from "~/types/V1";
 
 const CSRF_COOKIE = "XSRF-TOKEN";
 const CSRF_HEADER = "X-XSRF-TOKEN";
@@ -18,7 +17,6 @@ export type LarafetchOptions<R extends ResponseType> = FetchOptions<R> & {
     redirectIfNotAuthenticated?: boolean;
     redirectIfNotVerified?: boolean;
 };
-
 
 export async function $larafetch<T, R extends ResponseType = "json">(
     path: RequestInfo,

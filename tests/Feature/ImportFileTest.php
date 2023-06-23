@@ -160,7 +160,7 @@ class ImportFileTest extends BaseApiTest
         $this->actingAs($user);
 
         $res = $this->getJson('/api/v1/data-files/' . $data['id'] . '/sample');
-        $res->assertStatus(404);
+        $res->assertStatus(403);
     }
 
     /**

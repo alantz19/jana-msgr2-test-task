@@ -123,8 +123,8 @@ class ContactsImport extends BaseImport
             return null;
         }
 
-        if ($this->dataFile->meta['fixedCountryId'] ?? false) {
-            return $this->dataFile->meta['fixedCountryId'];
+        if (!empty($this->dataFile->meta['fixed_country_id'])) {
+            return $this->dataFile->meta['fixed_country_id'];
         }
 
         if (isset($this->countriesCache[$rawValue])) {

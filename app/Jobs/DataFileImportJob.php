@@ -2,9 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Enums\DataFileTypeEnum;
-use App\Imports\EmailFileImport;
-use App\Imports\NumbersFileImport;
+use App\Imports\ContactsImport;
 use App\Models\DataFile;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
@@ -40,13 +38,8 @@ class DataFileImportJob implements ShouldQueue, ShouldBeUnique
         ]);
 
         $dataFile = DataFile::findOrFail($this->fileId);
-
-        $import = match ($dataFile->type) {
-            DataFileTypeEnum::numbers()->value => new NumbersFileImport($dataFile),
-            DataFileTypeEnum::emails()->value => new EmailFileImport($dataFile),
-        };
-
-        $import->import();
+        $contacts = new ContactsImport($dataFile);
+        $contacts->import();
 
         Log::info('DataFileImportJob end', [
             'data_file_id' => $dataFile->id,

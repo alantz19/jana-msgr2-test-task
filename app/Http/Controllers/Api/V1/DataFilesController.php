@@ -3,11 +3,9 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Enums\DataFileStatusEnum;
-use App\Enums\DataFileTypeEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\DataFileResource;
-use App\Imports\EmailFileImport;
-use App\Imports\NumbersFileImport;
+use App\Imports\ContactsImport;
 use App\Jobs\DataFileImportJob;
 use App\Models\DataFile;
 use App\Services\AuthService;
@@ -20,15 +18,13 @@ class DataFilesController extends Controller
     {
         $request->validate([
             'file' => 'required|file|mimes:txt,csv,xlsx,xls|max:' . (50 * 1024),
-            'type' => 'required|string|in:' . implode(',', DataFileTypeEnum::toArray()),
         ]);
 
         $file = $request->file('file');
         $filePath = $file->store('users/' . auth()->id() . '/data-files');
 
         $dataFile = DataFile::create([
-            'user_id' => auth()->id(),
-            'type' => DataFileTypeEnum::from($request->get('type'))->value,
+            'team_id' => auth()->user()->current_team_id,
             'path' => $filePath,
             'name' => $file->getClientOriginalName(),
             'size' => $file->getSize(),
@@ -45,19 +41,16 @@ class DataFilesController extends Controller
 
         AuthService::isModelOwner($dataFile);
 
-        $import = match ($dataFile->type) {
-            DataFileTypeEnum::numbers()->value => new NumbersFileImport($dataFile),
-            DataFileTypeEnum::emails()->value => new EmailFileImport($dataFile),
-        };
+        $contacts = new ContactsImport($dataFile);
 
-        return $import->getSampleRows();
+        return $contacts->getSampleRows();
     }
 
     public function startImport($id, Request $request)
     {
         $dataFile = DataFile::findOrFail($id);
 
-        $this->authorize('update', $dataFile);
+        AuthService::isModelOwner($dataFile);
 
         if (!$dataFile->isPending()) {
             return response([
@@ -65,24 +58,15 @@ class DataFilesController extends Controller
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $rules = match ($dataFile->type) {
-            DataFileTypeEnum::numbers()->value => [
-                'columns' => 'required|array',
-                'columns.number' => 'required|numeric|min:0',
-                'columns.country' => 'required|numeric|min:0',
-                'columns.*' => 'distinct|numeric|min:0',
-            ],
-            DataFileTypeEnum::emails()->value => [
-                'columns' => 'required|array',
-                'columns.email' => 'required|numeric',
-                'columns.*' => 'numeric',
-            ],
-        };
-
-        $request->validate(array_merge($rules, [
+        $request->validate([
+            'columns' => 'required|array',
+            'columns.number' => 'required_without:columns.email|numeric|min:0',
+            'columns.country' => 'required_without:columns.email|numeric|min:0',
+            'columns.email' => 'required_without:columns.number|email',
+            'columns.*' => 'distinct|numeric|min:0',
             'list_name' => 'prohibits:list_id|required_without:list_id|string',
             'list_id' => 'prohibits:list_name|required_without:list_name|uuid|exists:lists,id',
-        ]));
+        ]);
 
         $dataFile->meta = array_merge($dataFile->meta, [
             'list_name' => $request->get('list_name') ?? null,

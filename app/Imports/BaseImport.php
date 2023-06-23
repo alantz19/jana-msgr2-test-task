@@ -24,7 +24,7 @@ abstract class BaseImport implements ImportInterface
         $this->dataFile = $dataFile;
         $this->columns = $dataFile->meta['columns'] ?? [];
         $this->list = $this->findOrCreateList();
-        $this->storagePath = storage_path('app/users/' . $this->dataFile->user_id . '/data-files');
+        $this->storagePath = storage_path('app/users/' . $this->dataFile->team_id . '/data-files');
 
         $this->autoDetectDelimiter();
     }
@@ -252,7 +252,7 @@ abstract class BaseImport implements ImportInterface
         }
 
         $list = new Lists([
-            'team_id' => $this->dataFile->user->current_team_id,
+            'team_id' => $this->dataFile->team_id,
             'name' => $dataFile->meta['list_name'] ?? $this->dataFile->name,
         ]);
 

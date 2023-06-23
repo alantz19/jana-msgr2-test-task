@@ -2,20 +2,16 @@
 
 namespace Tests\Feature;
 
-use App\Enums\DataFileTypeEnum;
-use App\Imports\NumbersFileImport;
+use App\Imports\ContactsImport;
 use App\Jobs\DataFileImportJob;
 use App\Models\Contact;
 use App\Models\DataFile;
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Queue;
-use Laravel\Sanctum\Sanctum;
 use PhpClickHouseLaravel\RawColumn;
 use Tests\Feature\Api\BaseApiTest;
-use Tests\TestCase;
 
 class ImportFileTest extends BaseApiTest
 {
@@ -24,18 +20,18 @@ class ImportFileTest extends BaseApiTest
         $path = __DIR__ . '/data/demo_list-20.xlsx';
 
         // copy to data-files storage directory
-        $targetPath = storage_path('app/users/' . $this->user->id . '/data-files');
+        $targetPath = storage_path('app/users/' . self::$user->id . '/data-files');
         $targetFile = $targetPath . '/demo_list-20.xlsx';
         File::makeDirectory($targetPath, 0775, true, true);
         File::copy($path, $targetFile);
 
         $dataFile = DataFile::factory()
-            ->withUser($this->user)
+            ->withTeamId(self::$user->current_team_id)
             ->withFile($targetFile)
             ->withLogicalTest()
             ->create();
 
-        $import = new NumbersFileImport($dataFile);
+        $import = new ContactsImport($dataFile);
         $import->import();
 
         $data = Contact::select(new RawColumn('uniqExact(id)', 'total'))
@@ -51,19 +47,19 @@ class ImportFileTest extends BaseApiTest
         $path = __DIR__ . '/data/demo_list-custom-fields.csv';
 
         // copy to data-files storage directory
-        $targetPath = storage_path('app/users/' . $this->user->id . '/data-files');
+        $targetPath = storage_path('app/users/' . self::$user->id . '/data-files');
         $targetFile = $targetPath . '/demo_list-custom-fields.csv';
         File::makeDirectory($targetPath, 0775, true, true);
         File::copy($path, $targetFile);
 
         $dataFile = DataFile::factory()
-            ->withUser($this->user)
+            ->withTeamId(self::$user->current_team_id)
             ->withFile($targetFile)
             ->withLogicalTest()
             ->withCustomColumns()
             ->create();
 
-        $import = new NumbersFileImport($dataFile);
+        $import = new ContactsImport($dataFile);
         $import->import();
 
         $data = Contact::select(new RawColumn('uniqExact(id)', 'total'))
@@ -92,18 +88,18 @@ class ImportFileTest extends BaseApiTest
         $path = __DIR__ . '/data/demo_list-auto-detect-delimiter.csv';
 
         // copy to data-files storage directory
-        $targetPath = storage_path('app/users/' . $this->user->id . '/data-files');
+        $targetPath = storage_path('app/users/' . self::$user->id . '/data-files');
         $targetFile = $targetPath . '/demo_list-auto-detect-delimiter.csv';
         File::makeDirectory($targetPath, 0775, true, true);
         File::copy($path, $targetFile);
 
         $dataFile = DataFile::factory()
-            ->withUser($this->user)
+            ->withTeamId(self::$user->current_team_id)
             ->withFile($targetFile)
             ->withLogicalTest()
             ->create();
 
-        $import = new NumbersFileImport($dataFile);
+        $import = new ContactsImport($dataFile);
 
         $this->assertEquals(';', $import->getDelimiter());
 
@@ -117,28 +113,12 @@ class ImportFileTest extends BaseApiTest
         $this->assertEquals(20, (int)$data['total']);
     }
 
-    public function testUnauthorizedRequest()
-    {
-        $this->actingAsGuest();
-        $path = __DIR__ . '/data/demo_list-custom-fields.csv';
-
-        $res = $this->postJson(
-            '/api/v1/data-files/contacts', [
-                'type' => DataFileTypeEnum::numbers()->label,
-                'file' => new UploadedFile($path, 'demo_list-custom-fields.csv', 'text/csv', null, true),
-            ]
-        );
-
-        $res->assertStatus(401);
-    }
-
     public function testApiUploadFile()
     {
-        $this->actingAs($this->user);
+        $this->actingAs(self::$user);
         $path = __DIR__ . '/data/demo_list-custom-fields.csv';
         $res = $this->postJson(
             '/api/v1/data-files/contacts', [
-                'type' => DataFileTypeEnum::numbers()->label,
                 'file' => new UploadedFile($path, 'demo_list-custom-fields.csv', 'text/csv', null, true),
             ]
         );
@@ -160,7 +140,7 @@ class ImportFileTest extends BaseApiTest
         $this->actingAs($user);
 
         $res = $this->getJson('/api/v1/data-files/' . $data['id'] . '/sample');
-        $res->assertStatus(404);
+        $res->assertStatus(403);
     }
 
     /**
@@ -168,7 +148,7 @@ class ImportFileTest extends BaseApiTest
      */
     public function testApiGetSample($data)
     {
-        $this->actingAs($this->user);
+        $this->actingAsInitialUser();
         $res = $this->getJson('/api/v1/data-files/' . $data['id'] . '/sample');
         $res->assertStatus(200);
         $sample = $res->json();

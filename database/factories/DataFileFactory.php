@@ -2,9 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Enums\DataFileTypeEnum;
 use App\Models\DataFile;
-use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -15,7 +13,6 @@ class DataFileFactory extends Factory
     public function definition(): array
     {
         return [
-            'type' => DataFileTypeEnum::numbers()->value,
             'name' => $this->faker->word,
             'path' => $this->faker->filePath(),
             'size' => $this->faker->randomNumber(),
@@ -30,11 +27,11 @@ class DataFileFactory extends Factory
         ];
     }
 
-    public function withUser(User $user): static
+    public function withTeamId(string $teamId): static
     {
-        return $this->state(function (array $attributes) use ($user) {
+        return $this->state(function (array $attributes) use ($teamId) {
             return [
-                'user_id' => $user->id,
+                'team_id' => $teamId,
             ];
         });
     }

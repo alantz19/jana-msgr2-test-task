@@ -14,7 +14,7 @@ class DataFile extends Model
     use HasFactory, SoftDeletes, HasUuids;
 
     protected $fillable = [
-        'user_id',
+        'team_id',
         'type',
         'name',
         'path',
@@ -29,9 +29,9 @@ class DataFile extends Model
         'meta' => 'array',
     ];
 
-    public function user(): BelongsTo
+    public function team(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Team::class);
     }
 
     public function getColumns(): array

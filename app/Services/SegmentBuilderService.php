@@ -14,8 +14,6 @@ use PhpClickHouseLaravel\RawColumn;
 
 class SegmentBuilderService
 {
-    private static int $ruleIdx = 0;
-
     public static function create(Segment $segment): ?Builder
     {
         $data = $segment->meta['query'] ?? [];
@@ -51,14 +49,14 @@ class SegmentBuilderService
         return $builder;
     }
 
-    public static function parse(array $conditions): array
+    public static function parse(array $conditions, &$ruleIdx = 1): array
     {
         $data = [];
 
         if (self::isGroup($conditions)) {
             $arr = [
                 'condition' => $conditions['condition'],
-                'rules' => self::parse($conditions['rules']),
+                'rules' => self::parse($conditions['rules'], $ruleIdx),
             ];
             $arr['sql'] = self::getGroupSql($arr);
             $arr['binds'] = self::getGroupBinds($arr);
@@ -67,13 +65,13 @@ class SegmentBuilderService
 
         foreach ($conditions as $rule) {
             if (self::isGroup($rule)) {
-                $data[] = self::parse($rule);
+                $data[] = self::parse($rule, $ruleIdx);
                 continue;
             }
 
             if (self::isRule($rule)) {
-                $data[] = self::parseRule($rule);
-                self::$ruleIdx += 1;
+                $data[] = self::parseRule($rule, $ruleIdx);
+                $ruleIdx += 1;
                 continue;
             }
 
@@ -90,8 +88,8 @@ class SegmentBuilderService
         $sub = (new Builder())
             ->select([
                 'phone_normalized',
-                new RawColumn('anyLast(last_sent)', 'last_sent'),
-                new RawColumn('anyLast(last_clicked)', 'last_clicked'),
+                new RawColumn('max(last_sent)', 'last_sent'),
+                new RawColumn('max(last_clicked)', 'last_clicked'),
                 new RawColumn('sum(sent_count)', 'sent_count'),
                 new RawColumn('sum(clicked_count)', 'clicked_count'),
                 new RawColumn('sum(leads_count)', 'leads_count'),
@@ -155,11 +153,11 @@ class SegmentBuilderService
             && array_key_exists('value', $value);
     }
 
-    private static function parseRule(array $rule): ?array
+    private static function parseRule(array $rule, int $ruleIdx): ?array
     {
         $op = JqBuilderOperatorEnum::from($rule['operator']);
         $field = JqBuilderFieldEnum::from($rule['field']);
-        $bindKey = 'rule_' . self::$ruleIdx;
+        $bindKey = 'rule_' . $ruleIdx;
         $value = $rule['value'];
 
         if ($op->equals(JqBuilderOperatorEnum::contains(), JqBuilderOperatorEnum::not_contains())) {

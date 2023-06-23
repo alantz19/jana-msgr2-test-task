@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Contact;
 use App\Models\MobileNetwork;
+use App\Models\Team;
 use App\Services\ClickhouseService;
 use App\Services\CountryService;
 use App\Services\SmsContactMobileNetworksService;
@@ -13,6 +14,8 @@ use Ramsey\Uuid\Uuid;
 
 class ContactFactory extends Factory
 {
+    public static Team $team;
+
     public function saveAndReturn($list_id = false, $country = 'uk', $withNetworks = false): Collection
     {
         $contacts = new Collection();
@@ -63,8 +66,20 @@ class ContactFactory extends Factory
             'phone_normalized' => str_replace('+', '', $this->faker->e164PhoneNumber()),
             'phone_is_good' => true,
             'phone_is_good_reason' => $this->faker->randomNumber(1, 5),
-            'country_id' => $this->faker->uuid,
+            'country_id' => 225,
+            'date_created' => now()->toDateTimeString(),
 //            'state_id' => 1,
         ];
+    }
+
+    public function withTeam(Team $team): static
+    {
+        self::$team = $team;
+
+        return $this->state(function (array $attributes) use ($team) {
+            return [
+                'team_id' => $team->id,
+            ];
+        });
     }
 }

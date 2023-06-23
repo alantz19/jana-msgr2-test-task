@@ -17,3 +17,5 @@ yarn-error.log
 /.fleet
 /.vscode
 .idea/workspace.xml
+
+.DS_Store

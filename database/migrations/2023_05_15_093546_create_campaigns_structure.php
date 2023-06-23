@@ -37,6 +37,12 @@ return new class extends Migration {
             $table->json('meta');
             $table->timestamps();
         });
+        Schema::create('sms_campaign_autosenders', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->foreignUuid('sms_campaign_id');
+            $table->longText('meta');
+            $table->timestamps();
+        });
         Schema::create('sms_campaign_texts', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('sms_campaign_id');
@@ -67,7 +73,8 @@ return new class extends Migration {
             $table->foreignUuid('offer_id')->references('id')->on('offers');
             $table->foreignUuid('sms_campaign_id');
             $table->boolean('is_active')->default(true);
-            $table->timestamp('date_created')->useCurrent();
+            $table->softDeletes();
+            $table->timestamps();
         });
     }
 

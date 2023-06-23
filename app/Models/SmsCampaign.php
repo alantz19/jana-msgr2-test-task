@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\HasMeta;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -12,6 +13,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class SmsCampaign extends Model
 {
+    use HasMeta;
     use HasFactory;
     use HasUuids;
     use SoftDeletes;
@@ -19,9 +21,7 @@ class SmsCampaign extends Model
     protected $fillable = [
         'sms_campaign_plan_id',
         'name',
-        'team_id',
         'meta',
-
     ];
 
     protected static function boot()
@@ -50,19 +50,6 @@ class SmsCampaign extends Model
         $this->addMeta('lists', $list_ids);
     }
 
-    private function addMeta($key, $value)
-    {
-        $meta = $this->getMeta();
-        $meta[$key] = $value;
-        $this->meta = json_encode($meta);
-        $this->save();
-    }
-
-    private function getMeta(){
-        $meta = json_decode($this->meta, true);
-
-        return $meta ? $meta : [];
-    }
 
     public function setSettings(array $array)
     {

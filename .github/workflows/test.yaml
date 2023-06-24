@@ -15,16 +15,17 @@ jobs:
     container: 
       image: php:8.1-cli
       env: 
-        DEPENDENSIES: libfreetype-dev libjpeg62-turbo-dev libpng-dev libzip-dev
+        DEPENDENSIES: libfreetype-dev libjpeg62-turbo-dev libpng-dev libzip-dev sudo
         EXTENSIONS: gd zip pcntl
         PECL_EXTENTIONS: redis
-      options: --user 1002
     steps:
     - run: curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
     - run: apt update && apt install -y ${DEPENDENSIES}
     - run: docker-php-ext-install ${EXTENSIONS}
-    - run: pecl install -o -f ${PECL_EXTENTIONS} &&  rm -rf /tmp/pear &&  docker-php-ext-enable ${PECL_EXTENTIONS}
-    - run: composer install
+    - run: yes '' | pecl install -o -f ${PECL_EXTENTIONS} &&  rm -rf /tmp/pear &&  docker-php-ext-enable ${PECL_EXTENTIONS}
+    - run: useradd -u 1002 github-actions
+    - run: pwd && ls -lsa
+    - run: sudo -u github-actions composer install
   
   deploy:
     runs-on: demo-v2

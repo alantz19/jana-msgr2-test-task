@@ -7,7 +7,7 @@ jobs:
     runs-on: demo-v2
     steps:
       - uses: actions/checkout@v3
-      - run: id
+      - run: ./vendor/bin/sail down || true
   
   build:
     runs-on: demo-v2
@@ -23,9 +23,8 @@ jobs:
     - run: apt update && apt install -y ${DEPENDENSIES}
     - run: docker-php-ext-install ${EXTENSIONS}
     - run: yes '' | pecl install -o -f ${PECL_EXTENTIONS} &&  rm -rf /tmp/pear &&  docker-php-ext-enable ${PECL_EXTENTIONS}
-    - run: useradd -u 1002 github-actions
-    - run: pwd && ls -lsa
-    - run: sudo -u github-actions composer install
+    - run: github-actions composer install
+    - run: chown -R 1000:1000 .
   
   deploy:
     runs-on: demo-v2

@@ -36,5 +36,5 @@ jobs:
         sed -i '/image: yandex.clickhouse-server/s/^/#/g' docker-compose.yml
     - run: cp .env.example .env
     - run: ./vendor/bin/sail up -d
-    - run: ./vendor/bin/sail artisan migrate:fresh --seed
+    - run: sleep 60 && ./vendor/bin/sail artisan migrate:fresh --seed
 

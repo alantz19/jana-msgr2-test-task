@@ -12,7 +12,7 @@ jobs:
   build:
     runs-on: demo-v2
     needs: stop-current-build
-    container: { image: php:8.1-cli }
+    container: php:8.1-cli
     steps:
     - run: curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
     - run: composer install

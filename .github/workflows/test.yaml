@@ -23,7 +23,7 @@ jobs:
     - run: apt update && apt install -y ${DEPENDENSIES}
     - run: docker-php-ext-install ${EXTENSIONS}
     - run: yes '' | pecl install -o -f ${PECL_EXTENTIONS} &&  rm -rf /tmp/pear &&  docker-php-ext-enable ${PECL_EXTENTIONS}
-    - run: github-actions composer install
+    - run: composer install
     - run: chown -R 1000:1000 .
   
   deploy:

@@ -1,0 +1,31 @@
+name: Deploy to demo
+on:
+  push:
+    braches: ["actions"]
+jobs:
+  stop-current-build:
+    runs-on: demo-v2
+    steps:
+      - uses: actions/checkout@v3
+      - run: ./vendor/bin/sail down
+  
+  build:
+    runs-on: demo-v2
+    needs: stop-current-build
+    container: { image: php:8.1-cli }
+    steps:
+    - run: curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+    - run: composer install
+  
+  deploy:
+    runs-on: demo-v2
+    needs: build
+    steps:
+    - run: |
+        sed -i '/^ARG single_binary_location_url/s/^/#/g' ./docker/clickhouse/Dockerfile
+        sed -i '/#ARG single_binary_location_url.*amd64/s/^#//g' ./docker/clickhouse/Dockerfile
+        sed -i '/image: yandex.clickhouse-server/s/^/#/g' docker-compose.yml
+    - run: cp .env.example .env
+    - run: ./vendor/bin/sail up -d
+    - run: ./vendor/bin/sail artisan migrate:fresh --seed
+

@@ -19,7 +19,7 @@ jobs:
         EXTENSIONS: gd zip
     steps:
     - run: curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-    - run: apt update && apt install ${DEPENDENSIES}
+    - run: apt update && apt install -y ${DEPENDENSIES}
     - run: docker-php-ext-install ${EXTENSIONS}
     - run: composer install
   

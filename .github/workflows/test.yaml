@@ -32,11 +32,11 @@ jobs:
     needs: build
     container: 
       image: node
-      volumes: .:/app
-      workingdir: /app
+      volumes: 
+      - .:/app
     steps:
-    - run: node install
-    - run: chown -R 1000:1000 node_modules
+    - run: cd /app/nuxt && node install
+    - run: chown -R 1000:1000 .
   
   deploy:
     runs-on: demo-v2
@@ -50,4 +50,4 @@ jobs:
     - run: ./vendor/bin/sail up -d
     - run: sleep 60 && ./vendor/bin/sail artisan migrate:fresh --seed
   
-    - run: docker run --name node-dev -d -v .:/app -w /app npm run dev
+    - run: docker run --name node-dev -d -v .:/app -w /app/nuxt npm run dev

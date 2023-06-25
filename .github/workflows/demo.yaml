@@ -40,4 +40,4 @@ jobs:
     - run: cp .env.example .env
     - run: ./vendor/bin/sail up -d
     - run: sleep 60 && ./vendor/bin/sail artisan migrate:fresh --seed
-    - run: docker run --name node-dev -d -v .:/app -w /app/nuxt node npm run dev
+    - run: docker run --name node-dev -d -v .:/app -w /app/nuxt -u 1000 node npm run dev

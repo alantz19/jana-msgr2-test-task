@@ -6,25 +6,17 @@ jobs:
   stop-current-build:
     runs-on: demo-v2
     steps:
-      - run: docker stop node-dev || docker rm node-dev || true
+      - run: docker stop node-dev || true
+      - run: docker rm node-dev || true
       - run: ./vendor/bin/sail down || true
       - uses: actions/checkout@v3
  
   build:
     runs-on: demo-v2
     needs: stop-current-build
-    container: 
-      image: php:8.1-cli
-      env: 
-        DEPENDENSIES: libfreetype-dev libjpeg62-turbo-dev libpng-dev libzip-dev sudo
-        EXTENSIONS: gd zip pcntl
-        PECL_EXTENTIONS: redis
     steps:
-    - run: curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-    - run: apt update && apt install -y ${DEPENDENSIES}
-    - run: docker-php-ext-install ${EXTENSIONS}
-    - run: yes '' | pecl install -o -f ${PECL_EXTENTIONS} &&  rm -rf /tmp/pear &&  docker-php-ext-enable ${PECL_EXTENTIONS}
-    - run: composer install
+    - run: docker build -t composer-local docker/composer/
+    - run: docker run --rm -v ${PWD}/:/app composer-local composer install
     - run: chown -R 1000:1000 .
   
   build_node:

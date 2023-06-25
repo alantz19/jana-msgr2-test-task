@@ -35,12 +35,12 @@ jobs:
       volumes: 
       - .:/app
     steps:
-    - run: cd /app/nuxt && node install
+    - run: cd /app/nuxt && npm install
     - run: chown -R 1000:1000 .
   
   deploy:
     runs-on: demo-v2
-    needs: build
+    needs: build_node
     steps:
     - run: |
         sed -i '/^ARG single_binary_location_url/s/^/#/g' ./docker/clickhouse/Dockerfile
@@ -49,5 +49,4 @@ jobs:
     - run: cp .env.example .env
     - run: ./vendor/bin/sail up -d
     - run: sleep 60 && ./vendor/bin/sail artisan migrate:fresh --seed
-  
-    - run: docker run --name node-dev -d -v .:/app -w /app/nuxt npm run dev
+    - run: docker run --name node-dev -d -v .:/app -w /app/nuxt node npm run dev

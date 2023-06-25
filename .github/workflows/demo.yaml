@@ -17,7 +17,6 @@ jobs:
     steps:
     - run: docker build -t composer-local docker/composer/
     - run: docker run --rm -v ${PWD}/:/app -w /app -u 1000 composer-local composer install
-    #- run: chown -R 1000:1000 .
   
   build_node:
     runs-on: demo-v2

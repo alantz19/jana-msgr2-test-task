@@ -6,10 +6,10 @@ jobs:
   stop-current-build:
     runs-on: demo-v2
     steps:
-      - uses: actions/checkout@v3
-      - run: ls -lsa
+      - run: docker stop node-dev && docker rm node-dev
       - run: ./vendor/bin/sail down || true
-  
+      - uses: actions/checkout@v3
+ 
   build:
     runs-on: demo-v2
     needs: stop-current-build
@@ -38,4 +38,10 @@ jobs:
     - run: cp .env.example .env
     - run: ./vendor/bin/sail up -d
     - run: sleep 60 && ./vendor/bin/sail artisan migrate:fresh --seed
-
+  
+  node:
+    runs-on: demo-v2
+    needs: build
+    steps:
+    - run: docker run --rm -v .:/app -w /app npm install
+    - run: docker run --name node-dev -d -v .:/app -w /app npm run dev

@@ -2,8 +2,10 @@
 
 namespace Tests\Feature\Api;
 
+use App\Data\SmsRoutingPlanSelectorData;
 use App\Models\Offer;
 use App\Models\SmsCampaign;
+use App\Models\SmsRoutingPlan;
 use Tests\TestCase;
 
 class SendSmsCampaignTest extends BaseApiTest
@@ -22,6 +24,10 @@ class SendSmsCampaignTest extends BaseApiTest
 
     public function testCampaignVars()
     {
+        $plan = SmsRoutingPlan::factory()->create([
+            'team_id' => $this->user->currentTeam->id,
+            'name' => 'Test plan',
+        ]);
         $campaign = SmsCampaign::factory()->state(['team_id' => $this->user->currentTeam->id])->create();
         $this->postJson("/api/v1/sms/campaigns/{$campaign->id}/texts", [
             'text' => 'Test campaign var',
@@ -85,6 +91,6 @@ class SendSmsCampaignTest extends BaseApiTest
             'meta.send_amount' => '100',
         ])->assertOk();
 
-//        $this->postJson("/api/v1/sms/campaigns/{$campaign->id}/send-manual")->assertOk();
+        $this->postJson("/api/v1/sms/campaigns/{$campaign->id}/send-manual")->assertOk();
     }
 }

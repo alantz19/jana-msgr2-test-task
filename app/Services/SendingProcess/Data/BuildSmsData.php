@@ -2,6 +2,7 @@
 
 namespace App\Services\SendingProcess\Data;
 
+use App\Data\CampaignSendToBuildSmsData;
 use App\Models\Domain;
 use App\Models\Offer;
 use App\Models\SmsCampaignText;
@@ -11,9 +12,9 @@ class BuildSmsData
     public SmsCampaignText $selectedCampaignText;
     public $sms_shortlink;
     public $segment_id; //todo
-    public \App\Data\buildSmsData $dto;
+    public CampaignSendToBuildSmsData $sendToBuildSmsData;
     /**
-     * @var \App\Models\Offer|mixed
+     * @var Offer|mixed
      */
     public Offer $selectedOffer;
     public Domain $domain;
@@ -80,7 +81,7 @@ class BuildSmsData
             ];
         }
 
-        $this->_cache['replacement_params'] =  array_merge($customParams, $metaParams, $stateParams, $params);
+        $this->_cache['replacement_params'] = array_merge($customParams, $metaParams, $stateParams, $params);
         return $this->_cache['replacement_params'];
     }
 

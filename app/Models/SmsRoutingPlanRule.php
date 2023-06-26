@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Data\SmsRoutingPlanRuleSplitActionVarsData;
 use App\Enums\SmsRoutingPlanRuleActionEnum;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,6 +13,7 @@ use Illuminate\Validation\Rule;
 
 /**
  * @property SmsRoutingPlan $plan
+ * @method bySelectOrder()
  */
 class SmsRoutingPlanRule extends Model
 {
@@ -37,13 +39,24 @@ class SmsRoutingPlanRule extends Model
             'network_id' => 'sometimes|integer|exists:networks,id',
             'is_active' => 'sometimes|boolean',
             'priority' => 'sometimes|integer',
+            /**
+             * To create a split rule please check POST ./route/split endpoint.
+             */
             'action' => ['required', Rule::in(SmsRoutingPlanRuleActionEnum::toArray())],
-            'action_vars' => 'nullable|array',
+            'action_vars' => 'nullable|json',
         ];
     }
 
     public function plan(): BelongsTo
     {
         return $this->belongsTo(SmsRoutingPlan::class, 'sms_routing_plan_id');
+    }
+
+    public function scopeBySelectOrder($query)
+    {
+        return $query->where('is_active', true)
+            ->orderBy('country_id', 'asc')
+            ->orderBy('network_id', 'asc')
+            ->orderBy('priority', 'asc');
     }
 }

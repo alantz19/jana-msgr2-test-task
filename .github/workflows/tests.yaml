@@ -12,16 +12,8 @@ jobs:
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
-    #- run: docker run --rm -v ${PWD}/:/app -w /app -u 1001 smsedge/msgr-v2:composer-local composer install
-    - run: docker run --rm -v ${PWD}/:/app -w /app/nuxt node npm install
-    - run: ls -lsa && ls -lsa nuxt
-  
+    - run: docker run --rm -v ${PWD}/:/app -w /app -u 1001 smsedge/msgr-v2:composer-local composer install
 
-  
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
     - run: |
         sed -i '/^ARG single_binary_location_url/s/^/#/g' ./docker/clickhouse/Dockerfile
         sed -i '/#ARG single_binary_location_url.*amd64/s/^#//g' ./docker/clickhouse/Dockerfile

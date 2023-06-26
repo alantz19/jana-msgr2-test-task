@@ -23,11 +23,12 @@ jobs:
     - run: ./vendor/bin/sail up -d
     - run: sleep 30 && ./vendor/bin/sail artisan migrate:fresh --seed
     - run: ./vendor/bin/sail test --log-junit ./report.xml || true
+    - run: ls -lsa
     - name: Test Report
       uses: dorny/test-reporter@v1
       if: success() || failure()
       with:
-        name: JEST Tests
+        name: PHPUnit Tests
         path: report.xml
-        reporter: jest-junit
+        reporter: java-junit
 

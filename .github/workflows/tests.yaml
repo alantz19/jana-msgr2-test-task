@@ -12,8 +12,7 @@ jobs:
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
-    - run: ls -lsa
-    - run: docker run --rm -v ${PWD}/:/app -w /app -u 1001 smsedge/msgr-v2:composer-local composer install
+    #- run: docker run --rm -v ${PWD}/:/app -w /app -u 1001 smsedge/msgr-v2:composer-local composer install
     - run: ls -lsa
   
   build_node:
@@ -24,7 +23,7 @@ jobs:
       volumes: 
       - ${{ github.workspace }}/:/app
     steps:
-    - run: ls -lsa && ls -lsa / && ls -lsa /_w && ls -lsa /app
+    - run: ls -lsa && ls -lsa / && ls -lsa /__w && ls -lsa /app && pwd
     - run: find / -type d
     - run: tree -d /
     - run: cd /app/nuxt && npm install

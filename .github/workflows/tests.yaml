@@ -12,7 +12,9 @@ jobs:
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
-    - run: docker run --rm -v ${PWD}/:/app -w /app -u 1000 smsedge/msgr-v2:composer-local composer install
+    - run: ls -lsa
+    - run: docker run --rm -v ${PWD}/:/app -w /app -u 1001 smsedge/msgr-v2:composer-local composer install
+    - run: ls -lsa
   
   build_node:
     runs-on: ubuntu-latest
@@ -23,7 +25,7 @@ jobs:
       - .:/app
     steps:
     - run: cd /app/nuxt && npm install
-    - run: chown -R 1000:1000 .
+    - run: chown -R 1001 .
   
   deploy:
     runs-on: ubuntu-latest
@@ -33,6 +35,7 @@ jobs:
         sed -i '/^ARG single_binary_location_url/s/^/#/g' ./docker/clickhouse/Dockerfile
         sed -i '/#ARG single_binary_location_url.*amd64/s/^#//g' ./docker/clickhouse/Dockerfile
         sed -i '/image: yandex.clickhouse-server/s/^/#/g' docker-compose.yml
+        sed -i '/WWWUSER' .env.example
     - run: cp .env.example .env
     - run: ./vendor/bin/sail up -d
     - run: sleep 30 && ./vendor/bin/sail artisan migrate:fresh --seed

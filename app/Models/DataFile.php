@@ -15,17 +15,15 @@ class DataFile extends Model
 
     protected $fillable = [
         'team_id',
-        'type',
         'name',
-        'path',
-        'size',
+        'file_name',
+        'file_size',
         'status_id',
         'meta',
     ];
 
     protected $casts = [
-        'type' => 'integer',
-        'size' => 'integer',
+        'file_size' => 'integer',
         'meta' => 'array',
     ];
 
@@ -42,5 +40,10 @@ class DataFile extends Model
     public function isPending(): bool
     {
         return $this->status_id === DataFileStatusEnum::pending()->value;
+    }
+
+    public function getFilePath(): string
+    {
+        return 'teams/' . $this->team_id . '/data-files/' . $this->file_name;
     }
 }

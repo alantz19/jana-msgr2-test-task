@@ -14,10 +14,9 @@ class DataFileFactory extends Factory
     {
         return [
             'name' => $this->faker->word,
-            'path' => $this->faker->filePath(),
-            'size' => $this->faker->randomNumber(),
+            'file_name' => $this->faker->word . '.csv',
+            'file_size' => $this->faker->randomNumber(),
             'meta' => [
-                'list_name' => $this->faker->word,
                 'columns' => [
                     'number' => 0,
                     'country' => 1,
@@ -36,15 +35,13 @@ class DataFileFactory extends Factory
         });
     }
 
-    public function withFile($filePath): static
+    public function withFileName($fileName): static
     {
-        $info = pathinfo($filePath);
-
-        return $this->state(function (array $attributes) use ($filePath, $info) {
+        return $this->state(function (array $attributes) use ($fileName) {
             return [
-                'name' => $info['basename'],
-                'path' => str_replace(storage_path('app/'), '', $filePath),
-                'size' => filesize($filePath),
+                'name' => $fileName,
+                'file_name' => $fileName,
+                'size' => $this->faker->randomNumber(),
             ];
         });
     }

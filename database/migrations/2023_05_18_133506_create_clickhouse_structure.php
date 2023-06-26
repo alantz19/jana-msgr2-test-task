@@ -198,22 +198,22 @@ SETTINGS index_granularity = 8192");
 ');
 
 
-        static::write("CREATE MATERIALIZED VIEW IF NOT EXISTS contacts_mv TO contacts_sms_materialized AS
-    select team_id, list_id, phone_normalized,  
-    anyLast(custom1_str), 
-    anyLast(custom2_str), anyLast(custom3_str),
-     anyLast(custom4_str), anyLast(custom5_str),
-      anyLast(custom1_int), anyLast(custom2_int),
-       anyLast(custom3_int), anyLast(custom4_int),
-        anyLast(custom5_int), anyLast(custom1_dec), 
-        anyLast(custom2_dec), anyLast(custom1_datetime), 
-        anyLast(custom2_datetime), anyLast(custom3_datetime), 
-        anyLast(custom4_datetime), anyLast(custom5_datetime),
-         anyLast(meta), anyLast(is_deleted), 
-         anyLast(phone_is_good),  anyLast(phone_is_good_reason), 
-         anyLast(name), anyLast(country_id), 
-         anyLast(state_id), anyLast(state_id_reason) 
-    from contacts group by team_id, list_id, phone_normalized;");
+//        static::write("CREATE MATERIALIZED VIEW IF NOT EXISTS contacts_mv TO contacts_sms_materialized AS
+//    select team_id, list_id, phone_normalized,
+//    anyLast(custom1_str),
+//    anyLast(custom2_str), anyLast(custom3_str),
+//     anyLast(custom4_str), anyLast(custom5_str),
+//      anyLast(custom1_int), anyLast(custom2_int),
+//       anyLast(custom3_int), anyLast(custom4_int),
+//        anyLast(custom5_int), anyLast(custom1_dec),
+//        anyLast(custom2_dec), anyLast(custom1_datetime),
+//        anyLast(custom2_datetime), anyLast(custom3_datetime),
+//        anyLast(custom4_datetime), anyLast(custom5_datetime),
+//         anyLast(meta), anyLast(is_deleted),
+//         anyLast(phone_is_good),  anyLast(phone_is_good_reason),
+//         anyLast(name), anyLast(country_id),
+//         anyLast(state_id), anyLast(state_id_reason)
+//    from contacts group by team_id, list_id, phone_normalized;");
 
         static::write('create table IF NOT EXISTS contact_tags
 (
@@ -350,7 +350,6 @@ SETTINGS index_granularity = 8192;
 
         static::write('CREATE MATERIALIZED VIEW IF NOT EXISTS sms_contact_sms_networks_mv TO contacts_sms_materialized AS
 select csm.phone_normalized,
-       csm.list_id,
        csm.team_id,
        vnn.network_id    as network_id,
        vnn.network_brand as network_brand

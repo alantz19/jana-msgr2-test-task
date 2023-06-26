@@ -4,9 +4,11 @@ namespace Tests\Feature;
 
 use App\Imports\ContactsImport;
 use App\Jobs\DataFileImportJob;
+use App\Models\Clickhouse\Materialized\ContactSms;
 use App\Models\Contact;
 use App\Models\DataFile;
 use App\Models\User;
+use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Queue;
@@ -15,27 +17,39 @@ use Tests\Feature\Api\BaseApiTest;
 
 class ImportFileTest extends BaseApiTest
 {
+    use WithFaker;
+
     public function testNumbersImportXlsx()
     {
         $path = __DIR__ . '/data/demo_list-20.xlsx';
 
         // copy to data-files storage directory
-        $targetPath = storage_path('app/teams/' . self::$user->id . '/data-files');
-        $targetFile = $targetPath . '/demo_list-20.xlsx';
+        $targetPath = storage_path('app/teams/' . self::$user->current_team_id . '/data-files');
+        $targetFileName = 'demo_list-20.xlsx';
+        $targetFile = $targetPath . '/' . $targetFileName;
         File::makeDirectory($targetPath, 0775, true, true);
         File::copy($path, $targetFile);
 
+        $tag1 = $this->faker->word;
+        $tag2 = $this->faker->word;
+
         $dataFile = DataFile::factory()
-            ->withTeamId(self::$user->current_team_id)
-            ->withFile($targetFile)
-            ->withLogicalTest()
+            ->state(function (array $attributes) use ($targetFileName, $tag1, $tag2) {
+                return [
+                    'team_id' => self::$user->current_team_id,
+                    'file_name' => $targetFileName,
+                    'meta' => array_merge($attributes['meta'] ?? [], [
+                        'logical_test' => true,
+                        'tags' => [$tag1, $tag2],
+                    ]),
+                ];
+            })
             ->create();
 
-        $import = new ContactsImport($dataFile);
-        $import->import();
+        $contacts = new ContactsImport($dataFile);
+        $contacts->import();
 
-        $data = Contact::select(new RawColumn('uniqExact(id)', 'total'))
-            ->where('list_id', $import->getList()->id)
+        $data = ContactSms::select(new RawColumn('uniqExact(id)', 'total'))
             ->get()
             ->fetchOne();
 
@@ -54,7 +68,7 @@ class ImportFileTest extends BaseApiTest
 
         $dataFile = DataFile::factory()
             ->withTeamId(self::$user->current_team_id)
-            ->withFile($targetFile)
+            ->withFileName($targetFile)
             ->withLogicalTest()
             ->withCustomColumns()
             ->create();
@@ -95,7 +109,7 @@ class ImportFileTest extends BaseApiTest
 
         $dataFile = DataFile::factory()
             ->withTeamId(self::$user->current_team_id)
-            ->withFile($targetFile)
+            ->withFileName($targetFile)
             ->withLogicalTest()
             ->create();
 

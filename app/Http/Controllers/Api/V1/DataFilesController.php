@@ -21,13 +21,13 @@ class DataFilesController extends Controller
         ]);
 
         $file = $request->file('file');
-        $filePath = $file->store('teams/' . auth()->user()->current_team_id . '/data-files');
+        $file->store('teams/' . auth()->user()->current_team_id . '/data-files');
 
         $dataFile = DataFile::create([
             'team_id' => auth()->user()->current_team_id,
-            'path' => $filePath,
             'name' => $file->getClientOriginalName(),
-            'size' => $file->getSize(),
+            'file_size' => $file->getSize(),
+            'file_name' => $file->getFilename(),
             'status_id' => DataFileStatusEnum::pending()->value,
             'meta' => [],
         ]);
@@ -82,16 +82,15 @@ class DataFilesController extends Controller
             'columns.custom3_datetime' => 'sometimes|numeric|min:0',
             'columns.custom4_datetime' => 'sometimes|numeric|min:0',
             'columns.custom5_datetime' => 'sometimes|numeric|min:0',
-            'list_name' => 'sometimes|prohibits:list_id|required_without:list_id|string',
-            'list_id' => 'sometimes|prohibits:list_name|required_without:list_name|uuid|exists:lists,id',
+            'tags' => 'sometimes|array',
+            'tags.*' => 'distinct|string',
             'fixed_country_id' => 'sometimes|numeric|exists:countries,id',
         ]);
 
         $dataFile->meta = array_merge($dataFile->meta, [
-            'list_name' => $request->get('list_name') ?? null,
-            'list_id' => $request->get('list_id') ?? null,
             'fixed_country_id' => $request->get('fixed_country_id') ?? null,
             'columns' => $request->get('columns'),
+            'tags' => $request->get('tags') ?? null,
         ]);
         $dataFile->saveOrFail();
 

@@ -22,7 +22,7 @@ jobs:
     container: 
       image: node
       volumes: 
-      - ${PWD}/:/app
+      - ./:/app
     steps:
     - run: cd /app/nuxt && npm install
     - run: chown -R 1001 .

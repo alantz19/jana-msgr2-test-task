@@ -22,7 +22,7 @@ jobs:
     container: 
       image: node
       volumes: 
-      - .:/app
+      - ${PWD}/:/app
     steps:
     - run: cd /app/nuxt && npm install
     - run: chown -R 1001 .
@@ -35,8 +35,8 @@ jobs:
         sed -i '/^ARG single_binary_location_url/s/^/#/g' ./docker/clickhouse/Dockerfile
         sed -i '/#ARG single_binary_location_url.*amd64/s/^#//g' ./docker/clickhouse/Dockerfile
         sed -i '/image: yandex.clickhouse-server/s/^/#/g' docker-compose.yml
-        sed -i '/WWWUSER' .env.example
     - run: cp .env.example .env
+    - run: sed -i 's/^WWWUSER=.*/WWWUSER=1001/g' .env
     - run: ./vendor/bin/sail up -d
     - run: sleep 30 && ./vendor/bin/sail artisan migrate:fresh --seed
     - run: ./vendor/bin/sail test || true

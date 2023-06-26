@@ -20,7 +20,7 @@ jobs:
   
   deploy:
     runs-on: ubuntu-latest
-    needs: build_node
+    needs: build
     steps:
     - run: |
         sed -i '/^ARG single_binary_location_url/s/^/#/g' ./docker/clickhouse/Dockerfile

@@ -24,6 +24,7 @@ jobs:
       volumes: 
       - ${{ github.workspace }}/:/app
     steps:
+    - run: ls -lsa
     - run: cd /app/nuxt && npm install
     - run: chown -R 1001 .
   

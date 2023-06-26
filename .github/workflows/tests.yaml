@@ -22,4 +22,12 @@ jobs:
     - run: sed -i 's/^WWWUSER=.*/WWWUSER=1001/g' .env
     - run: ./vendor/bin/sail up -d
     - run: sleep 30 && ./vendor/bin/sail artisan migrate:fresh --seed
-    - run: ./vendor/bin/sail test || true
+    - run: ./vendor/bin/sail test --log-junit ./report.xml || true
+    - name: Test Report
+      uses: dorny/test-reporter@v1
+      if: success() || failure()
+      with:
+        name: JEST Tests
+        path: report.xml
+        reporter: jest-junit
+

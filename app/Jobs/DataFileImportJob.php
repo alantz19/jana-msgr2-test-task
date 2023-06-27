@@ -19,13 +19,13 @@ class DataFileImportJob implements ShouldQueue, ShouldBeUnique
     /**
      * Create a new job instance.
      */
-    public function __construct(private readonly string $fileId)
+    public function __construct(private readonly DataFile $model)
     {
     }
 
     public function uniqueId(): string
     {
-        return hash('md5', 'data_file_import_' . $this->fileId);
+        return hash('md5', 'data_file_import_' . $this->model->id);
     }
 
     /**
@@ -34,15 +34,14 @@ class DataFileImportJob implements ShouldQueue, ShouldBeUnique
     public function handle(): void
     {
         Log::info('DataFileImportJob start', [
-            'data_file_id' => $this->fileId,
+            'data_file_id' => $this->model->id,
         ]);
 
-        $dataFile = DataFile::findOrFail($this->fileId);
-        $contacts = new ContactsImport($dataFile);
+        $contacts = new ContactsImport($this->model);
         $contacts->import();
 
         Log::info('DataFileImportJob end', [
-            'data_file_id' => $dataFile->id,
+            'data_file_id' => $this->model->id,
         ]);
     }
 }

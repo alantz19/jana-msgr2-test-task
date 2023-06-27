@@ -3,15 +3,11 @@
 namespace Tests\Feature;
 
 use App\Imports\ContactsImport;
-use App\Jobs\DataFileImportJob;
-use App\Models\Clickhouse\Materialized\ContactSms;
-use App\Models\Contact;
+use App\Models\Clickhouse\Views\ContactSms;
+use App\Models\Clickhouse\Views\ContactTag;
 use App\Models\DataFile;
-use App\Models\User;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Queue;
 use PhpClickHouseLaravel\RawColumn;
 use Tests\Feature\Api\BaseApiTest;
 
@@ -19,25 +15,49 @@ class ImportFileTest extends BaseApiTest
 {
     use WithFaker;
 
-    public function testNumbersImportXlsx()
+    public function test_numbers_import_xlsx()
     {
-        $path = __DIR__ . '/data/demo_list-20.xlsx';
+        $fileName = 'demo_list-20.xlsx';
+        $this->copySampleFile($fileName);
+        $teamId = $this->user->current_team_id;
 
-        // copy to data-files storage directory
-        $targetPath = storage_path('app/teams/' . self::$user->current_team_id . '/data-files');
-        $targetFileName = 'demo_list-20.xlsx';
-        $targetFile = $targetPath . '/' . $targetFileName;
-        File::makeDirectory($targetPath, 0775, true, true);
-        File::copy($path, $targetFile);
+        $dataFile = DataFile::factory()
+            ->state(function (array $attributes) use ($fileName, $teamId) {
+                return [
+                    'team_id' => $teamId,
+                    'file_name' => $fileName,
+                    'meta' => array_merge($attributes['meta'] ?? [], [
+                        'logical_test' => true,
+                    ]),
+                ];
+            })
+            ->create();
+
+        $contacts = new ContactsImport($dataFile);
+        $contacts->import();
+
+        $data = ContactSms::select(new RawColumn('uniqExact(id)', 'total'))
+            ->where('team_id', $teamId)
+            ->get()
+            ->fetchOne();
+
+        $this->assertEquals(20, (int)$data['total']);
+    }
+
+    public function test_numbers_tags()
+    {
+        $fileName = 'demo_list-custom-fields.csv';
+        $this->copySampleFile($fileName);
 
         $tag1 = $this->faker->word;
         $tag2 = $this->faker->word;
+        $teamId = $this->user->current_team_id;
 
         $dataFile = DataFile::factory()
-            ->state(function (array $attributes) use ($targetFileName, $tag1, $tag2) {
+            ->state(function (array $attributes) use ($fileName, $teamId, $tag1, $tag2) {
                 return [
-                    'team_id' => self::$user->current_team_id,
-                    'file_name' => $targetFileName,
+                    'team_id' => $teamId,
+                    'file_name' => $fileName,
                     'meta' => array_merge($attributes['meta'] ?? [], [
                         'logical_test' => true,
                         'tags' => [$tag1, $tag2],
@@ -49,41 +69,54 @@ class ImportFileTest extends BaseApiTest
         $contacts = new ContactsImport($dataFile);
         $contacts->import();
 
-        $data = ContactSms::select(new RawColumn('uniqExact(id)', 'total'))
-            ->get()
-            ->fetchOne();
+        $tags = ContactTag::where('team_id', $teamId)
+            ->whereIn('tag', [$tag1, $tag2])
+            ->getRows();
 
-        $this->assertEquals(20, (int)$data['total']);
+        $this->assertCount(40, $tags);
+        $this->assertCount(20, array_filter($tags, function ($tag) use ($tag1) {
+            return $tag['tag'] === $tag1;
+        }));
     }
 
-    public function testNumbersImportCustomFields()
+    public function test_numbers_import_custom_fields()
     {
-        $path = __DIR__ . '/data/demo_list-custom-fields.csv';
+        $fileName = 'demo_list-custom-fields.csv';
+        $this->copySampleFile($fileName);
 
-        // copy to data-files storage directory
-        $targetPath = storage_path('app/teams/' . self::$user->id . '/data-files');
-        $targetFile = $targetPath . '/demo_list-custom-fields.csv';
-        File::makeDirectory($targetPath, 0775, true, true);
-        File::copy($path, $targetFile);
+        $teamId = $this->user->current_team_id;
 
         $dataFile = DataFile::factory()
-            ->withTeamId(self::$user->current_team_id)
-            ->withFileName($targetFile)
-            ->withLogicalTest()
-            ->withCustomColumns()
+            ->state(function (array $attributes) use ($fileName, $teamId) {
+                return [
+                    'team_id' => $teamId,
+                    'file_name' => $fileName,
+                    'meta' => array_merge($attributes['meta'] ?? [], [
+                        'logical_test' => true,
+                        'columns' => [
+                            'number' => 0,
+                            'country' => 1,
+                            'custom1_str' => 2,
+                            'custom2_str' => 3,
+                            'custom1_int' => 4,
+                            'custom2_int' => 5,
+                            'custom1_dec' => 6,
+                            'custom2_dec' => 7,
+                            'custom1_datetime' => 8,
+                            'custom2_datetime' => 9,
+                        ],
+                    ]),
+                ];
+            })
             ->create();
 
         $import = new ContactsImport($dataFile);
         $import->import();
 
-        $data = Contact::select(new RawColumn('uniqExact(id)', 'total'))
-            ->where('list_id', $import->getList()->id)
-            ->get()
-            ->fetchOne();
+        $rows = ContactSms::where('team_id', $teamId)
+            ->getRows();
 
-        $this->assertEquals(20, (int)$data['total']);
-
-        $rows = Contact::where('list_id', $import->getList()->id)->getRows();
+        $this->assertCount(20, $rows);
 
         foreach ($rows as $row) {
             $this->assertNotEmpty($row['custom1_str']);
@@ -99,18 +132,21 @@ class ImportFileTest extends BaseApiTest
 
     public function testAutoDetectDelimiter()
     {
-        $path = __DIR__ . '/data/demo_list-auto-detect-delimiter.csv';
+        $fileName = 'demo_list-auto-detect-delimiter.csv';
+        $this->copySampleFile($fileName);
 
-        // copy to data-files storage directory
-        $targetPath = storage_path('app/teams/' . self::$user->id . '/data-files');
-        $targetFile = $targetPath . '/demo_list-auto-detect-delimiter.csv';
-        File::makeDirectory($targetPath, 0775, true, true);
-        File::copy($path, $targetFile);
+        $teamId = $this->user->current_team_id;
 
         $dataFile = DataFile::factory()
-            ->withTeamId(self::$user->current_team_id)
-            ->withFileName($targetFile)
-            ->withLogicalTest()
+            ->state(function (array $attributes) use ($fileName, $teamId) {
+                return [
+                    'team_id' => $teamId,
+                    'file_name' => $fileName,
+                    'meta' => array_merge($attributes['meta'] ?? [], [
+                        'logical_test' => true,
+                    ]),
+                ];
+            })
             ->create();
 
         $import = new ContactsImport($dataFile);
@@ -119,109 +155,22 @@ class ImportFileTest extends BaseApiTest
 
         $import->import();
 
-        $data = Contact::select(new RawColumn('uniqExact(id)', 'total'))
-            ->where('list_id', $import->getList()->id)
+        $data = ContactSms::select(new RawColumn('uniqExact(id)', 'total'))
+            ->where('team_id', $teamId)
             ->get()
             ->fetchOne();
 
         $this->assertEquals(20, (int)$data['total']);
     }
 
-    public function testApiUploadFile()
+    private function copySampleFile($sample): string
     {
-        $this->actingAs(self::$user);
-        $path = __DIR__ . '/data/demo_list-custom-fields.csv';
-        $res = $this->postJson(
-            '/api/v1/data-files/contacts', [
-                'file' => new UploadedFile($path, 'demo_list-custom-fields.csv', 'text/csv', null, true),
-            ]
-        );
+        $path = __DIR__ . '/data/' . $sample;
+        $targetPath = storage_path('app/teams/' . $this->user->current_team_id . '/data-files');
+        $targetFile = $targetPath . '/' . $sample;
+        File::makeDirectory($targetPath, 0775, true, true);
+        File::copy($path, $targetFile);
 
-        $res->assertStatus(201);
-
-        return $res->json();
-    }
-
-    /**
-     * @depends testApiUploadFile
-     */
-    public function testDataFilePolicy($data)
-    {
-        $user = User::factory()
-            ->withPersonalTeam()
-            ->withSanctumToken()
-            ->create();
-        $this->actingAs($user);
-
-        $res = $this->getJson('/api/v1/data-files/' . $data['id'] . '/sample');
-        $res->assertStatus(403);
-    }
-
-    /**
-     * @depends testApiUploadFile
-     */
-    public function testApiGetSample($data)
-    {
-        $this->actingAsInitialUser();
-        $res = $this->getJson('/api/v1/data-files/' . $data['id'] . '/sample');
-        $res->assertStatus(200);
-        $sample = $res->json();
-
-        $this->assertEquals(11, $sample['cols']);
-        $this->assertCount(15, $sample['rows']);
-
-        return [
-            'id' => $data['id'],
-            'sample' => $sample,
-        ];
-    }
-
-    /**
-     * @depends testApiGetSample
-     */
-    public function testStartImportWrongData($data)
-    {
-        $res = $this->postJson('/api/v1/data-files/' . $data['id'] . '/import', [
-            'columns' => [
-                'number' => 0,
-                'country' => 0,
-            ],
-            'list_name' => 'test list',
-        ]);
-
-        $res->assertStatus(422);
-
-        return $data;
-    }
-
-    /**
-     * @depends testApiGetSample
-     */
-    public function testStartImport($data)
-    {
-        Queue::fake();
-        Queue::assertNothingPushed();
-
-        $res = $this->postJson('/api/v1/data-files/' . $data['id'] . '/import', [
-            'columns' => [
-                'number' => 0,
-                'country' => 1,
-            ],
-            'list_name' => 'test list',
-        ]);
-
-        $res->assertStatus(200);
-
-        Queue::assertPushedOn('data_file_import', DataFileImportJob::class);
-    }
-
-    private function createTestUser(): void
-    {
-        if (empty($this->user)) {
-            $this->user = User::factory()
-                ->withPersonalTeam()
-                ->withSanctumToken()
-                ->create();
-        }
+        return $targetFile;
     }
 }

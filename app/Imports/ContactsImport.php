@@ -4,8 +4,9 @@ namespace App\Imports;
 
 use App\Enums\DataFileStatusEnum;
 use App\Exceptions\InvalidAttributesException;
-use App\Models\Clickhouse\Materialized\ContactSms;
-use App\Models\Contact;
+use App\Models\Clickhouse\Contact;
+use App\Models\Clickhouse\Views\ContactSms;
+use App\Models\Clickhouse\Views\ContactTag;
 use App\Models\DataFile;
 use App\Services\CountryService;
 use App\Services\NumberService;
@@ -218,6 +219,7 @@ class ContactsImport
     public function prepareRow($row): array
     {
         $fields = [];
+        $tags = [];
 
         if (!empty($row[$this->columns['country'] ?? -1])) {
             $fields['country_id'] = $this->getCountryId($row[$this->columns['country']]);
@@ -249,11 +251,11 @@ class ContactsImport
                 $isLogicalNumber = NumberService::isLogicalNumber($fields['phone_normalized']);
             }
 
-            $fields['phone_is_good'] = (int) ($isMobile && $isLogicalNumber);
+            $fields['phone_is_good'] = (int)($isMobile && $isLogicalNumber);
         }
 
         if (!empty($fields['email_normalized'])) {
-            $fields['email_is_good'] = (int) filter_var($fields['email_normalized'], FILTER_VALIDATE_EMAIL);
+            $fields['email_is_good'] = (int)filter_var($fields['email_normalized'], FILTER_VALIDATE_EMAIL);
         }
 
         if (!empty($row[$this->columns['name'] ?? -1])) {
@@ -261,7 +263,7 @@ class ContactsImport
         }
 
         if (!empty($this->dataFile->meta['tags'])) {
-            $fields['tags'] = join(';', $this->dataFile->meta['tags']);
+            $tags = array_unique($this->dataFile->meta['tags']);
         }
 
         $customStrArray = $this->getCustomStrArray($row, $this->columns);
@@ -269,6 +271,7 @@ class ContactsImport
         $customDecArray = $this->getCustomDecArray($row, $this->columns);
         $customDatetimeArray = $this->getCustomDatetimeArray($row, $this->columns);
 
+        $isNew = true;
         $newContact = [
             'id' => Uuid::uuid4()->toString(),
             'team_id' => $this->dataFile->team_id,
@@ -279,48 +282,43 @@ class ContactsImport
             ...$customDatetimeArray,
         ];
 
-        /*
-                 if (!empty($newContact['phone_normalized'])
-            && ($number = ContactSms::findOne($this->dataFile->team_id, $newContact['phone_normalized']))) {
-            $diff = array_diff_assoc($newContact, $number);
-            $isNew = !empty($diff);
-            $newContact['id'] = $number['id'];
+
+        if (!empty($newContact['phone_normalized'])) {
+            $number = ContactSms::where('team_id', $this->dataFile->team_id)
+                ->where('phone_normalized', $newContact['phone_normalized'])
+                ->get()
+                ->fetchOne();
+
+            if (!empty($number)) {
+                $diff = array_diff_assoc($newContact, $number);
+                $isNew = !empty($diff);
+                $newContact['id'] = $number['id'];
+            }
         }
 
         if (!empty($tags)) {
-            $tags = array_map(function($tag) use ($newContact) {
-                return [
-                    'team_id' => $this->dataFile->team_id,
-                    'contact_id' => $newContact['id'],
-                    'tag' => $tag,
-                    'date_created' => date('Y-m-d H:i:s'),
-                ];
-            }, $tags);
+            $contactTags = ContactTag::where('team_id', $this->dataFile->team_id)
+                ->where('contact_id', $newContact['id'])
+                ->getRows();
+            $contactTags = array_column($contactTags, 'tag');
 
-            ContactTag::insertAssoc($tags);
+            $tags = array_diff($tags, $contactTags);
+            if (!empty($tags)) {
+                $tags = array_map(function ($tag) use ($newContact) {
+                    return [
+                        'team_id' => $this->dataFile->team_id,
+                        'contact_id' => $newContact['id'],
+                        'tag' => $tag,
+                        'date_created' => date('Y-m-d H:i:s'),
+                    ];
+                }, $tags);
+
+                ContactTag::insertAssoc($tags);
+            }
         }
-         */
 
-        if (!empty($newContact['phone_normalized'])
-            && ($number = ContactSms::findOne($this->dataFile->team_id, $newContact['phone_normalized']))) {
-            $diff = array_diff_assoc($newContact, $number);
-
-            // if all fields are the same, return empty array
-            if (empty($diff)) {
-                $this->log('Duplicate number', [
-                    'row' => $row,
-                    'number' => $fields['phone_normalized'],
-                ]);
-                return [];
-            }
-
-            if (!empty($diff['tags'])) {
-                $numberTags = json_decode($number['tags'] ?? '[]', true);
-                $newTags = json_decode($newContact['tags'], true);
-                $newContact['tags'] = array_unique(array_merge($numberTags, $newTags));
-            }
-
-            $newContact['id'] = $number['id'];
+        if (!$isNew) {
+            return [];
         }
 
         return $newContact;

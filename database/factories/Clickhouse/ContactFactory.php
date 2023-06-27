@@ -1,8 +1,8 @@
 <?php
 
-namespace Database\Factories;
+namespace Database\Factories\Clickhouse;
 
-use App\Models\Contact;
+use App\Models\Clickhouse\Contact;
 use App\Models\MobileNetwork;
 use App\Services\ClickhouseService;
 use App\Services\CountryService;
@@ -13,18 +13,22 @@ use Ramsey\Uuid\Uuid;
 
 class ContactFactory extends Factory
 {
-    public function saveAndReturn($list_id = false, $country = 'uk', $withNetworks = false): Collection
+    public function saveAndReturn($country = 'uk', $withNetworks = false): Collection
     {
         $contacts = new Collection();
-        if (!$list_id) {
-            $list_id = Uuid::uuid4()->toString();//use same list of all contacts..
-        }
+//        if (!$list_id) {
+//            $list_id = Uuid::uuid4()->toString();//use same list of all contacts..
+//        }
+
+        $teamId = Uuid::uuid4()->toString();
+
         $i = 0;
         while ($i < 100) {
             $i++;
             $contact = new Contact();
             $contact->fill($this->definition());
-            $contact->list_id = $list_id;
+//            $contact->list_id = $list_id;
+            $contact->team_id = $teamId;
             $contact->country_id = CountryService::guessCountry($country);
             $contacts->add($contact);
         }
@@ -54,7 +58,7 @@ class ContactFactory extends Factory
             'id' => $this->faker->uuid,
             'team_id' => $this->faker->uuid,
             'name' => $this->faker->name,
-            'list_id' => $this->faker->uuid,
+//            'list_id' => $this->faker->uuid,
             'phone_normalized' => str_replace('+', '', $this->faker->e164PhoneNumber()),
             'phone_is_good' => true,
             'phone_is_good_reason' => $this->faker->randomNumber(1, 5),

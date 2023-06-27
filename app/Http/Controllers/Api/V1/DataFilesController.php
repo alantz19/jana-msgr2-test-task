@@ -26,8 +26,8 @@ class DataFilesController extends Controller
         $dataFile = DataFile::create([
             'team_id' => auth()->user()->current_team_id,
             'name' => $file->getClientOriginalName(),
+            'file_name' => $file->hashName(),
             'file_size' => $file->getSize(),
-            'file_name' => $file->getFilename(),
             'status_id' => DataFileStatusEnum::pending()->value,
             'meta' => [],
         ]);
@@ -60,7 +60,6 @@ class DataFilesController extends Controller
 
         $request->validate([
             'columns' => 'required|array',
-            'columns.*' => 'distinct|numeric|min:0',
             'columns.number' => 'required_without:columns.email|numeric|min:0',
             'columns.country' => 'required_without:columns.email|numeric|min:0',
             'columns.email' => 'required_without:columns.number|numeric|min:0',
@@ -83,9 +82,18 @@ class DataFilesController extends Controller
             'columns.custom4_datetime' => 'sometimes|numeric|min:0',
             'columns.custom5_datetime' => 'sometimes|numeric|min:0',
             'tags' => 'sometimes|array',
-            'tags.*' => 'distinct|string',
+            'tags.*' => 'string',
             'fixed_country_id' => 'sometimes|numeric|exists:countries,id',
         ]);
+
+        $keys = array_unique(array_keys($request->get('columns')));
+        $values = array_unique(array_values($request->get('columns')));
+
+        if (count($keys) !== count($values)) {
+            return response([
+                'message' => 'Columns must be unique.'
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
 
         $dataFile->meta = array_merge($dataFile->meta, [
             'fixed_country_id' => $request->get('fixed_country_id') ?? null,
@@ -94,7 +102,7 @@ class DataFilesController extends Controller
         ]);
         $dataFile->saveOrFail();
 
-        DataFileImportJob::dispatch($dataFile->id)->onQueue('data_file_import');
+        DataFileImportJob::dispatch($dataFile);
 
         return response(new DataFileResource($dataFile), Response::HTTP_OK);
     }

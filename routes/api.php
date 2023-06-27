@@ -1,8 +1,8 @@
 <?php
 
-use App\Http\Controllers\Api\V1\DataFilesController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CountriesController;
+use App\Http\Controllers\DataFilesController;
 use App\Http\Controllers\MobileNetworksController;
 use App\Http\Controllers\OffersController;
 use App\Http\Controllers\SmsCampaignOffersController;

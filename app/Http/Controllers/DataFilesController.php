@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1;
+namespace App\Http\Controllers;
 
 use App\Enums\DataFileStatusEnum;
-use App\Http\Controllers\Controller;
 use App\Http\Resources\DataFileResource;
 use App\Imports\ContactsImport;
 use App\Jobs\DataFileImportJob;

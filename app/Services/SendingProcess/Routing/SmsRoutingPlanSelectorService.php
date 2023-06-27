@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\SendingProcess\Routing;
 
 use api\v2\sms\routing\modules\plans\resources\enums\PlanActionEnum;
 use api\v2\sms\routing\modules\plans\services\resources\enums\SelectorMethodEnum;
@@ -11,9 +11,16 @@ use App\Data\SmsRoutingPlanSelectorData;
 use App\Enums\SmsRoutingPlanRuleActionEnum;
 use App\Enums\SmsRoutingPlanSelectedMethodEnum;
 use App\Enums\SmsRoutingPlanSelectedStatusEnum;
+use App\Enums\SmsRoutingPlanSelectorFailStatusEnum;
+use App\Models\SmsRoute;
 use App\Models\SmsRoutingPlan;
 use App\Models\SmsRoutingPlanRule;
+use App\Services\CampaignSmsMessage;
+use App\Services\RoutingPlansResource;
+use App\Services\RoutingPlansRulesStats;
+use App\Services\SelectRouteAutoService;
 use App\Services\SendingProcess\Data\BuildSmsData;
+use App\Services\UserRoutesService;
 use Exception;
 use Illuminate\Support\Facades\Log;
 use Yii;
@@ -53,18 +60,25 @@ class SmsRoutingPlanSelectorService
         return $selectorData;
     }
 
-    private static function makeDecision(SmsRoutingPlanSelectorData $selector): SmsRoutingPlanSelectedData
+    /**
+     * Will return SmsRoutingPlanSelectedData if selected or SmsRoutingPlanSelectorData if not selected (failed)
+     *
+     * @param SmsRoutingPlanSelectorData $selector
+     * @return SmsRoutingPlanSelectedData|SmsRoutingPlanSelectorData
+     */
+    private static function makeDecision(SmsRoutingPlanSelectorData $selector):
+    SmsRoutingPlanSelectedData|SmsRoutingPlanSelectorData
     {
         if ($selected = self::setByPlanSelector($selector)) {
             return $selected;
         }
-        if (SelectRouteAutoService::selectRoute($selector)) {
-            return true;
+        if ($selected = SmsRoutingPlanAutoSelectorService::selectRoute($selector)) {
+            return $selected;
         }
 
-        Log::warning('No matching rules found');
-        $selector->setFailStatus(SelectorStatusEnum::NOT_FOUND);
-        return true;
+        Log::debug('No matching rules found', ['selector' => $selector]);
+        $selector->fail_status = SmsRoutingPlanSelectorFailStatusEnum::no_route_found();
+        return $selector;
     }
 
     public static function setByPlanSelector(SmsRoutingPlanSelectorData $selector, $counter = 0):
@@ -134,6 +148,13 @@ class SmsRoutingPlanSelectorService
                 return $selector;
             }
 
+            $route = $rule->smsRoute;
+            if (!$route->hasRateForCountry($selector->country_id)) {
+                $selector->filtered_rules_ids[] = $rule->id;
+                return $selector;
+            }
+
+            $selected->route_rate = $route->priceForCountry;
             $selected->selected_route_id = $rule->sms_route_id;
             return $selected;
         }
@@ -164,17 +185,21 @@ class SmsRoutingPlanSelectorService
 
         #remove $selector->filtered_route_ids frp, $splitAction->route_ids
         $splitRoutes = array_values(array_diff($splitAction->route_ids, $selector->filtered_route_ids));
+        $splitRoutes = array_values(array_filter($splitRoutes, function ($routeId) use ($selector) {
+            return !in_array($routeId, $selector->filtered_route_ids);
+        }));
         if (empty($splitRoutes)) {
             $selector->filtered_rules_ids[] = $rule->id;
             return $selector;
         }
+
         $selected->selected_route_id = $splitRoutes[$selector->counter % count($splitRoutes)];
 
         return $selected;
     }
 
     public static function createSelector($country_id, SmsRoutingPlan $plan, $networkId = false,
-                                          $counter = 0): SmsRoutingPlanSelectedData|false
+                                          $counter = 0): SmsRoutingPlanSelectedData|SmsRoutingPlanSelectorData
     {
         $selectorData = SmsRoutingPlanSelectorData::from([
             'country_id' => $country_id,
@@ -183,6 +208,11 @@ class SmsRoutingPlanSelectorService
         ]);
 
         $selectedData = self::makeDecision($selectorData);
+        if ($selectedData instanceof SmsRoutingPlanSelectorData) {
+            //todo: log failed to select data
+
+            return $selectedData;
+        }
         $selectedData->selector_data = $selectorData;
         return $selectedData;
     }

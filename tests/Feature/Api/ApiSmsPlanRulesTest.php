@@ -348,7 +348,49 @@ class ApiSmsPlanRulesTest extends TestCase
 
     public function testSkipRouteWithNoCountryRate()
     {
-        $this->markTestIncomplete('maybe in the future wouldnt let the route to be selected if no country rate is found');
+        $user = UserFactory::new()->withPersonalTeam()->create();
+        $plan = SmsRoutingPlan::factory()->state([
+            'team_id' => $user->current_team_id
+        ])->create();
+        $route1 = SmsRoute::factory()->withSmppConnection()->state([
+            'team_id' => $user->current_team_id,
+        ])->create();
+
+        SmsRoutingPlanRule::factory()->state([
+            'sms_routing_plan_id' => $plan->id,
+            'action' => SmsRoutingPlanRuleActionEnum::send(),
+            'country_id' => CountryService::guessCountry('AU'),
+            'sms_route_id' => $route1->id
+        ])->create();
+        $this->actingAs($user);
+        $res = $this->postJson("/api/v1/sms/routing/plans/{$plan->id}/simulate", [
+            'country_id' => CountryService::guessCountry('AU'),
+        ])->assertJsonFragment([
+            'fail_status' => 'no_route_found',
+        ])->assertOk();
+    }
+
+    public function testSelectRouteNotFound()
+    {
+        $user = UserFactory::new()->withPersonalTeam()->create();
+        $plan = SmsRoutingPlan::factory()->state([
+            'team_id' => $user->current_team_id
+        ])->create();
+        $route1 = SmsRoute::factory()->withRouteRates()->withSmppConnection()->state([
+            'team_id' => $user->current_team_id,
+        ])->create();
+        $route2 = SmsRoute::factory()->withRouteRates()->withSmppConnection()->state([
+            'team_id' => $user->current_team_id,
+        ])->create();
+
+        $this->actingAs($user);
+
+        //should return all routes for the country as split
+        $this->postJson("/api/v1/sms/routing/plans/{$plan->id}/simulate", [
+            'country_id' => CountryService::guessCountry('ZW'),
+        ])->assertOk()->assertJsonFragment([
+            'fail_status' => 'no_route_found',
+        ]);
     }
 
     public function testAutoSelectRoute()
@@ -366,13 +408,54 @@ class ApiSmsPlanRulesTest extends TestCase
 
         $this->actingAs($user);
 
+        //should return all routes for the country as split
         $this->postJson("/api/v1/sms/routing/plans/{$plan->id}/simulate", [
-            'country_id' => CountryService::guessCountry('ZW'),
+            'country_id' => CountryService::guessCountry('AU'),
         ])->assertOk()->assertJsonFragment([
             'selected_method' => 'auto',
             'selected_action' => 'send',
             'selected_route_id' => $route1->id,
         ]);
+        $this->postJson("/api/v1/sms/routing/plans/{$plan->id}/simulate", [
+            'country_id' => CountryService::guessCountry('AU'),
+            'counter' => 1,
+        ])->assertOk()->assertJsonFragment([
+            'selected_method' => 'auto',
+            'selected_action' => 'send',
+            'selected_route_id' => $route2->id,
+        ]);
+    }
 
+    public function testAutoSelectRouteWithOneRouteWithoutRate()
+    {
+        $user = UserFactory::new()->withPersonalTeam()->create();
+        $plan = SmsRoutingPlan::factory()->state([
+            'team_id' => $user->current_team_id
+        ])->create();
+        $route1 = SmsRoute::factory()->withSmppConnection()->state([
+            'team_id' => $user->current_team_id,
+        ])->create();
+        $route2 = SmsRoute::factory()->withRouteRates()->withSmppConnection()->state([
+            'team_id' => $user->current_team_id,
+        ])->create();
+
+        $this->actingAs($user);
+
+        //should return all routes for the country as split
+        $this->postJson("/api/v1/sms/routing/plans/{$plan->id}/simulate", [
+            'country_id' => CountryService::guessCountry('AU'),
+        ])->assertOk()->assertJsonFragment([
+            'selected_method' => 'auto',
+            'selected_action' => 'send',
+            'selected_route_id' => $route2->id,
+        ]);
+        $res = $this->postJson("/api/v1/sms/routing/plans/{$plan->id}/simulate", [
+            'country_id' => CountryService::guessCountry('AU'),
+            'counter' => 1,
+        ])->assertOk()->assertJsonFragment([
+            'selected_method' => 'auto',
+            'selected_action' => 'send',
+            'selected_route_id' => $route2->id,
+        ]);
     }
 }

@@ -73,12 +73,12 @@ Route::prefix('v1')->group(function () {
                         ->name('rules.split');
                     Route::put('rules/{rule}/split', [SmsRoutingPlanRulesController::class, 'patchSplitRule'])
                         ->name('rules.split.patch');
-                    Route::post('simulate', [SmsRoutingPlanRulesController::class, 'simulate'])
-                        ->name('simulate');
                 });
 
                 Route::resource('plans', SmsRoutingPlansController::class)
                     ->only(['index', 'store', 'destroy', 'update', 'show']);
+                Route::post('plans/{plan}/simulate', [SmsRoutingPlansController::class, 'simulate'])
+                    ->name('simulate');
 
                 Route::resource('rates', SmsRoutingRatesController::class)->only(['store', 'index', 'update']);
                 Route::get('rates/logs', [SmsRoutingRatesController::class, 'logs'])->name('rates.logs');

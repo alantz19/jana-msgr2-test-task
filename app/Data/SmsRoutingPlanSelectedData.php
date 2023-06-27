@@ -24,6 +24,8 @@ class SmsRoutingPlanSelectedData extends Data
         #[Enum(SmsRoutingPlanRuleActionEnum::class)]
         public string                      $selected_action,
         public ?string                     $selected_route_id = null,
+        public ?int                        $route_rate = null,
+
         public ?SmsRoutingPlanSelectorData $selector_data = null,
     )
     {

@@ -3,12 +3,11 @@
 namespace App\Jobs;
 
 use App\Data\CampaignSendToBuildSmsData;
+use App\Models\SmsCampaignSend;
 use App\Models\SmsRoutingPlan;
 use App\Services\SendingProcess\Data\BuildSmsData;
-use App\Models\SmsCampaign;
-use App\Models\SmsCampaignSend;
+use App\Services\SendingProcess\Routing\SmsRoutingPlanSelectorService;
 use App\Services\SendingProcess\TextService;
-use App\Services\SmsRoutingPlanSelectorService;
 use App\Services\SmsRoutingPlanService;
 use Exception;
 use Illuminate\Bus\Queueable;

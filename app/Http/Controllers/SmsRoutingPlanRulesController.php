@@ -3,17 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Data\SmsRoutingPlanRuleSplitActionVarsData;
+use App\Data\SmsRoutingPlanSelectorData;
 use App\Enums\SmsRoutingPlanRuleActionEnum;
-use App\Http\Resources\SmsRoutingPlanResource;
 use App\Http\Resources\SmsRoutingPlanRuleResource;
 use App\Models\SmsRoutingPlan;
 use App\Models\SmsRoutingPlanRule;
 use App\Services\AuthService;
-use App\Services\SmsRoutingPlanSelectorService;
-use Illuminate\Http\JsonResponse;
+use App\Services\SendingProcess\Routing\SmsRoutingPlanSelectorService;
 use Illuminate\Http\Request;
-use PHPStan\Rules\Rule;
-use Symfony\Component\Uid\Uuid;
 
 class SmsRoutingPlanRulesController extends Controller
 {
@@ -111,23 +108,5 @@ class SmsRoutingPlanRulesController extends Controller
 
         $rule->delete();
         return response()->json(null, 204);
-    }
-
-    public function simulate(Request $request, SmsRoutingPlan $plan)
-    {
-        $params = $request->validate([
-            'country_id' => 'required|integer|exists:countries,id',
-            'network_id' => 'sometimes|integer|exists:networks,id',
-            'counter' => 'sometimes|integer|min:0',
-        ]);
-
-        AuthService::isModelOwner($plan);
-        $selector = SmsRoutingPlanSelectorService::createSelector($params['country_id'],
-            $plan,
-            $params['network_id'] ?? null,
-            $params['counter'] ?? 0
-        );
-
-        return response()->json($selector, 200);
     }
 }

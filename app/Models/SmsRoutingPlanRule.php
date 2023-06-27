@@ -13,6 +13,7 @@ use Illuminate\Validation\Rule;
 
 /**
  * @property SmsRoutingPlan $plan
+ * @property SmsRoute $smsRoute
  * @method bySelectOrder()
  */
 class SmsRoutingPlanRule extends Model
@@ -58,5 +59,10 @@ class SmsRoutingPlanRule extends Model
             ->orderBy('country_id', 'asc')
             ->orderBy('network_id', 'asc')
             ->orderBy('priority', 'asc');
+    }
+
+    public function smsRoute()
+    {
+        return $this->hasOne(SmsRoute::class, 'id', 'sms_route_id');
     }
 }

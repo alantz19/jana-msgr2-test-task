@@ -9,14 +9,17 @@ use App\Models\SmsRouteSmppConnection;
 use App\Models\SmsRoutingPlan;
 use App\Models\SmsRoutingPlanRoutes;
 use App\Models\User;
+use Illuminate\Support\Collection;
 
 class UserRoutesService
 {
 
-    public static function getAvailableRoutesForCountry(User $user, $country): array
+    public static function getAvailableRoutesForCountry($team_id, $country): array
     {
+        return false;
+        //"connected routes" not implemented yet
         $country = CountryService::guessCountry($country);
-        $routes = self::getAvailableRoutes($user);
+        $routes = self::getAvailableRoutes($team_id);
         $prices = [
             'private' => [],
             'platform' => [],
@@ -41,14 +44,14 @@ class UserRoutesService
         return $prices;
     }
 
-    public static function getAvailableRoutes(User $user)
+    public static function getAvailableRoutes($team_id)
     {
+        return false;
         $smppRoutes = SmsRoute::where(['connection_type' => SmsRouteSmppConnection::class])
-            ->where(['team_id' => $user->current_team_id])->get();
+            ->where(['team_id' => $team_id])->get();
 
 
-        $planConnections = SmsRoutePlatformConnection::
-        where(['customer_team_id' => $user->current_team_id])
+        $planConnections = SmsRoutePlatformConnection::where(['customer_team_id' => $team_id])
             ->where(['is_active' => true])->get();
         $planRoutes = [];
         if ($planConnections->isNotEmpty()) {
@@ -75,6 +78,7 @@ class UserRoutesService
 
     private static function setPlatformRate(CustomerRoute $route, int $country, SmsRoutePlatformConnection $connection)
     {
+        return false;
         $rate = $route->smsRouteRates()->where(['country_id' => $country])->first();
         if ($rate) {
             $route->priceForCountry = $rate->rate * $connection->rate_multiplier;
@@ -82,6 +86,33 @@ class UserRoutesService
             return true;
         }
         return false;
+    }
+
+    public static function getRoutes($team_id, $country_id = false): Collection
+    {
+        $routes = SmsRoute::where(['team_id' => $team_id])->where(['is_active' => true])->get();
+        if ($country_id) {
+            self::setRoutesRates($routes, $country_id);
+        }
+
+        return $routes;
+    }
+
+    private static function setRoutesRates($routes, $country_id): void
+    {
+        foreach ($routes as $route) {
+            self::setRouteRate($route, $country_id);
+        }
+    }
+
+    public static function setRouteRate($route, $country_id)
+    {
+        $rate = $route->smsRouteRates()->where(['country_id' => $country_id])->first();
+        if ($rate) {
+            $route->priceForCountry = $rate->rate;
+        }
+
+        return $route;
     }
 
 }

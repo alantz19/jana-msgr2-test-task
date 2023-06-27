@@ -255,8 +255,6 @@ WHERE `phone_normalized` > 0");
       GROUP BY `phone_normalized`, `team_id`
         ");
 
-        static::write("alter table msgr.contact_tags modify column date_created DateTime");
-
         static::write("alter table msgr.contact_tags add column if not exists inserted_at DateTime default now()");
         static::write("alter table msgr.contact_tags_materialized add column if not exists inserted_at DateTime default now()");
 

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CountriesController;
+use App\Http\Controllers\CustomFieldsController;
 use App\Http\Controllers\DataFilesController;
 use App\Http\Controllers\MobileNetworksController;
 use App\Http\Controllers\OffersController;
@@ -44,6 +45,9 @@ Route::prefix('v1')->group(function () {
         Route::get('/data-files/{id:uuid}/sample', [DataFilesController::class, 'sample']);
         Route::post('/data-files/contacts', [DataFilesController::class, 'uploadContacts']);
         Route::post('/data-files/{id:uuid}/import', [DataFilesController::class, 'startImport']);
+
+        Route::resource('custom-fields', CustomFieldsController::class)
+            ->only(['index', 'store', 'update', 'destroy']);
 
         Route::get('countries', [CountriesController::class, 'index']);
 

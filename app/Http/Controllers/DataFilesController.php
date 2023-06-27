@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\DataFileStatusEnum;
+use App\Http\Resources\DataFileCollection;
 use App\Http\Resources\DataFileResource;
 use App\Imports\ContactsImport;
 use App\Jobs\DataFileImportJob;
@@ -13,6 +14,15 @@ use Symfony\Component\HttpFoundation\Response;
 
 class DataFilesController extends Controller
 {
+    public function index()
+    {
+        $dataFiles = DataFile::whereTeamId(auth()->user()->current_team_id)
+            ->orderByDesc('created_at')
+            ->paginate(25);
+
+        return new DataFileCollection($dataFiles);
+    }
+
     public function uploadContacts(Request $request)
     {
         $request->validate([

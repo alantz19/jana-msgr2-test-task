@@ -12,12 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('custom_fields', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->foreignUuid('team_id')->constrained();
             $table->string('field_name');
             $table->string('field_key');
             $table->timestamps();
             $table->softDeletes();
+
+            $table->unique(['team_id', 'field_key']);
         });
     }
 

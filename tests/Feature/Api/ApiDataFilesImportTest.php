@@ -11,7 +11,7 @@ use Tests\TestCase;
 
 class ApiDataFilesImportTest extends TestCase
 {
-    public function test_api_upload_file_and_data_policy()
+    public function test_api_upload_file()
     {
         $res = $this->uploadFileAsSanctumUser();
 

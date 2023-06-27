@@ -38,7 +38,7 @@ class BalanceService
 
     public static function deductBalance(
         $team_id,
-        int $amount,
+        float $amount,
         $meta
     )
     {

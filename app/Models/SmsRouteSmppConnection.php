@@ -33,6 +33,6 @@ class SmsRouteSmppConnection extends Model
 
     public function route()
     {
-        return $this->morphOne(SmsRoute::class, 'connection');
+        return $this->morphMany(SmsRoute::class, 'connection');
     }
 }

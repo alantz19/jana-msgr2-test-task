@@ -5,6 +5,8 @@ namespace App\Jobs;
 use App\Data\BuildSmsToSendSmsData;
 use App\Models\SmsRoute;
 use App\Models\SmsRouteSmppConnection;
+use App\Services\SendingProcess\Routing\SmsRoutingSmppClientService;
+use App\Services\SendingProcess\Telecom\SMPP\SmppClient;
 use App\Services\SmppService;
 use DB;
 use Exception;
@@ -42,16 +44,34 @@ class SendSmsJob implements ShouldQueue
         self::testDbConnection();
         if ($route->connection_type === SmsRouteSmppConnection::class) {
             $smpp = SmsRouteSmppConnection::find($route->connection_id);
-            SmppService::sendSms($smpp,
+            try {
+                $client = SmsRoutingSmppClientService::createSmppClient($smpp);
+            } catch (Exception $e) {
+                Log::error("Error creating smpp client",
+                    ['sms_id' => $this->dto->buildSmsData->sms_id, 'error' => $e->getMessage()]);
+                $this->fail();
+                return;
+            }
+
+            $res = $client->sendSms($this->dto->buildSmsData->selected_senderderid_text,
                 $this->dto->buildSmsData->sendToBuildSmsData->phone_normalized,
-                $this->dto->buildSmsData->finalText);
-            $route->connection->submitSms($this->dto->buildSmsData);
+                $this->dto->buildSmsData->finalText,
+                $this->dto->buildSmsData->final_text_is_unicode,
+                $this->dto->buildSmsData->final_text_msg_parts > 1,
+            );
+            if (!$res) {
+                $this->fail('Failed to send SMS');
+                return;
+            }
+            $msgId = isset($results['msgid']) ? $results['msgid'] : '';
+
+            $client->syncSmppDlrs();
+
         } else {
-            $route->connection->submitSms($this->dto->buildSmsData->sms);
+            Log::warning('Other connection types not implemented yet');
         }
         //save results to send log
-        $this->dto->buildSmsData->sms->saveResultsToLog();
-
+        $this->saveResultsToSmsSendlog($res);
     }
 
     private static function testDbConnection()
@@ -66,5 +86,10 @@ class SendSmsJob implements ShouldQueue
         } catch (Exception $e) {
             DB::connection('clickhouse')->reconnect();
         }
+    }
+
+    private function saveResultsToSmsSendlog()
+    {
+
     }
 }

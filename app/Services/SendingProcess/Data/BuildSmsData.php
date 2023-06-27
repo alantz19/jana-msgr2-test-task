@@ -31,10 +31,16 @@ class BuildSmsData
      */
     public string|array|null $finalText;
     public int $final_text_msg_parts;
+    public $final_text_is_unicode = false;
 
     public array $keyword_data = [];
     public string $scheme;
     public SmsRoutingPlanSelectedData $selectedRoute;
+    /**
+     * @var mixed|string
+     */
+    public string $selected_senderderid_id;
+    public $selected_senderderid_text;
 
     public function getReplacementParams()
     {

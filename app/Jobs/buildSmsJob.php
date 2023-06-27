@@ -6,8 +6,10 @@ use App\Data\BuildSmsToSendSmsData;
 use App\Data\CampaignSendToBuildSmsData;
 use App\Data\SmsRoutingPlanSelectedData;
 use App\Data\SmsRoutingPlanSelectorData;
+use App\Models\Country;
 use App\Models\SmsCampaignLog;
 use App\Models\SmsCampaignSend;
+use App\Models\SmsCampaignSenderid;
 use App\Models\SmsRoutingPlan;
 use App\Services\BalanceService;
 use App\Services\SendingProcess\Data\BuildSmsData;
@@ -52,7 +54,50 @@ class buildSmsJob implements ShouldQueue
         $data->sms_id = Str::uuid()->toString();
         TextService::processMsg($data);
 
+        $this->setSenderids($data);
+
         //decide on route.
+        if (!$this->setRoute($data)) {
+            return;
+        }
+
+        //deduct balance
+        if (!$this->deductBalance($data)) {
+            return;
+        }
+
+        //submit to sms build queue
+        $data = BuildSmsToSendSmsData::from([
+            'buildSmsData' => $data,
+        ]);
+        SendSmsJob::dispatch($data);
+    }
+
+    private function setSenderids(BuildSmsData $data)
+    {
+        $country = Country::where(['id' => $this->dto->country_id])->firstOrFail();
+        if (!$country->sender_id) {
+            Log::debug('country has no sender id: ' . $country->id, ['sms_id' => $data->sms_id]);
+            return true;
+        }
+
+        $senderids = SmsCampaignSenderid::where(['sms_campaign_id' => $this->dto->sms_campaign_id])
+            ->where(['is_active' => true])
+            ->get();
+        if ($senderids->count() == 0) {
+            Log::debug('no senderids found for campaign: ' . $this->dto->sms_campaign_id, ['sms_id' => $data->sms_id]);
+            return false;
+        }
+
+        $senderid = $senderids[$data->sendToBuildSmsData->counter % $senderids->count()];
+        $data->selected_senderderid_id = $senderid->id;
+        $data->selected_senderderid_text = $senderid->text;
+
+        return true;
+    }
+
+    private function setRoute(BuildSmsData $data): bool
+    {
         if ($this->dto->sms_routing_plan_id) {
             $plan = SmsRoutingPlan::where(['id' => $this->dto->sms_routing_plan_id, 'team_id' => $this->dto->team_id])
                 ->first();
@@ -73,29 +118,32 @@ class buildSmsJob implements ShouldQueue
             ]);
 
             $this->fail('failed to find route');
-            return;
+            Log::info('failed to find route', ['sms_id' => $data->sms_id]);
+            return false;
         }
         /** @var SmsRoutingPlanSelectedData $selected */
         $data->selectedRoute = $selected;
+        return true;
+    }
 
-        //deduct balance
+    private function deductBalance(BuildSmsData $data): bool
+    {
+        Log::debug('deducting balance');
         $balance = BalanceService::getTeamBalance($this->dto->team_id);
-        $toDeduct = ($selected->route_rate * $data->final_text_msg_parts);
+        $toDeduct = ($data->selectedRoute->route_rate * $data->final_text_msg_parts);
         if ($balance - $toDeduct < 0) {
             $this->fail('not enough balance');
-            return;
+            Log::info('fail - not enough balance', ['sms_id' => $data->sms_id]);
+            return false;
         }
-        BalanceService::deductBalance($this->dto->team_id, $selected->route_rate, [
+        BalanceService::deductBalance($this->dto->team_id, $toDeduct, [
             'type' => 'campaign_send',
             'campaign_send_id' => $this->dto->sms_campaign_send_id,
             'sms_id' => $data->sms_id,
-            'sms_routing_plan_id' => $data->sms_routing_plan_id,
+            'sms_routing_plan_id' => $data->sendToBuildSmsData->sms_routing_plan_id,
         ]);
+        Log::debug('deducting balance', ['sms_id' => $data->sms_id, 'balance' => $balance, 'deducted' => $toDeduct]);
 
-        //submit to sms build queue
-        $data = BuildSmsToSendSmsData::from([
-            'buildSmsData' => $data,
-        ]);
-        SendSmsJob::dispatch($data);
+        return true;
     }
 }

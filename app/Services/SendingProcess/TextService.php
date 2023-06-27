@@ -13,14 +13,6 @@ class TextService
 {
     private static BuildSmsData $data;
 
-    public static function maxTextParts(int $adId)
-    {
-        return AdTexts::find()
-            ->where(['ad_id' => $adId])
-            ->select('max(parts)')
-            ->scalar();
-    }
-
     public static function processMsg(BuildSmsData $data)
     {
         self::$data = $data;
@@ -63,6 +55,7 @@ class TextService
         //todo - refactor out number replacement and clean text.. translations as part of routing plans
 //        $text = Translations::replaceMessage($->lapObj->getCampaign()->user->translationMessage(), $text);
         self::$data->finalText = $text;
+        self::$data->final_text_is_unicode = self::isUnicode($text);
         self::$data->final_text_msg_parts = self::getParts($text);
         Log::debug('Final text', ['text' => $text]);
 
@@ -79,14 +72,14 @@ class TextService
         }
     }
 
-public static function getParts(string $text): int
+    public static function getParts(string $text): int
     {
         $msgs = (new SMSCounter())->count($text);
 
         return $msgs->messages;
     }
 
-        public static function mandatoryTextReplacements($text)
+    public static function mandatoryTextReplacements($text)
     {
         $shortlink = self::$data->sms_shortlink;
 
@@ -119,7 +112,7 @@ public static function getParts(string $text): int
 //        }
 
         return $text;
-    }//end setFinalText()
+    }
 
     private static function cleanBadSymbols(string $msg)
     {
@@ -167,7 +160,7 @@ public static function getParts(string $text): int
         $message = preg_replace('/\x{00A0}/u', ' ', $message);
         // no-break space
         return $message;
-    }//end selectSpecificAdText()
+    }//end setFinalText()
 
     public static function optionalTextReplacements(string $text)
     {
@@ -195,7 +188,7 @@ public static function getParts(string $text): int
             }
         }
         return $text;
-    }//end optionalTextReplacements()
+    }//end selectSpecificAdText()
 
     private static function metaTextReplacements(mixed $text)
     {
@@ -209,7 +202,7 @@ public static function getParts(string $text): int
         }
 
         return $text;
-    }//end mandatoryTextReplacements()
+    }//end optionalTextReplacements()
 
     private static function metaTextReplacement($text, $shortcode, $metaVal)
     {
@@ -230,7 +223,7 @@ public static function getParts(string $text): int
         }
 
         return $text;
-    }//end getParts()
+    }//end mandatoryTextReplacements()
 
     private static function replaceRandomDigits($text)
     {
@@ -244,7 +237,7 @@ public static function getParts(string $text): int
         }
 
         return $text;
-    }
+    }//end getParts()
 
     private static function processSpintext(mixed $text)
     {
@@ -279,5 +272,13 @@ public static function getParts(string $text): int
     {
         $text = preg_replace('/{{{.*?}}}/', '', $text);
         return preg_replace('/{.*?}/', '', $text);
+    }
+
+    public static function isUnicode($text)
+    {
+        $text = str_replace('+', 'A', $text);
+        //$res = \SMSCounter::count($text);
+        $res = (new SMSCounter())->count($text);
+        return $res->per_message < 71;
     }//end findBadSymbols()
 }

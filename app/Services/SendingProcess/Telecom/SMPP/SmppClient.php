@@ -328,7 +328,7 @@ STR;
      * Reconnect to SMSC.
      * This is mostly to deal with the situation were we run out of sequence numbers
      */
-    protected function reconnect()
+    public function reconnect()
     {
         $this->close();
         sleep(1);
@@ -708,7 +708,7 @@ STR;
      */
     public function sendSMS(SmppAddress $from, SmppAddress $to, $message, $tags = null,
                                         $dataCoding = SMPP::DATA_CODING_DEFAULT, $priority = 0x00,
-                                        $scheduleDeliveryTime = null, $validityPeriod = null): array|bool
+                                        $scheduleDeliveryTime = null, $validityPeriod = null): SmppPdu|array|bool
     {
         $msg_length = strlen($message);
 
@@ -799,7 +799,7 @@ STR;
                 # do it for all - no reason to reconnect (we always have fresh connection)
 //                if (!empty($this->gtw_type) && in_array($this->gtw_type, ['clx', 'commpeak', 'smswarriors', 'hansa', 't2w', 'clickatell', 'quickcom'])) {
                 $e_msg .= "\n[" . $e->getLine() . '] [' . $e->getFile() . ']';
-                throw new Exception("[" . strtoupper($this->gtw_type) . "] submit_sm failed: {$e_msg}",
+                throw new Exception("[] submit_sm failed: {$e_msg}",
                     $e->getCode(),
                     $e);
 //                }

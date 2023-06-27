@@ -26,7 +26,9 @@ class SmsRouteFactory extends Factory
 
     public function withSmppConnection()
     {
-        return $this->has(SmsRouteSmppConnection::factory(), 'smppConnection');
+        return $this->afterCreating(function (SmsRoute $smsRoute) {
+            $smsRoute->connection()->associate(SmsRouteSmppConnection::factory()->create())->save();
+        });
     }
 
     public function withRouteRates()

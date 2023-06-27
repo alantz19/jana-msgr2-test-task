@@ -8,6 +8,7 @@ use App\Models\Offer;
 use App\Models\SmsCampaign;
 use App\Models\SmsRoute;
 use App\Models\SmsRoutingPlan;
+use App\Services\BalanceService;
 use Tests\TestCase;
 
 class SendSmsCampaignTest extends BaseApiTest
@@ -103,6 +104,7 @@ class SendSmsCampaignTest extends BaseApiTest
             'team_id' => $this->user->currentTeam->id,
             'name' => 'Test plan',
         ]);
+        BalanceService::addBalance($this->user->current_team_id, 1000, []);
         $route1 = SmsRoute::factory()->withRouteRates()->withSmppConnection()->create([
             'team_id' => $this->user->currentTeam->id,
         ]);

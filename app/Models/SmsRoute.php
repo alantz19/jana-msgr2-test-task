@@ -17,6 +17,7 @@ class SmsRoute extends Model
     use SoftDeletes, HasFactory, HasUuids;
 
     public $priceForCountry;
+    public $setForCountry;
     protected $fillable = [
         'team_id',
         'name',
@@ -69,5 +70,13 @@ class SmsRoute extends Model
     {
         UserRoutesService::setRouteRate($this, $country_id);
         return $this->priceForCountry !== null;
+    }
+
+    public function getRateForCountry($country_id)
+    {
+        if ($this->setForCountry !== $country_id) {
+            UserRoutesService::setRouteRate($this, $country_id);
+        }
+        return $this->priceForCountry;
     }
 }

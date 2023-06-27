@@ -258,7 +258,6 @@ SETTINGS index_granularity = 8192');
 (
     id UUID,
     team_id UUID,
-    user_id UUID,
     amount DECIMAL64(6),
     meta Nullable(String),
     date_created DateTime DEFAULT now()

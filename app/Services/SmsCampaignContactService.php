@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\SmsCampaignSend;
 use ClickHouseDB\Client;
 use DB;
+use Log;
 
 class SmsCampaignContactService
 {
@@ -15,15 +16,17 @@ class SmsCampaignContactService
 //            return self::getContactsForAutosender($campaignSend);
 //        }
         //todo: check if contact unsubscribed. add - tags, segments, cache
-        $limit = $campaignSend->getLimit();
+        $limit = 100;
+//        $limit = $campaignSend->getLimit();
 //        $lists = $campaignSend->getLists();
 //        $microSegments = $campaignSend->getMicroSegments();
 
 
         //add chunking mechanism
 
-
-        return DB::connection('clickhouse')->select("
+        /** @var Client $client */
+        $client = DB::connection('clickhouse')->getClient();
+        $res = $client->select("
         SELECT 
             id as contact_id,
             phone_normalized,
@@ -33,7 +36,10 @@ class SmsCampaignContactService
         LIMIT :limit
         ",
             ['limit' => $limit, 'team_id' => $campaignSend->campaign->team_id]);
-
+        Log::debug("queried contacts: " . $res->count(), ['contacts' => array_merge($res->statistics(),
+            $res->responseInfo()
+        )]);
+        return $res->rows();
     }
 
     private static function getContactsForAutosender(SmsCampaignSend $campaignSend)

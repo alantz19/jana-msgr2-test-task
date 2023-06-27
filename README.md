@@ -43,3 +43,15 @@ sail test
 npm install
 npm run dev
 ```
+
+# queues
+
+`sail php artisan horizon` to start
+`http://v2.local/horizon/dashboard` to view
+
+make sure queues are not retrying automatically
+
+# logs
+
+I use https://lnav.org/ for it
+run `lnav storage/logs/laravel.log`

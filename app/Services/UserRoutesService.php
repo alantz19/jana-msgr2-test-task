@@ -110,6 +110,7 @@ class UserRoutesService
         $rate = $route->smsRouteRates()->where(['country_id' => $country_id])->first();
         if ($rate) {
             $route->priceForCountry = $rate->rate;
+            $route->setForCountry = $country_id;
         }
 
         return $route;

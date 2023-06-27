@@ -36,6 +36,10 @@ class SmsRoutingPlanAutoSelectorService
             /** @var SmsRoute $route */
             return $route->is_active == true;
         });
+        $routes = $routes->filter(function ($route) use ($selector) {
+            /** @var SmsRoute $route */
+            return $route->hasRateForCountry($selector->country_id);
+        });
 
         if ($routes->isEmpty()) {
             return false;
@@ -48,6 +52,7 @@ class SmsRoutingPlanAutoSelectorService
             'selected_action' => SmsRoutingPlanRuleActionEnum::send(),
             'selected_route_id' => $selectedRoute->id,
             'selected_method' => SmsRoutingPlanSelectedMethodEnum::auto(),
+            'route_rate' => $selectedRoute->getRateForCountry($selector->country_id),
         ]);
 
         //todo in future add stats consideration

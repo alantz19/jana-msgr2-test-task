@@ -52,10 +52,15 @@ class SmsCampaignsController extends Controller
     {
         AuthService::isModelOwner($campaign);
         $request->validate([
+            'sms_routing_plan_id' => 'required|uuid|exists:sms_routing_plans,id',
+            //default is 100 sms
             'sms_amount' => 'sometimes|integer|min:1',
         ]);
         if ($request->sms_amount) {
             $campaign->setMeta('sms_amount', $request->sms_amount);
+        }
+        if ($request->sms_routing_plan_id) {
+            $campaign->setMeta('sms_routing_plan_id', $request->sms_routing_plan_id);
         }
         $campaign->save();
         SendCampaignService::send($campaign);

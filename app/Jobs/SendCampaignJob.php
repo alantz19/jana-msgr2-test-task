@@ -31,6 +31,10 @@ class SendCampaignJob implements ShouldQueue
         Log::info('Sending campaign: ' . $this->campaignSend->id);
         //get contacts
         $contacts = SmsCampaignContactService::getContacts($this->campaignSend);
+        if (empty($contacts)) {
+            Log::debug('No contacts found for campaign: ' . $this->campaignSend->id);
+            return;
+        }
         //get balance
 //        BalanceService::getTeamBalance($this->campaignSend->campaign->team_id);
 
@@ -45,7 +49,7 @@ class SendCampaignJob implements ShouldQueue
                 'team_id' => $this->campaignSend->campaign->team_id,
                 'sms_routing_plan_id' => $this->campaignSend->getRoutingPlan(),
             ]);
-            Log::debug('Sending campaign: ' . $this->campaignSend->id . ' dto: ' . $data->toJson(),
+            Log::info('Sending campaign: ' . $this->campaignSend->id . ' dto: ' . $data->toJson(),
                 LogContextEnum::sendCampaignContext());
             buildSmsJob::dispatch($data);
         }

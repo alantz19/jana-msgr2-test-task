@@ -3,6 +3,7 @@
 namespace App\Services\SendingProcess\Data;
 
 use App\Data\CampaignSendToBuildSmsData;
+use App\Data\SmsRoutingPlanSelectedData;
 use App\Models\Domain;
 use App\Models\Offer;
 use App\Models\SmsCampaignText;
@@ -29,9 +30,11 @@ class BuildSmsData
      * @var array|string|string[]|null
      */
     public string|array|null $finalText;
+    public int $final_text_msg_parts;
 
     public array $keyword_data = [];
     public string $scheme;
+    public SmsRoutingPlanSelectedData $selectedRoute;
 
     public function getReplacementParams()
     {

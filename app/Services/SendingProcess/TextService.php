@@ -30,13 +30,13 @@ class TextService
         self::processTextReplacement();
     }
 
-private static function getSpecificAdText($campaign_id, $counter)
+    private static function getSpecificAdText($campaign_id, $counter)
     {
         $adTexts = SmsCampaignText::where(['sms_campaign_id' => $campaign_id, 'is_active' => 1])->get();
         return $adTexts[($counter % $adTexts->count())];
     }
 
-private static function processTextReplacement()
+    private static function processTextReplacement()
     {
         $text = self::$data->selectedCampaignText->text;
         Log::info('text before replacement', ['text' => $text]);
@@ -45,7 +45,7 @@ private static function processTextReplacement()
 //            self::$data->sms_optout_link = UrlShortenerService::getDynamicSmsOptOut(self::$data->sms_shortlink);
         }
 
-        self::setSmsLength($text);
+        self::setIsInitialMsgLong($text);
 
         $text = self::mandatoryTextReplacements($text);
         Log::debug('after mandatory', ['text' => $text]);
@@ -63,12 +63,13 @@ private static function processTextReplacement()
         //todo - refactor out number replacement and clean text.. translations as part of routing plans
 //        $text = Translations::replaceMessage($->lapObj->getCampaign()->user->translationMessage(), $text);
         self::$data->finalText = $text;
+        self::$data->final_text_msg_parts = self::getParts($text);
         Log::debug('Final text', ['text' => $text]);
 
         return $text;
     }
 
-    private static function setSmsLength(mixed $text)
+    private static function setIsInitialMsgLong(mixed $text)
     {
         $parts = self::getParts($text);
         self::$data->submited_text_parts = $parts;
@@ -78,7 +79,14 @@ private static function processTextReplacement()
         }
     }
 
-public static function mandatoryTextReplacements($text)
+public static function getParts(string $text): int
+    {
+        $msgs = (new SMSCounter())->count($text);
+
+        return $msgs->messages;
+    }
+
+        public static function mandatoryTextReplacements($text)
     {
         $shortlink = self::$data->sms_shortlink;
 
@@ -111,7 +119,7 @@ public static function mandatoryTextReplacements($text)
 //        }
 
         return $text;
-    }
+    }//end setFinalText()
 
     private static function cleanBadSymbols(string $msg)
     {
@@ -159,7 +167,7 @@ public static function mandatoryTextReplacements($text)
         $message = preg_replace('/\x{00A0}/u', ' ', $message);
         // no-break space
         return $message;
-    }//end setFinalText()
+    }//end selectSpecificAdText()
 
     public static function optionalTextReplacements(string $text)
     {
@@ -187,9 +195,9 @@ public static function mandatoryTextReplacements($text)
             }
         }
         return $text;
-    }//end selectSpecificAdText()
+    }//end optionalTextReplacements()
 
-        private static function metaTextReplacements(mixed $text)
+    private static function metaTextReplacements(mixed $text)
     {
         $params = self::$data->getReplacementParams();
         foreach ($params as $shortcode => $val) {
@@ -201,9 +209,9 @@ public static function mandatoryTextReplacements($text)
         }
 
         return $text;
-    }//end optionalTextReplacements()
+    }//end mandatoryTextReplacements()
 
-        private static function metaTextReplacement($text, $shortcode, $metaVal)
+    private static function metaTextReplacement($text, $shortcode, $metaVal)
     {
         if (str_contains($text, "\{$shortcode\}" && !empty($metaVal))
         ) {
@@ -222,13 +230,6 @@ public static function mandatoryTextReplacements($text)
         }
 
         return $text;
-    }//end mandatoryTextReplacements()
-
-    public static function getParts(string $text)
-    {
-        $msgs = (new SMSCounter())->count($text);
-
-        return $msgs->messages;
     }//end getParts()
 
     private static function replaceRandomDigits($text)
@@ -274,7 +275,7 @@ public static function mandatoryTextReplacements($text)
         return $text;
     }
 
-        private static function cleanTextFromShortcodes($text)
+    private static function cleanTextFromShortcodes($text)
     {
         $text = preg_replace('/{{{.*?}}}/', '', $text);
         return preg_replace('/{.*?}/', '', $text);

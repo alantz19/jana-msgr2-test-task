@@ -2,9 +2,14 @@
 
 namespace App\Jobs;
 
+use App\Data\BuildSmsToSendSmsData;
 use App\Data\CampaignSendToBuildSmsData;
+use App\Data\SmsRoutingPlanSelectedData;
+use App\Data\SmsRoutingPlanSelectorData;
+use App\Models\SmsCampaignLog;
 use App\Models\SmsCampaignSend;
 use App\Models\SmsRoutingPlan;
+use App\Services\BalanceService;
 use App\Services\SendingProcess\Data\BuildSmsData;
 use App\Services\SendingProcess\Routing\SmsRoutingPlanSelectorService;
 use App\Services\SendingProcess\TextService;
@@ -58,11 +63,39 @@ class buildSmsJob implements ShouldQueue
             throw new Exception('No routing plan found for team: ' . $this->dto->team_id);
         }
         $data->sms_routing_plan_id = $plan->id;
-        SmsRoutingPlanSelectorService::createSelectorForBuildSms($plan, $data);
+        $selected = SmsRoutingPlanSelectorService::createSelectorForBuildSms($plan, $data);
+        if ($selected instanceof SmsRoutingPlanSelectorData) {
+            SmsCampaignLog::create([
+                'caller_id' => $data->sendToBuildSmsData->sms_campaign_send_id,
+                'caller_type' => SmsCampaignSend::class,
+                'text' => 'failed to find route',
+                'meta' => array_merge($selected->toArray()),
+            ]);
 
+            $this->fail('failed to find route');
+            return;
+        }
+        /** @var SmsRoutingPlanSelectedData $selected */
+        $data->selectedRoute = $selected;
 
         //deduct balance
+        $balance = BalanceService::getTeamBalance($this->dto->team_id);
+        $toDeduct = ($selected->route_rate * $data->final_text_msg_parts);
+        if ($balance - $toDeduct < 0) {
+            $this->fail('not enough balance');
+            return;
+        }
+        BalanceService::deductBalance($this->dto->team_id, $selected->route_rate, [
+            'type' => 'campaign_send',
+            'campaign_send_id' => $this->dto->sms_campaign_send_id,
+            'sms_id' => $data->sms_id,
+            'sms_routing_plan_id' => $data->sms_routing_plan_id,
+        ]);
 
         //submit to sms build queue
+        $data = BuildSmsToSendSmsData::from([
+            'buildSmsData' => $data,
+        ]);
+        SendSmsJob::dispatch($data);
     }
 }

@@ -56,8 +56,9 @@ class SmsRoutingPlanSelectorService
             'counter' => $data->sendToBuildSmsData->counter,
         ]);
 
-        self::makeDecision($selectorData);
-        return $selectorData;
+        $response = self::makeDecision($selectorData);
+        Log::debug("selector response", ['response' => $response, 'selector' => $selectorData]);
+        return $response;
     }
 
     /**

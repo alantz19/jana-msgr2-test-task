@@ -265,7 +265,7 @@ WHERE `phone_normalized` > 0");
     `contact_id` UUID,
     `tag` String,
     `date_created` DateTime,
-    `is_deleted` Int8 DEFAULT 0
+    `is_deleted` Int64 DEFAULT 0
 )
 ENGINE = MergeTree
 ORDER BY (team_id, contact_id, tag)
@@ -276,7 +276,7 @@ SETTINGS index_granularity = 8192");
     `team_id` UUID,
     `tag` String,
     `contact_id` UUID,
-    `is_deleted` SimpleAggregateFunction(sumWithOverflow, Int8)
+    `is_deleted` SimpleAggregateFunction(sum, Int64)
 )
 ENGINE = SummingMergeTree
 ORDER BY (team_id, tag, contact_id)
@@ -287,7 +287,7 @@ SETTINGS index_granularity = 8192");
     `team_id` UUID,
     `tag` String,
     `contact_id` UUID,
-    `is_deleted` Int8
+    `is_deleted` Int64
 ) AS
 SELECT
     team_id,

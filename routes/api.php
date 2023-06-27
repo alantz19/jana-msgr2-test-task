@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ContactsController;
 use App\Http\Controllers\CountriesController;
 use App\Http\Controllers\CustomFieldsController;
 use App\Http\Controllers\DataFilesController;
@@ -48,6 +49,9 @@ Route::prefix('v1')->group(function () {
 
         Route::resource('custom-fields', CustomFieldsController::class)
             ->only(['index', 'store', 'update', 'destroy']);
+
+        Route::resource('contacts', ContactsController::class)
+            ->only(['index']);
 
         Route::get('countries', [CountriesController::class, 'index']);
 

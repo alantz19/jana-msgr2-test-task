@@ -34,12 +34,13 @@ export const useAppStore =
                 icon: CalendarIcon,
                 current: false,
                 children: [
+                    {name: 'Plans', href: '/sms/routing/plans', current: false},
+                    {name: 'Routes', href: '/sms/routing/routes', current: false},
                     {
                         name: 'Companies',
                         href: '/sms/routing/companies',
                         current: false,
                     },
-                    {name: 'Routes', href: '/sms/routing/routes', current: false},
                     {name: 'Rates', href: '#', current: false},
                     {name: 'Reports', href: '#', current: false},
                 ]

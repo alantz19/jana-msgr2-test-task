@@ -1,11 +1,11 @@
 <?php
 
+use App\Enums\SmsCampaignStatusEnum;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -15,7 +15,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignUuid('team_id');
             $table->string('name');
-            $table->string('status')->default(\App\Enums\SmsCampaignStatusEnum::draft());
+            $table->string('status')->default(SmsCampaignStatusEnum::draft());
             $table->foreignUuid('sms_campaign_plan_id')->nullable();
             $table->json('meta')->nullable();
             $table->timestamps();
@@ -25,7 +25,7 @@ return new class extends Migration
         Schema::create('sms_campaign_sends', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('sms_campaign_id');
-            $table->string('status')->default(\App\Enums\SmsCampaignStatusEnum::draft());
+            $table->string('status')->default(SmsCampaignStatusEnum::draft());
             $table->json('meta')->nullable();
             $table->timestamps();
             $table->softDeletes();
@@ -35,6 +35,12 @@ return new class extends Migration
             $table->nullableUuidMorphs('caller');
             $table->string('text');
             $table->json('meta');
+            $table->timestamps();
+        });
+        Schema::create('sms_campaign_autosenders', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->foreignUuid('sms_campaign_id');
+            $table->longText('meta');
             $table->timestamps();
         });
         Schema::create('sms_campaign_texts', function (Blueprint $table) {
@@ -58,7 +64,7 @@ return new class extends Migration
             $table->foreignUuid('team_id');
             $table->string('name');
             $table->string('url');
-            $table->integer('profit')->nullable();
+            $table->decimal('profit')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
@@ -67,7 +73,8 @@ return new class extends Migration
             $table->foreignUuid('offer_id')->references('id')->on('offers');
             $table->foreignUuid('sms_campaign_id');
             $table->boolean('is_active')->default(true);
-            $table->timestamp('date_created')->useCurrent();
+            $table->softDeletes();
+            $table->timestamps();
         });
     }
 

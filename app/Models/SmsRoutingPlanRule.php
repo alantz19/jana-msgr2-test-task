@@ -33,8 +33,8 @@ class SmsRoutingPlanRule extends Model
     {
         return [
             'sms_route_id' => 'sometimes|uuid',
-            'country_id' => 'sometimes|uuid',
-            'network_id' => 'sometimes|uuid',
+            'country_id' => 'sometimes|integer|exists:countries,id',
+            'network_id' => 'sometimes|integer|exists:networks,id',
             'is_active' => 'sometimes|boolean',
             'priority' => 'sometimes|integer',
             'action' => ['required', Rule::in(SmsRoutingPlanRuleActionEnum::toArray())],

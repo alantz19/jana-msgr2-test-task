@@ -24,15 +24,7 @@ class SmsRoutingPlanRulesController extends Controller
     public function store(Request $request, SmsRoutingPlan $plan)
     {
         AuthService::isModelOwner($plan);
-        $validated = $request->validate([
-            'sms_route_id' => 'sometimes|uuid',
-            'country_id' => 'sometimes|uuid',
-            'network_id' => 'sometimes|uuid',
-            'is_active' => 'sometimes|boolean',
-            'priority' => 'sometimes|integer',
-            'action' => ['required', \Illuminate\Validation\Rule::in(SmsRoutingPlanRuleActionEnum::toArray())],
-            'action_vars' => 'nullable|array',
-        ]);
+        $validated = $request->validate(SmsRoutingPlanRule::getRules());
 
         $rule = SmsRoutingPlanRule::make($validated);
         $rule->sms_routing_plan_id = $plan->id;

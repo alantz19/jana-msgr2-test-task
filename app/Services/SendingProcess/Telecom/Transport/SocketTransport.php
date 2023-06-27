@@ -281,8 +281,7 @@ class SocketTransport
             }
             $it->next();
         }
-        throw new SocketTransportException('Could not connect to any of the specified hosts',
-            GatewaysErrors::GATEWAY_ERROR_CONNECTION);
+        throw new SocketTransportException('Could not connect to any of the specified hosts');
     }
 
     /**

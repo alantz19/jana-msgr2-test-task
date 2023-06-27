@@ -2,14 +2,12 @@
 
 namespace Tests\Feature\Api;
 
-use App\Data\SmsRoutingPlanSelectorData;
 use App\Models\Contact;
 use App\Models\Offer;
 use App\Models\SmsCampaign;
 use App\Models\SmsRoute;
 use App\Models\SmsRoutingPlan;
 use App\Services\BalanceService;
-use Tests\TestCase;
 
 class SendSmsCampaignTest extends BaseApiTest
 {
@@ -142,5 +140,99 @@ class SendSmsCampaignTest extends BaseApiTest
         $this->postJson("/api/v1/sms/campaigns/{$campaign->id}/send-manual", [
             'sms_routing_plan_id' => $plan->id,
         ])->assertOk();
+    }
+
+    public function testSendManualCampaignWithBadRouteApi()
+    {
+        $plan = SmsRoutingPlan::factory()->create([
+            'team_id' => $this->user->currentTeam->id,
+            'name' => 'Test plan',
+        ]);
+        BalanceService::addBalance($this->user->current_team_id, 1000, []);
+        $route1 = SmsRoute::factory()->withRouteRates()->withSmppConnection()->create([
+            'team_id' => $this->user->currentTeam->id,
+        ]);
+        $route1->smppConnection->update([
+            'url' => 'asopifj',
+        ]);
+        $contacts = Contact::factory()->saveAndReturn($this->user->current_team_id);
+        $campaign = SmsCampaign::factory()->state(['team_id' => $this->user->currentTeam->id])->create();
+        $this->postJson("/api/v1/sms/campaigns/{$campaign->id}/texts", [
+            'text' => 'Test campaign var',
+        ])->assertCreated();
+
+        $this->postJson("/api/v1/sms/campaigns/{$campaign->id}/senderids", [
+            'text' => 'abcydu',
+        ])->assertCreated();
+        $this->postJson("/api/v1/sms/campaigns/{$campaign->id}/senderids", [
+            'text' => 'abcyasfwrduaisudhiuh',
+        ])->assertUnprocessable();
+
+        $offer = Offer::factory()->state([
+            'team_id' => $this->user->currentTeam->id,
+        ])->create();
+
+        $this->postJson("/api/v1/sms/campaigns/{$campaign->id}/offers", [
+            'offer_id' => $offer->id,
+        ])->assertCreated();
+
+        $this->putJson("/api/v1/sms/campaigns/{$campaign->id}", [
+            'name' => 'Test campaign 2',
+            'meta.send_time' => '00:00',
+            'meta.send_date' => '2021-01-01',
+            'meta.send_amount' => '100',
+        ])->assertOk();
+
+        $this->postJson("/api/v1/sms/campaigns/{$campaign->id}/send-manual", [
+            'sms_routing_plan_id' => $plan->id,
+        ])->assertOk();
+        //logs - testing.ERROR: Error creating smpp client {"sms_id":"32de9f10-5004-41c4-84ec-d049226f982c","error":"No valid hosts was found"}
+    }
+
+    public function testSendManualCampaignBalanceApi()
+    {
+        $plan = SmsRoutingPlan::factory()->create([
+            'team_id' => $this->user->currentTeam->id,
+            'name' => 'Test plan',
+        ]);
+        BalanceService::addBalance($this->user->current_team_id, 1000, []);
+        $route1 = SmsRoute::factory()->withRouteRates()->withSmppConnection()->create([
+            'team_id' => $this->user->currentTeam->id,
+        ]);
+        $contacts = Contact::factory()->saveAndReturn($this->user->current_team_id);
+        $campaign = SmsCampaign::factory()->state(['team_id' => $this->user->currentTeam->id])->create();
+        $this->postJson("/api/v1/sms/campaigns/{$campaign->id}/texts", [
+            'text' => 'Test campaign var',
+        ])->assertCreated();
+
+        $this->postJson("/api/v1/sms/campaigns/{$campaign->id}/senderids", [
+            'text' => 'abcydu',
+        ])->assertCreated();
+        $this->postJson("/api/v1/sms/campaigns/{$campaign->id}/senderids", [
+            'text' => 'abcyasfwrduaisudhiuh',
+        ])->assertUnprocessable();
+
+        $offer = Offer::factory()->state([
+            'team_id' => $this->user->currentTeam->id,
+        ])->create();
+
+        $this->postJson("/api/v1/sms/campaigns/{$campaign->id}/offers", [
+            'offer_id' => $offer->id,
+        ])->assertCreated();
+
+        $this->putJson("/api/v1/sms/campaigns/{$campaign->id}", [
+            'name' => 'Test campaign 2',
+            'meta.send_time' => '00:00',
+            'meta.send_date' => '2021-01-01',
+            'meta.send_amount' => '100',
+        ])->assertOk();
+
+        $this->postJson("/api/v1/sms/campaigns/{$campaign->id}/send-manual", [
+            'sms_routing_plan_id' => $plan->id,
+        ])->assertOk();
+
+        $this->assertEquals(BalanceService::getTeamBalance($this->user->current_team_id),
+            1000 - count($contacts) *
+            $route1->getRateForCountry($contacts[0]->country_id));
     }
 }

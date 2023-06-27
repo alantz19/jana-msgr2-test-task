@@ -47,9 +47,11 @@ use RuntimeException;
 class SmsRoutingSmppClientService
 {
     public SmppClient $smppClient;
+    private $isDemo = false; //for testing.
 
     public static function createSmppClient(SmsRouteSmppConnection $smppConnectionData): SmsRoutingSmppClientService
     {
+
         $transport = new SocketTransport(array($smppConnectionData->url),
             $smppConnectionData->port,
             $persist = true);
@@ -81,6 +83,10 @@ class SmsRoutingSmppClientService
         $service = new SmsRoutingSmppClientService();
         $service->smppClient = $smpp;
 
+
+        if ($smppConnectionData->url === '167.235.66.91') {
+            $service->isDemo = true;
+        }
         return $service;
     }
 
@@ -135,6 +141,10 @@ class SmsRoutingSmppClientService
         //todo: add cron to sync all dlr's every 1 hours from all providers.. even if we don't have a running sending
         // with them.
         Log::debug('Syncing smpp dlrs');
+        if ($this->isDemo) {
+            Log::debug('Skipping smpp dlr sync for testing');
+            return;
+        }
         try {
             while ($dlr = $this->smppClient->readSMS()) {
                 if (!($dlr instanceof SmppDeliveryReceipt)) {

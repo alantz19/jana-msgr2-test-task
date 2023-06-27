@@ -14,10 +14,13 @@ return new class extends \PhpClickHouseLaravel\Migration
         static::write('drop view if exists msgr.contacts_mv');
         static::write('drop view if exists msgr.contacts_sms_mv');
         static::write('drop view if exists msgr.contacts_sms_view');
-        static::write('drop view if exists msgr.contact_tags_view');
-
         static::write('drop table if exists msgr.contacts');
         static::write('drop table if exists msgr.contacts_sms_materialized');
+
+        static::write('drop view if exists msgr.contact_tags_mv');
+        static::write('drop view if exists msgr.contact_tags_view');
+        static::write('drop table if exists msgr.contact_tags');
+        static::write('drop table if exists msgr.contact_tags_materialized');
 
         static::write("CREATE TABLE msgr.contacts
 (
@@ -255,21 +258,56 @@ WHERE `phone_normalized` > 0");
       GROUP BY `phone_normalized`, `team_id`
         ");
 
-        static::write("alter table msgr.contact_tags add column if not exists inserted_at DateTime default now()");
-        static::write("alter table msgr.contact_tags_materialized add column if not exists inserted_at DateTime default now()");
+
+        static::write("CREATE TABLE msgr.contact_tags
+(
+    `team_id` UUID,
+    `contact_id` UUID,
+    `tag` String,
+    `date_created` DateTime,
+    `is_deleted` Int8 DEFAULT 0
+)
+ENGINE = MergeTree
+ORDER BY (team_id, contact_id, tag)
+SETTINGS index_granularity = 8192");
+
+        static::write("CREATE TABLE msgr.contact_tags_materialized
+(
+    `team_id` UUID,
+    `tag` String,
+    `contact_id` UUID,
+    `is_deleted` SimpleAggregateFunction(sumWithOverflow, Int8)
+)
+ENGINE = SummingMergeTree
+ORDER BY (team_id, tag, contact_id)
+SETTINGS index_granularity = 8192");
+
+        static::write("CREATE MATERIALIZED VIEW msgr.contact_tags_mv TO msgr.contact_tags_materialized
+(
+    `team_id` UUID,
+    `tag` String,
+    `contact_id` UUID,
+    `is_deleted` Int8
+) AS
+SELECT
+    team_id,
+    tag,
+    contact_id,
+    is_deleted
+FROM msgr.contact_tags");
 
         static::write("CREATE VIEW contact_tags_view
         (
             `team_id` UUID,
             `contact_id` UUID,
             `tag` String,
-            `is_deleted` Bool DEFAULT 0
+            `is_deleted` Int8 DEFAULT 0
         )
         AS
         SELECT `team_id`,
              `contact_id`,
              `tag`,
-             argMax(is_deleted, inserted_at) AS `is_deleted`
+             sum(is_deleted) AS `is_deleted`
         FROM `contact_tags_materialized`
         GROUP BY `team_id`, `contact_id`, `tag`
         ");

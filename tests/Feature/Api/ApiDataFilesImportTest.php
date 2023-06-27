@@ -93,7 +93,7 @@ class ApiDataFilesImportTest extends TestCase
         $path = dirname(__DIR__) . '/data/demo_list-custom-fields.csv';
 
         return $this->postJson(
-            '/api/v1/data-files/contacts', [
+            '/api/v1/data-files/contacts/upload-file', [
                 'file' => new UploadedFile($path, 'demo_list-custom-fields.csv', 'text/csv', null, true),
             ]
         );

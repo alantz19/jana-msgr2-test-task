@@ -44,7 +44,7 @@ Route::prefix('v1')->group(function () {
 
         Route::get('/data-files', [DataFilesController::class, 'index']);
         Route::get('/data-files/{id:uuid}/sample', [DataFilesController::class, 'sample']);
-        Route::post('/data-files/contacts', [DataFilesController::class, 'uploadContacts']);
+        Route::post('/data-files/contacts/upload-file', [DataFilesController::class, 'uploadContacts']);
         Route::post('/data-files/{id:uuid}/import', [DataFilesController::class, 'startImport']);
 
         Route::resource('custom-fields', CustomFieldsController::class)

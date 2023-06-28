@@ -94,6 +94,9 @@ class ApiCustomFieldsTest extends BaseApiTest
             'field_name' => 'test field',
             'field_key' => $customField['field_key'],
         ]);
+
+        $customField->refresh();
+        $this->assertNull($customField->deleted_at);
     }
 
     public function test_update()

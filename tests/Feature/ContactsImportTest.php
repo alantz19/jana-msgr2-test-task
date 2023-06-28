@@ -4,14 +4,14 @@ namespace Tests\Feature;
 
 use App\Imports\ContactsImport;
 use App\Models\Clickhouse\Views\ContactSmsView;
-use App\Models\Clickhouse\Views\ContactTag;
+use App\Models\Clickhouse\Views\ContactTagView;
 use App\Models\DataFile;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\File;
 use PhpClickHouseLaravel\RawColumn;
 use Tests\Feature\Api\BaseApiTest;
 
-class ImportFileTest extends BaseApiTest
+class ContactsImportTest extends BaseApiTest
 {
     use WithFaker;
 
@@ -36,12 +36,10 @@ class ImportFileTest extends BaseApiTest
         $contacts = new ContactsImport($dataFile);
         $contacts->import();
 
-        $data = ContactSmsView::select(new RawColumn('uniqExact(id)', 'total'))
-            ->where('team_id', $teamId)
-            ->get()
-            ->fetchOne();
+        $data = ContactSmsView::where('team_id', $teamId)
+            ->getRows();
 
-        $this->assertEquals(20, (int)$data['total']);
+        $this->assertCount(20, $data);
     }
 
     public function test_numbers_tags()
@@ -69,7 +67,7 @@ class ImportFileTest extends BaseApiTest
         $contacts = new ContactsImport($dataFile);
         $contacts->import();
 
-        $tags = ContactTag::where('team_id', $teamId)
+        $tags = ContactTagView::where('team_id', $teamId)
             ->whereIn('tag', [$tag1, $tag2])
             ->getRows();
 
@@ -155,12 +153,10 @@ class ImportFileTest extends BaseApiTest
 
         $import->import();
 
-        $data = ContactSmsView::select(new RawColumn('uniqExact(id)', 'total'))
-            ->where('team_id', $teamId)
-            ->get()
-            ->fetchOne();
+        $data = ContactSmsView::where('team_id', $teamId)
+            ->getRows();
 
-        $this->assertEquals(20, (int)$data['total']);
+        $this->assertCount(20, $data);
     }
 
     private function copySampleFile($sample): string

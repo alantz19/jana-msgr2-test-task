@@ -4,13 +4,17 @@ namespace Tests\Feature\Api;
 
 use App\Jobs\DataFileImportJob;
 use App\Models\User;
+use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Queue;
+use Illuminate\Testing\TestResponse;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
 class ApiDataFilesImportTest extends TestCase
 {
+    use WithFaker;
+
     public function test_api_upload_file()
     {
         $res = $this->uploadFileAsSanctumUser();
@@ -56,7 +60,7 @@ class ApiDataFilesImportTest extends TestCase
                 'number' => 0,
                 'country' => 0,
             ],
-            'list_name' => 'test list',
+            'tag' => [$this->faker->word],
         ]);
 
         $res->assertStatus(422);
@@ -75,7 +79,7 @@ class ApiDataFilesImportTest extends TestCase
                 'number' => 0,
                 'country' => 1,
             ],
-            'list_name' => 'test list',
+            'tags' => [$this->faker->word],
         ]);
 
         $res->assertStatus(200);
@@ -83,7 +87,7 @@ class ApiDataFilesImportTest extends TestCase
         Queue::assertPushed(DataFileImportJob::class);
     }
 
-    private function uploadFileAsSanctumUser(): \Illuminate\Testing\TestResponse
+    private function uploadFileAsSanctumUser(): TestResponse
     {
         $user = User::factory()->withPersonalTeam()->create();
         Sanctum::actingAs(

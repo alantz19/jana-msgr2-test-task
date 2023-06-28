@@ -6,7 +6,7 @@ use App\Enums\DataFileStatusEnum;
 use App\Exceptions\InvalidAttributesException;
 use App\Models\Clickhouse\Contact;
 use App\Models\Clickhouse\Views\ContactSmsView;
-use App\Models\Clickhouse\Views\ContactTag;
+use App\Models\Clickhouse\Views\ContactTagView;
 use App\Models\DataFile;
 use App\Services\CountryService;
 use App\Services\NumberService;
@@ -272,6 +272,7 @@ class ContactsImport
         $customDatetimeArray = $this->getCustomDatetimeArray($row, $this->columns);
 
         $isNew = true;
+        $number = null;
         $newContact = [
             'id' => Uuid::uuid4()->toString(),
             'team_id' => $this->dataFile->team_id,
@@ -297,9 +298,11 @@ class ContactsImport
         }
 
         if (!empty($tags)) {
-            $contactTags = ContactTag::where('team_id', $this->dataFile->team_id)
-                ->where('contact_id', $newContact['id'])
-                ->getRows();
+            $contactTags = $number
+                ? ContactTagView::where('team_id', $this->dataFile->team_id)
+                    ->where('contact_id', $newContact['id'])
+                    ->getRows()
+                : [];
             $contactTags = array_column($contactTags, 'tag');
 
             $tags = array_diff($tags, $contactTags);
@@ -313,7 +316,7 @@ class ContactsImport
                     ];
                 }, $tags);
 
-                ContactTag::insertAssoc($tags);
+                ContactTagView::insertAssoc($tags);
             }
         }
 

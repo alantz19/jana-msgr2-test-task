@@ -37,9 +37,9 @@ Install dependencies, start the project and run tests
 
 ```bash
 composer install
-sail up -d
-sail artisan migrate:fresh --seed
-sail test
-npm install
-npm run dev
+./vendor/bin/sail
+./vendor/bin/sail up -d
+./vendor/bin/sail artisan migrate:fresh --seed
+./vendor/bin/sail artisan jwt:secret
+./vendor/bin/sail test
 ```

@@ -12,7 +12,10 @@ export class Api<SecurityDataType = unknown> extends V1<SecurityDataType> {
         //     ...useRequestHeaders(["cookie"]),
         //     referer: 'http://localhost:3000',
         // };
-        this.instance.defaults.withCredentials = true;
+        const token = localStorage.getItem('token');
+        this.instance.defaults.headers = {'Authorization': `Bearer ${token}`, accept: "application/json"};
+
+        // this.instance.defaults.withCredentials = true;
 
         this.instance.interceptors.response.use(
             response => {
@@ -22,7 +25,13 @@ export class Api<SecurityDataType = unknown> extends V1<SecurityDataType> {
                 const status = error.response?.status ?? -1;
 
                 if ([401, 419].includes(status)) {
-                    useRouter().push("/login");
+                    // Token expired, refresh the token
+                    if (error.config.url !== "/v1/token/refresh" && localStorage.getItem("token") && !error.config._retry) {
+                        return this.refreshTokenAndRetry(error);
+                    }
+
+                    localStorage.removeItem("token");
+                    return useRouter().push("/login");
                 }
 
                 if ([409].includes(status)) {
@@ -35,5 +44,17 @@ export class Api<SecurityDataType = unknown> extends V1<SecurityDataType> {
                 return Promise.reject(error.response);
             }
         );
+    }
+
+    private async refreshTokenAndRetry(error: any) {
+        try {
+            const {data} = await this.instance.post("/v1/token/refresh");
+            const token = data.token;
+            localStorage.setItem("token", token);
+            error.config.headers["Authorization"] = `Bearer ${token}`;
+            return this.instance.request(error.config);
+        } catch (e) {
+            return Promise.reject(error);
+        }
     }
 }

@@ -7,7 +7,7 @@ const items = ref([])
 
 const api = new Api();
 
-items.value = (await api.smsRoutingCompaniesList()).data.data;
+items.value = (await api.smsRoutingRoutesList()).data.data;
 </script>
 
 <template>

@@ -13,20 +13,17 @@ const data = reactive({
 const status = ref(
     (route.query.reset ?? "").length > 0 ? atob(route.query.reset as string) : ""
 );
+const errors = ref({})
 
-const {
-  submit,
-  inProgress,
-  validationErrors: errors,
-} = useSubmit(
-    () => {
-      status.value = "";
-      return login(data);
-    },
-    {
-      onSuccess: () => router.push("/dashboard"),
-    }
-);
+async function submitLogin() {
+  try {
+    return await login(data);
+  } catch (e) {
+    errors.value = {
+      "email": ["The provided credentials do not match our records."],
+    };
+  }
+}
 </script>
 
 <template>
@@ -40,7 +37,7 @@ const {
     <!-- Session Status -->
     <AuthSessionStatus :status="status" class="mb-4"/>
 
-    <form @submit.prevent="submit">
+    <form @submit.prevent="submitLogin">
       <!-- Email Address -->
       <div>
         <Label for="email">Email</Label>

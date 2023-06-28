@@ -32,9 +32,9 @@
           <MenuButton class="-m-1.5 flex items-center p-1.5">
             <span class="sr-only">Open user menu</span>
             <span class="hidden lg:flex lg:items-center">
-                  <span aria-hidden="true" class="ml-4 text-sm font-semibold leading-6 text-gray-900">{{
-                      user.name
-                    }}</span>
+                  <span aria-hidden="true" class="ml-4 text-sm font-semibold leading-6 text-gray-900">
+                    {{ user?.name }}
+                  </span>
                   <ChevronDownIcon aria-hidden="true" class="ml-2 h-5 w-5 text-gray-400"/>
                 </span>
           </MenuButton>
@@ -68,10 +68,8 @@ import {ChevronDownIcon, MagnifyingGlassIcon} from "@heroicons/vue/20/solid";
 import {Bars3Icon, BellIcon} from "@heroicons/vue/24/outline";
 import {useAppStore} from "@/stores/app.js";
 
-const {logout} = useAuth();
+const {logout, user} = useAuth();
 const active = false;
-const user = useUser();
-
 const appStore = useAppStore()
 
 const userNavigation = [

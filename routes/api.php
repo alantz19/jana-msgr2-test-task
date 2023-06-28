@@ -37,7 +37,7 @@ Route::prefix('v1')->group(function () {
         Route::post('logout', [AuthController::class, 'logout']);
     });
 
-    Route::middleware('auth:sanctum')->group(function () {
+    Route::middleware('auth:api')->group(function () {
         Route::get('/user', [AuthController::class, 'me']);
 
         Route::get('/data-files/{id:uuid}/sample', [DataFilesController::class, 'sample']);

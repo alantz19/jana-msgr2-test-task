@@ -41,7 +41,7 @@ class ApiContactsTest extends BaseApiTest
         $this->assertEquals(50, $data['meta']['per_page']);
         $this->assertEquals(100, $data['meta']['total']);
 
-        $res = $this->getJson('/api/v1/audience/contacts?page=10&per_page=50')->assertOk();
+        $res = $this->getJson('/api/v1/audience/contacts?page=3&per_page=50')->assertOk();
         $data = $res->json();
         $this->assertCount(0, $data['data']);
     }

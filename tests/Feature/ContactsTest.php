@@ -3,7 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Clickhouse\Contact;
-use App\Models\Clickhouse\Views\ContactSms;
+use App\Models\Clickhouse\Views\ContactSmsView;
 use App\Services\CountryService;
 use App\Services\SmsContactMobileNetworksService;
 use PhpClickHouseLaravel\RawColumn;
@@ -14,7 +14,7 @@ class ContactsTest extends TestCase
     public function testContactFactory()
     {
         $contacts = Contact::factory()->saveAndReturn();
-        $rows = ContactSms::where('team_id', $contacts[0]->team_id)
+        $rows = ContactSmsView::where('team_id', $contacts[0]->team_id)
             ->getRows();
 
         $this->assertCount(100, $rows);
@@ -26,7 +26,7 @@ class ContactsTest extends TestCase
         $contacts = Contact::factory()->saveAndReturn('au');
         SmsContactMobileNetworksService::getNetworks($contacts);
 
-        $rows = ContactSms::where('team_id', $contacts[0]->team_id)
+        $rows = ContactSmsView::where('team_id', $contacts[0]->team_id)
             ->getRows();
 
         //@TODO: add assertions?

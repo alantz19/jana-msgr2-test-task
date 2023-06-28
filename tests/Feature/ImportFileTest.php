@@ -3,7 +3,7 @@
 namespace Tests\Feature;
 
 use App\Imports\ContactsImport;
-use App\Models\Clickhouse\Views\ContactSms;
+use App\Models\Clickhouse\Views\ContactSmsView;
 use App\Models\Clickhouse\Views\ContactTag;
 use App\Models\DataFile;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -36,7 +36,7 @@ class ImportFileTest extends BaseApiTest
         $contacts = new ContactsImport($dataFile);
         $contacts->import();
 
-        $data = ContactSms::select(new RawColumn('uniqExact(id)', 'total'))
+        $data = ContactSmsView::select(new RawColumn('uniqExact(id)', 'total'))
             ->where('team_id', $teamId)
             ->get()
             ->fetchOne();
@@ -113,7 +113,7 @@ class ImportFileTest extends BaseApiTest
         $import = new ContactsImport($dataFile);
         $import->import();
 
-        $rows = ContactSms::where('team_id', $teamId)
+        $rows = ContactSmsView::where('team_id', $teamId)
             ->getRows();
 
         $this->assertCount(20, $rows);
@@ -155,7 +155,7 @@ class ImportFileTest extends BaseApiTest
 
         $import->import();
 
-        $data = ContactSms::select(new RawColumn('uniqExact(id)', 'total'))
+        $data = ContactSmsView::select(new RawColumn('uniqExact(id)', 'total'))
             ->where('team_id', $teamId)
             ->get()
             ->fetchOne();

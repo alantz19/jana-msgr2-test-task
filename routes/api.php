@@ -50,7 +50,7 @@ Route::prefix('v1')->group(function () {
         Route::resource('custom-fields', CustomFieldsController::class)
             ->only(['index', 'store', 'update', 'destroy']);
 
-        Route::resource('contacts', ContactsController::class)
+        Route::resource('audience/contacts', ContactsController::class)
             ->only(['index']);
 
         Route::get('countries', [CountriesController::class, 'index']);

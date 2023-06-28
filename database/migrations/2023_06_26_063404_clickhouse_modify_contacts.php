@@ -57,7 +57,7 @@ return new class extends \PhpClickHouseLaravel\Migration
     `date_created` Nullable(DateTime),
     `date_updated` Nullable(DateTime),
     `meta` Nullable(String),
-    `is_deleted` Nullable(Bool),
+    `is_deleted` Int64,
     `inserted_at` DateTime default now()
 )
 ENGINE = MergeTree
@@ -106,7 +106,7 @@ SETTINGS index_granularity = 8192");
     `date_created` SimpleAggregateFunction(any, Nullable(DateTime)),
     `date_updated` SimpleAggregateFunction(anyLast, Nullable(DateTime)),
     `meta` SimpleAggregateFunction(anyLast, Nullable(String)),
-    `is_deleted` SimpleAggregateFunction(anyLast, Nullable(Bool)),
+    `is_deleted` SimpleAggregateFunction(sum, Int64),
     `inserted_at` SimpleAggregateFunction(anyLast, DateTime) default now()
 )
 ENGINE = SummingMergeTree
@@ -118,6 +118,7 @@ SETTINGS index_granularity = 8192");
     `team_id` UUID,
     `phone_normalized` UInt64,
     `id` Nullable(UUID),
+    `foreign_id` Nullable(String),
     `phone_is_good` Nullable(UInt8),
     `phone_is_good_reason` Nullable(UInt8),
     `name` Nullable(String),
@@ -144,12 +145,13 @@ SETTINGS index_granularity = 8192");
     `date_created` Nullable(DateTime),
     `date_updated` Nullable(DateTime),
     `meta` Nullable(String),
-    `is_deleted` Nullable(Bool)
+    `is_deleted` Int64
 ) AS
 SELECT
     `team_id`,
     `phone_normalized`,
     `id`,
+    `foreign_id`,
     `phone_is_good`,
     `phone_is_good_reason`,
     `name`,
@@ -185,6 +187,17 @@ WHERE `phone_normalized` > 0");
             `team_id` UUID,
             `phone_normalized` UInt64,
             `id` Nullable(UUID),
+            `foreign_id` Nullable(String),
+            `last_sent` Nullable(DateTime),
+            `last_clicked` Nullable(DateTime),
+            `sent_count` UInt64,
+            `clicked_count` UInt64,
+            `leads_count` UInt64,
+            `sales_count` UInt64,
+            `profit_sum` UInt64,
+            `network_brand` Nullable(String),
+            `network_id` Nullable(UInt32),
+            `network_reason` Nullable(UInt8),
             `phone_is_good` Nullable(UInt8),
             `phone_is_good_reason` Nullable(UInt8),
             `name` Nullable(String),
@@ -208,23 +221,24 @@ WHERE `phone_normalized` > 0");
             `custom3_datetime` Nullable(DateTime),
             `custom4_datetime` Nullable(DateTime),
             `custom5_datetime` Nullable(DateTime),
+            `meta` Nullable(String),
             `date_created` Nullable(DateTime),
             `date_updated` Nullable(DateTime),
-            `meta` Nullable(String),
-            `is_deleted` Nullable(Bool)
+            `is_deleted` Int64
         )
         AS
-        SELECT `phone_normalized`,
-             `team_id`,
-             argMax(id, inserted_at)                    AS `id`,
-             argMax(last_sent, inserted_at)             AS `last_sent`,
-             argMax(last_clicked, inserted_at)          AS `last_clicked`,
-             sum(sent_count)                            AS `sent_count`,
-             sum(clicked_count)                         AS `clicked_count`,
-             sum(leads_count)                           AS `leads_count`,
-             sum(sales_count, inserted_at)              AS `sales_count`,
-             sum(profit_sum, inserted_at)               AS `profit_sum`,
-             argMax(network_brand, inserted_at)         AS `network_brand`,
+        SELECT `team_id`,
+             `phone_normalized`,
+             argMax(id, inserted_at)                   AS `id`,
+             argMax(foreign_id, inserted_at)           AS `foreign_id`,
+             argMax(last_sent, inserted_at)            AS `last_sent`,
+             argMax(last_clicked, inserted_at)         AS `last_clicked`,
+             sum(sent_count)                           AS `sent_count`,
+             sum(clicked_count)                        AS `clicked_count`,
+             sum(leads_count)                          AS `leads_count`,
+             sum(sales_count)                          AS `sales_count`,
+             sum(profit_sum)                           AS `profit_sum`,
+             argMax(network_brand, inserted_at)        AS `network_brand`,
              argMax(network_id, inserted_at)           AS `network_id`,
              argMax(network_reason, inserted_at)       AS `network_reason`,
              argMax(phone_is_good, inserted_at)        AS `phone_is_good`,
@@ -251,9 +265,9 @@ WHERE `phone_normalized` > 0");
              argMax(custom4_datetime, inserted_at)     AS `custom4_datetime`,
              argMax(custom5_datetime, inserted_at)     AS `custom5_datetime`,
              argMax(meta, inserted_at)                 AS `meta`,
-             argMax(date_created, inserted_at)             AS `date_created`,
+             argMax(date_created, inserted_at)         AS `date_created`,
              argMax(date_updated, inserted_at)         AS `date_updated`,
-             argMax(is_deleted, inserted_at)           AS `is_deleted`
+             sum(is_deleted)                           AS `is_deleted`
       FROM `contacts_sms_materialized`
       GROUP BY `phone_normalized`, `team_id`
         ");

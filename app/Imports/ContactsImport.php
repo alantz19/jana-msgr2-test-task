@@ -5,7 +5,7 @@ namespace App\Imports;
 use App\Enums\DataFileStatusEnum;
 use App\Exceptions\InvalidAttributesException;
 use App\Models\Clickhouse\Contact;
-use App\Models\Clickhouse\Views\ContactSms;
+use App\Models\Clickhouse\Views\ContactSmsView;
 use App\Models\Clickhouse\Views\ContactTag;
 use App\Models\DataFile;
 use App\Services\CountryService;
@@ -284,7 +284,7 @@ class ContactsImport
 
 
         if (!empty($newContact['phone_normalized'])) {
-            $number = ContactSms::where('team_id', $this->dataFile->team_id)
+            $number = ContactSmsView::where('team_id', $this->dataFile->team_id)
                 ->where('phone_normalized', $newContact['phone_normalized'])
                 ->get()
                 ->fetchOne();

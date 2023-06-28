@@ -7,7 +7,6 @@ use App\Models\MobileNetwork;
 use App\Services\ClickhouseService;
 use App\Services\CountryService;
 use App\Services\SmsContactMobileNetworksService;
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Collection;
 use Ramsey\Uuid\Uuid;
 
@@ -64,6 +63,7 @@ class ContactFactory extends Factory
             'phone_is_good_reason' => $this->faker->randomNumber(1, 5),
             'country_id' => $this->faker->uuid,
 //            'state_id' => 1,
+            'date_created' => now()->toDateTime(),
         ];
     }
 }

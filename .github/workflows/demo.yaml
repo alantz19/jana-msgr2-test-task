@@ -18,17 +18,17 @@ jobs:
       - run: docker build -t composer-local docker/composer/
       - run: docker run --rm -v ${PWD}/:/app -w /app -u 1000 composer-local composer install
   
-  build_node:
-    runs-on: demo-v2
-    needs: build
-    container:
-      image: node
-      volumes:
-        - .:/app
-    steps:
-      - run: cd /app/nuxt && npm install
-      - run: chown -R 1000:1000 .
-  
+  #  build_node:
+  #    runs-on: demo-v2
+  #    needs: build
+  #    container:
+  #      image: node
+  #      volumes:
+  #        - .:/app
+  #    steps:
+  #      - run: cd /app/nuxt && npm install
+  #      - run: chown -R 1000:1000 .
+  #
   deploy:
     runs-on: demo-v2
     needs: build_node
@@ -41,4 +41,4 @@ jobs:
       - run: ./vendor/bin/sail up -d
       - run: sleep 60 && ./vendor/bin/sail artisan migrate:fresh --seed
       - run: ./vendor/bin/sail artisan jwt:secret --force
-      - run: docker run --name node-dev --network host -d -v .:/app -w /app/nuxt -u 1000 node npm run dev
+#      - run: docker run --name node-dev --network host -d -v .:/app -w /app/nuxt -u 1000 node npm run dev

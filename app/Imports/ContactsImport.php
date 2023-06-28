@@ -294,6 +294,10 @@ class ContactsImport
                 $diff = array_diff_assoc($newContact, $number);
                 $isNew = !empty($diff);
                 $newContact['id'] = $number['id'];
+
+                if (!empty($number['is_deleted'])) {
+                    $newContact['is_deleted'] = -1;
+                }
             }
         }
 

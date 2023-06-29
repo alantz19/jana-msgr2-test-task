@@ -22,7 +22,7 @@ class DataFileResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'size' => (int) $this->size,
+            'size' => $this->file_size,
             'status' => DataFileStatusEnum::from($this->status_id)->label,
             'created_at' => $this->created_at->toDateTimeString(),
             'created_ago' => Carbon::parse($this->created_at)->diffForHumans(),

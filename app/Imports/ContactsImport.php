@@ -283,7 +283,6 @@ class ContactsImport
             ...$customDatetimeArray,
         ];
 
-
         if (!empty($newContact['phone_normalized'])) {
             $number = ContactSmsView::where('team_id', $this->dataFile->team_id)
                 ->where('phone_normalized', $newContact['phone_normalized'])

@@ -16,7 +16,7 @@ class OfferFactory extends Factory
             'team_id' => $this->faker->uuid(),
             'name' => $this->faker->name(),
             'url' => $this->faker->url(),
-            'profit' => $this->faker->randomNumber(),
+            'profit' => $this->faker->randomNumber(4),
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ];

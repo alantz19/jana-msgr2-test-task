@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Models\Contact;
+use App\Models\Clickhouse\Contact;
 use App\Models\Lists;
 use App\Models\User;
 use App\Services\SmsContactMobileNetworksService;
@@ -14,10 +14,7 @@ class ContactNetworkTest extends TestCase
     {
         self::markTestSkipped();
         $user = User::factory()->withPersonalTeam()->create();
-        $list = Lists::factory()->create([
-            'team_id' => $user->currentTeam->id,
-        ]);
-        $contacts = Contact::factory()->saveAndReturn($list->id, 'au', true);
+        $contacts = Contact::factory()->saveAndReturn('au', true);
         sleep(3);
         $res = SmsContactMobileNetworksService::getNetworksCountByList($list->id);
         foreach ($res as $network) {

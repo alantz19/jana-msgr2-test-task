@@ -11,6 +11,9 @@ class AuthService
         if (!$user) {
             $user = auth()->user();
         }
+        if (!$user) {
+            throw new AuthorizationException('User must be authenticated to access this resource.');
+        }
 
         if ($model->team_id !== $user->current_team_id) {
             throw new AuthorizationException('You are not authorized to access this resource.');

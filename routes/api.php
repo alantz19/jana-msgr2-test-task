@@ -1,9 +1,16 @@
 <?php
 
-use App\Http\Controllers\Api\V1\DataFilesController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ContactsController;
 use App\Http\Controllers\CountriesController;
+use App\Http\Controllers\CustomFieldsController;
+use App\Http\Controllers\DataFilesController;
 use App\Http\Controllers\MobileNetworksController;
+use App\Http\Controllers\OffersController;
+use App\Http\Controllers\SmsCampaignOffersController;
+use App\Http\Controllers\SmsCampaignsController;
+use App\Http\Controllers\SmsCampaignSenderidsController;
+use App\Http\Controllers\SmsCampaignTextsController;
 use App\Http\Controllers\SmsRoutingCompaniesController;
 use App\Http\Controllers\SmsRoutingPlanRulesController;
 use App\Http\Controllers\SmsRoutingPlansController;
@@ -35,9 +42,16 @@ Route::prefix('v1')->group(function () {
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('/user', [AuthController::class, 'me']);
 
+        Route::get('/data-files', [DataFilesController::class, 'index']);
         Route::get('/data-files/{id:uuid}/sample', [DataFilesController::class, 'sample']);
-        Route::post('/data-files/contacts', [DataFilesController::class, 'uploadContacts']);
+        Route::post('/data-files/contacts/upload-file', [DataFilesController::class, 'uploadContacts']);
         Route::post('/data-files/{id:uuid}/import', [DataFilesController::class, 'startImport']);
+
+        Route::resource('custom-fields', CustomFieldsController::class)
+            ->only(['index', 'store', 'update', 'destroy']);
+
+        Route::resource('audience/contacts', ContactsController::class)
+            ->only(['index']);
 
         Route::get('countries', [CountriesController::class, 'index']);
 
@@ -73,7 +87,29 @@ Route::prefix('v1')->group(function () {
                 Route::get('rates/logs', [SmsRoutingRatesController::class, 'logs'])->name('rates.logs');
             });
 
+            Route::resource('campaigns', SmsCampaignsController::class)
+                ->only(['index', 'store', 'update', 'destroy']);
+//                ->parameters(['smsCampaign' => 'campaign']);
+
+            Route::prefix('campaigns/{campaign}')->name('campaigns.')->group(function () {
+                Route::resource('texts', SmsCampaignTextsController::class)->only(['index',
+                    'store', 'update', 'destroy']);
+                Route::resource('senderids', SmsCampaignSenderidsController::class)
+                    ->only(['index',
+                        'store', 'update', 'destroy']);
+                Route::resource('offers', SmsCampaignOffersController::class)
+                    ->only(['index', 'store', 'update', 'destroy']);
+
+                Route::post('send-manual', [SmsCampaignsController::class, 'sendManual'])->name('send-manual');
+                Route::get('logs', [SmsCampaignsController::class, 'logs'])->name('logs');
+            });
         });
 
+        Route::resource('offers', OffersController::class)->only(['index', 'store', 'update',
+            'destroy']);
     });
+});
+
+Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
+    return $request->user();
 });

@@ -9,48 +9,49 @@ return new class extends \PhpClickHouseLaravel\Migration {
     public function up(): void
     {
         static::write(
-            "CREATE TABLE IF NOT EXISTS msgr.sms_sendlog
+            "CREATE TABLE IF NOT EXISTS msgr.sms_sendlogs
     (
         `sms_id` UUID,
         `team_id` UUID,
-        `updated_datetime` DateTime,
-        `status` String,
-        `list_id` UUID,
-        `segment_id` UUID,
+        `updated_datetime` DateTime64,
+        `sms_campaign_id` UUID,
+        `sms_campaign_send_id` UUID,
+        `segment_id` Nullable(UUID),
         `contact_id` UUID,
         `phone_normalized` UInt64,
-        `network_id` UInt32,
+        `network_id` Nullable(UInt32),
         `country_id` UInt16,
-        `foreign_id` String,
-        `fail_reason` String,
+        `foreign_id` Nullable(String),
+        `fail_reason` Nullable(String),
         `is_sent` Int8,
-        `is_clicked` BOOL,
-        `is_lead` BOOL,
-        `is_sale` BOOL,
-        `profit` Int32,
-        `is_unsubscribed` BOOL,
-        `unsubscribed_method` String,
-        `domain_id` UUID,
-        `original_url` String,
-        `shortened_url` String,
-        `offer_id` UUID,
-        `offer_group_id` UUID,
-        `campaign_text_id` UUID,
+        `is_clicked` Nullable(Int8),
+        `is_lead` Nullable(Int8),
+        `is_sale` Nullable(Int8),
+        `conversion_profit` Nullable(Int32),
+        `is_unsubscribed` Nullable(Int8),
+        `unsubscribed_method` Nullable(String),
+        `domain_id` Nullable(UUID),
+        `shortened_url` Nullable(String),
+        `offer_id` Nullable(UUID),
+        `campaign_text_id` Nullable(UUID),
         `final_text` String,
-        `plan_id` UUID,
-        `rule_id` UUID,
-        `rule_reason` String,
-        `sender_id` String,
-        `sender_id_id` UUID,
-        `sms_parts` UInt8,
-        `dlr_code` UInt8,
-        `dlr_str` String,
-        `cost_platform_profit` Decimal(18,15),
-        `cost_platform_cost` Decimal(18,15),
-        `cost_user_vendor_cost` Decimal(18,15),
-        `click_meta` String,
-        `time_clicked` DateTime,
-        `meta` String
+        `text_parts` UInt8,
+        `sms_routing_plan_id` UUID,
+        `sms_routing_plan_rule_id` UUID,
+        `sms_routing_route_id` UUID,
+        `sms_rule_selected_data` Nullable(String),
+        `sender_id` Nullable(String),
+        `sender_id_id` Nullable(UUID),
+        `sms_parts` Nullable(UInt8),
+        `dlr_code` Nullable(UInt8),
+        `dlr_str` Nullable(String),
+        `cost_platform_profit` Nullable(Decimal(18,15)),
+        `cost_platform_cost` Nullable(Decimal(18,15)),
+        `cost_user_vendor_cost` Nullable(Decimal(18,15)),
+        `click_meta` Nullable(String),
+        `sent_at` Nullable(DateTime),
+        `time_clicked` Nullable(DateTime),
+        `meta` Nullable(String)
 )
 ENGINE = MergeTree
 PRIMARY KEY (sms_id)
@@ -102,9 +103,10 @@ SETTINGS index_granularity = 8192"
 //        SETTINGS index_granularity = 8192;
 //        ");
 
-        static::write("CREATE MATERIALIZED VIEW IF NOT EXISTS sms_sendlog_mv TO contacts_sms_materialized AS
-    select team_id,list_id,phone_normalized, sum(is_sent), sum(is_clicked) as clicks_count, sum(is_lead) as leads_count,  
-    sum(is_sale) as sales_count, sum(profit) as profit_sum from sms_sendlog group by team_id,list_id,phone_normalized;");
+        //todo after contacts branch merge
+//        static::write("CREATE MATERIALIZED VIEW IF NOT EXISTS sms_sendlog_mv TO contacts_sms_materialized AS
+//    select team_id,list_id,phone_normalized, sum(is_sent), sum(is_clicked) as clicks_count, sum(is_lead) as leads_count,
+//    sum(is_sale) as sales_count, sum(profit) as profit_sum from sms_sendlog group by team_id,list_id,phone_normalized;");
 
         static::write("create table IF NOT EXISTS contacts (
     `id` UUID,

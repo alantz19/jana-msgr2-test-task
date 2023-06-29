@@ -13,18 +13,19 @@ use Ramsey\Uuid\Uuid;
 
 class ContactFactory extends Factory
 {
-    public function saveAndReturn($list_id = false, $country = 'uk', $withNetworks = false): Collection
+    public function saveAndReturn($team_id = false, $country = 'au', $withNetworks = false): Collection
     {
         $contacts = new Collection();
-        if (!$list_id) {
-            $list_id = Uuid::uuid4()->toString();//use same list of all contacts..
+        if (!$team_id) {
+            $team_id = Uuid::uuid4()->toString();//use same list of all contacts..
         }
         $i = 0;
-        while ($i < 100) {
+        while ($i < 5) {
             $i++;
             $contact = new Contact();
             $contact->fill($this->definition());
-            $contact->list_id = $list_id;
+            $contact->team_id = $team_id;
+            $contact->list_id = Uuid::uuid4()->toString();
             $contact->country_id = CountryService::guessCountry($country);
             $contacts->add($contact);
         }

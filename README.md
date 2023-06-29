@@ -56,3 +56,8 @@ make sure queues are not retrying automatically
 
 I use https://lnav.org/ for it
 run `lnav storage/logs/laravel.log`
+
+# supporting services
+
+- frontend: https://v2-frontend.vercel.app/ (https://github.com/msgr2/v2_frontend)
+- url shortener: https://github.com/msgr2/v2_shortener

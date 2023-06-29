@@ -34,9 +34,4 @@ class SmsCampaignSend extends Model
     {
         return $this->getMeta()['lists'];
     }
-
-    public function getRoutingPlan()
-    {
-        return $this->getMetaByKey('sms_routing_plan_id');
-    }
 }

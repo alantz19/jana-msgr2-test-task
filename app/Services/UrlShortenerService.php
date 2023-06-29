@@ -5,6 +5,8 @@ namespace App\Services;
 use api\v2\sms\sends\campaigns\sending_services\DomainsService;
 use api\v2\sms\sends\campaigns\sending_services\models\CampaignSmsMessage;
 use App\Enums\LogContextEnum;
+use App\Exceptions\CampaignSendException;
+use App\Models\OfferCampaign;
 use App\Services\SendingProcess\Data\BuildSmsData;
 use common\components\Shorty;
 use Exception;
@@ -13,12 +15,13 @@ use Illuminate\Support\Facades\Log;
 
 class UrlShortenerService
 {
-/**
+    /**
      * @param  $domains
      * @throws Exception
      */
     public static function setShortlink(BuildSmsData $msg)
     {
+        Log::debug('Setting shortlink', ['sms_campaign_send_id' => $msg->sendToBuildSmsData->sms_campaign_send_id]);
         if (env('dont_send', false)) {
             throw new Exception('dont_send');
         }
@@ -26,24 +29,22 @@ class UrlShortenerService
         $offer = self::selectOffer($msg);
         $msg->selectedOffer = $offer;
 
+        Log::debug('URL shortener - selected offer', ['offer_id' => $offer->id]);
         $urlShortenerParams = self::buildUrlShortenerPostParams($msg);
-        $listOrSegmentId = $msg->sendToBuildSmsData->list_id;
-        if (empty($listOrSegmentId) && !empty($msg->segment_id)) {
-            $listOrSegmentId = 'segment_' . $msg->segment_id;
-        }
 
-//        DomainsService::setDomainTag($msg);
+        Log::debug('URL shortener - got params', ['params' => $urlShortenerParams]);
         $domain = DomainService::getDomainForCampaign($msg);
+
+        Log::debug('URL shortener - got domain', ['domain_id' => $domain->id, 'domain_url' => $domain->url]);
         if (!$domain) {
             throw new Exception('Failed to get shorty domain');
         }
 
         $msg->domain = $domain;
-        Log::debug('URL shortener domain', ['domain_id' => $domain->id, ...LogContextEnum::sendCampaignContext()]);
 
         $link = self::callUrlShortener($msg, $urlShortenerParams);
         if (empty($link)) {
-            throw new Exception('Failed to create shortlink');
+            throw new CampaignSendException('Failed to create shortlink');
         }
 
         Log::debug("Received shortlink: $link");
@@ -53,14 +54,16 @@ class UrlShortenerService
         return true;
     }
 
-        private static function selectOffer(BuildSmsData $msg)
+    private static function selectOffer(BuildSmsData $msg)
     {
-        $offers = $msg->sendToBuildSmsData->getCampaign()->offers()->where('is_active', true)->get();
-        if (empty($offers)) {
+        $offers = OfferCampaign::where(['sms_campaign_id' => $msg->sendToBuildSmsData->sms_campaign_id, 'is_active' =>
+            true])
+            ->get();
+        if ($offers->isEmpty()) {
             throw new Exception('No offers found for campaign');
         }
 
-        return $offers[$msg->sendToBuildSmsData->counter % count($offers)];
+        return $offers[$msg->sendToBuildSmsData->counter % count($offers)]->offer;
     }//end getShortlink()
 
     private static function buildUrlShortenerPostParams(BuildSmsData $msg)

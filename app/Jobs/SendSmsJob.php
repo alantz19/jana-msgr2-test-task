@@ -5,6 +5,8 @@ namespace App\Jobs;
 use App\Data\BuildSmsToSendSmsData;
 use App\Models\SmsRoute;
 use App\Models\SmsRouteSmppConnection;
+use App\Models\SmsSendlog;
+use App\Services\PricingService;
 use App\Services\SendingProcess\Routing\SmsRoutingSmppClientService;
 use App\Services\SendingProcess\Telecom\SMPP\SmppClient;
 use App\Services\SmppService;
@@ -88,8 +90,46 @@ class SendSmsJob implements ShouldQueue
         }
     }
 
-    private function saveResultsToSmsSendlog()
+    private function saveResultsToSmsSendlog($foreignId)
     {
+        //        `dlr_code` Nullable(UInt8),
+        //        `dlr_str` Nullable(String),
+        //        `click_meta` Nullable(String),
+        //        `time_clicked` Nullable(DateTime),
+        //        `meta` Nullable(String)
 
+        $smsSendLog = new SmsSendLog();
+        $smsSendLog->foreign_id = $foreignId;
+        $smsSendLog->sms_id = $this->dto->buildSmsData->sms_id;
+        $smsSendLog->segment_id = $this->dto->buildSmsData->sendToBuildSmsData->segment_id;
+        $smsSendLog->network_id = $this->dto->buildSmsData->sendToBuildSmsData->network_id;
+        $smsSendLog->offer_id = isset($this->dto->buildSmsData->selectedOffer) ?
+            $this->dto->buildSmsData->selectedOffer->id : null;
+        $smsSendLog->sender_id = $this->dto->buildSmsData->selected_senderderid_text;
+        $smsSendLog->sender_id_id = $this->dto->buildSmsData->selected_senderderid_id;
+        $smsSendLog->cost_platform_profit = PricingService::getCostOfCustomRoute
+        ($this->dto->buildSmsData->sendToBuildSmsData->team_id);
+        $smsSendLog->cost_user_vendor_cost = $this->dto->buildSmsData->selectedRoute->route_rate;
+//        $smsSendLog->original_url = $this->dto->buildSmsData->selectedOffer?->original_url;
+        $smsSendLog->sms_routing_plan_id = $this->dto->buildSmsData->sendToBuildSmsData->sms_routing_plan_id;
+        $smsSendLog->sms_routing_plan_rule_id = $this->dto->buildSmsData->selectedRoute->selected_rule_id;
+        $smsSendLog->sms_rule_selected_data = json_encode($this->dto->buildSmsData->selectedRoute);
+        $smsSendLog->shortened_url = $this->dto->buildSmsData->sms_shortlink;
+        $smsSendLog->domain_id = isset($this->dto->buildSmsData->domain) ? $this->dto->buildSmsData->domain->id : null;
+        $smsSendLog->campaign_text_id = isset($this->dto->buildSmsData->selectedCampaignText) ?
+            $this->dto->buildSmsData->selectedCampaignText->id : null;
+        $smsSendLog->country_id = $this->dto->buildSmsData->sendToBuildSmsData->country_id;
+        $smsSendLog->sent_at = now();
+        $smsSendLog->is_sent = 1;
+        $smsSendLog->contact_id = $this->dto->buildSmsData->sendToBuildSmsData->contact_id;
+        $smsSendLog->phone_normalized = $this->dto->buildSmsData->sendToBuildSmsData->phone_normalized;
+        $smsSendLog->sms_campaign_id = $this->dto->buildSmsData->sendToBuildSmsData->sms_campaign_id;
+        $smsSendLog->sms_campaign_send_id = $this->dto->buildSmsData->sendToBuildSmsData->sms_campaign_send_id;
+        $smsSendLog->final_text = $this->dto->buildSmsData->finalText;
+        $smsSendLog->text_parts = $this->dto->buildSmsData->final_text_msg_parts;
+        $smsSendLog->sms_routing_route_id = $this->dto->buildSmsData->selectedRoute->selected_route_id;
+        $smsSendLog->team_id = $this->dto->buildSmsData->sendToBuildSmsData->team_id;
+        $smsSendLog->updated_datetime = now();
+        $smsSendLog->save();
     }
 }

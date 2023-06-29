@@ -21,9 +21,9 @@ class SmsRoutingPlanAutoSelectorService
     {
         $network = null;
         Log::debug("auto routing", ['country' => $selector->country_id, 'network' => $network, 'plan_id' =>
-            $selector->plan->id]);
+            $selector->plan_id]);
 
-        $routes = UserRoutesService::getRoutes($selector->plan->team_id, $selector->country_id, $network);
+        $routes = UserRoutesService::getRoutes($selector->team_id, $selector->country_id, $network);
         $routes = $routes->filter(function ($route) {
             /** @var SmsRoute $route */
             return isset($route->priceForCountry);

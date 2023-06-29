@@ -8,6 +8,7 @@ use App\Enums\LogContextEnum;
 use App\Models\SmsCampaignSend;
 use App\Services\BalanceService;
 use App\Services\SmsCampaignContactService;
+use Faker\Core\Uuid;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -43,15 +44,17 @@ class SendCampaignJob implements ShouldQueue
         foreach ($contacts as $contact) {
             $data = CampaignSendToBuildSmsData::from([...$contact,
                 'counter' => $i,
+                'segment_id' => \Ramsey\Uuid\Uuid::uuid4(), //todo: change when segments are implemented
                 'country_id' => $contact['country_id'],
                 'sms_campaign_send_id' => $this->campaignSend->id,
                 'sms_campaign_id' => $this->campaignSend->sms_campaign_id,
                 'team_id' => $this->campaignSend->campaign->team_id,
-                'sms_routing_plan_id' => $this->campaignSend->getRoutingPlan(),
+                'sms_routing_plan_id' => $this->campaignSend->campaign->getSettings()['sms_routing_plan_id'],
             ]);
             Log::info('Sending campaign: ' . $this->campaignSend->id . ' dto: ' . $data->toJson(),
                 LogContextEnum::sendCampaignContext());
             buildSmsJob::dispatch($data);
+            $i++;
         }
     }
 }

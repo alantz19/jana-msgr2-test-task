@@ -52,7 +52,8 @@ class SmsRoutingPlanSelectorService
 
         $selectorData = SmsRoutingPlanSelectorData::from([
             'country_id' => $data->sendToBuildSmsData->country_id,
-            'plan' => $plan,
+            'plan_id' => $plan->id,
+            'team_id' => $plan->team_id,
             'counter' => $data->sendToBuildSmsData->counter,
         ]);
 
@@ -112,7 +113,7 @@ class SmsRoutingPlanSelectorService
 
     private static function getRule(SmsRoutingPlanSelectorData $selector)
     {
-        return SmsRoutingPlanRule::where(['sms_routing_plan_id' => $selector->plan->id])
+        return SmsRoutingPlanRule::where(['sms_routing_plan_id' => $selector->plan_id])
             ->where(['country_id' => $selector->country_id])
             ->whereNotIn('id', $selector->filtered_rules_ids)
             ->whereNotIn('sms_routing_plan_id', $selector->filtered_route_ids)
@@ -204,7 +205,8 @@ class SmsRoutingPlanSelectorService
     {
         $selectorData = SmsRoutingPlanSelectorData::from([
             'country_id' => $country_id,
-            'plan' => $plan,
+            'plan_id' => $plan->id,
+            'team_id' => $plan->team_id,
             'counter' => $counter,
         ]);
 

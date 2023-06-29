@@ -29,6 +29,7 @@ class SmsCampaignContactService
         $res = $client->select("
         SELECT 
             id as contact_id,
+            name,
             phone_normalized,
             country_id
         from contacts

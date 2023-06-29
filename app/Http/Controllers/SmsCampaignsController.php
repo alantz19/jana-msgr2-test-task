@@ -40,8 +40,8 @@ class SmsCampaignsController extends Controller
         if ($request->input('name')) {
             $smsCampaign->name = $request->input('name');
         }
-        if ($request->input('meta')) {
-            $smsCampaign->addMetaArray($request->input('meta'));
+        if ($request->input('settings')) {
+            $smsCampaign->addMetaArray($request->input('settings'));
         }
 
         $smsCampaign->save();

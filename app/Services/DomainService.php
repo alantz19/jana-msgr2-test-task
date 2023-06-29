@@ -3,13 +3,24 @@
 namespace App\Services;
 
 use App\Models\Domain;
+use App\Services\SendingProcess\Data\BuildSmsData;
+use Log;
+use Ramsey\Uuid\Uuid;
 
 class DomainService
 {
 
-    public static function getDomainForCampaign(SendingProcess\Data\BuildSmsData $msg)
+    public static function getDomainForCampaign(BuildSmsData $msg)
     {
-        return Domain::factory()->create();
+        Log::debug('getDomainForCampaign');
+        $domain = Domain::make([
+            'url' => 'https://www.google.com',
+            'is_active' => true,
+            'id' => Uuid::uuid4()
+        ]);
+        $domain->team_id = $msg->sendToBuildSmsData->team_id;
+//        $domain->save();
+        return $domain;
         //todo
     }
 }

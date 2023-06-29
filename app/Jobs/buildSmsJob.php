@@ -7,6 +7,7 @@ use App\Data\CampaignSendToBuildSmsData;
 use App\Data\SmsRoutingPlanSelectedData;
 use App\Data\SmsRoutingPlanSelectorData;
 use App\Models\Country;
+use App\Models\OfferCampaign;
 use App\Models\SmsCampaignLog;
 use App\Models\SmsCampaignSend;
 use App\Models\SmsCampaignSenderid;
@@ -36,8 +37,10 @@ class buildSmsJob implements ShouldQueue
 
     public function handle(): void
     {
+        Log::debug('starting build sms job', ['sms_campaign_send_id' => $this->dto->sms_campaign_send_id]);
         //check stop conditions
         if (SmsCampaignSend::find($this->dto->sms_campaign_send_id)->status == 'stopped') {
+            Log::debug('campaign stopped, returning');
             return;
         }
 
@@ -52,14 +55,15 @@ class buildSmsJob implements ShouldQueue
         $data = new BuildSmsData();
         $data->sendToBuildSmsData = $this->dto;
         $data->sms_id = Str::uuid()->toString();
-        TextService::processMsg($data);
-
-        $this->setSenderids($data);
-
         //decide on route.
         if (!$this->setRoute($data)) {
             return;
         }
+        Log::debug('finished setting route, processing text', ['sms_id' => $data->sms_id]);
+
+        TextService::processMsg($data);
+
+        $this->setSenderids($data);
 
         //deduct balance
         if (!$this->deductBalance($data)) {
@@ -71,29 +75,6 @@ class buildSmsJob implements ShouldQueue
             'buildSmsData' => $data,
         ]);
         SendSmsJob::dispatch($data);
-    }
-
-    private function setSenderids(BuildSmsData $data)
-    {
-        $country = Country::where(['id' => $this->dto->country_id])->firstOrFail();
-        if (!$country->sender_id) {
-            Log::debug('country has no sender id: ' . $country->id, ['sms_id' => $data->sms_id]);
-            return true;
-        }
-
-        $senderids = SmsCampaignSenderid::where(['sms_campaign_id' => $this->dto->sms_campaign_id])
-            ->where(['is_active' => true])
-            ->get();
-        if ($senderids->count() == 0) {
-            Log::debug('no senderids found for campaign: ' . $this->dto->sms_campaign_id, ['sms_id' => $data->sms_id]);
-            return false;
-        }
-
-        $senderid = $senderids[$data->sendToBuildSmsData->counter % $senderids->count()];
-        $data->selected_senderderid_id = $senderid->id;
-        $data->selected_senderderid_text = $senderid->text;
-
-        return true;
     }
 
     private function setRoute(BuildSmsData $data): bool
@@ -123,6 +104,29 @@ class buildSmsJob implements ShouldQueue
         }
         /** @var SmsRoutingPlanSelectedData $selected */
         $data->selectedRoute = $selected;
+        return true;
+    }
+
+    private function setSenderids(BuildSmsData $data)
+    {
+        $country = Country::where(['id' => $this->dto->country_id])->firstOrFail();
+        if (!$country->sender_id) {
+            Log::debug('country has no sender id: ' . $country->id, ['sms_id' => $data->sms_id]);
+            return true;
+        }
+
+        $senderids = SmsCampaignSenderid::where(['sms_campaign_id' => $this->dto->sms_campaign_id])
+            ->where(['is_active' => true])
+            ->get();
+        if ($senderids->count() == 0) {
+            Log::debug('no senderids found for campaign: ' . $this->dto->sms_campaign_id, ['sms_id' => $data->sms_id]);
+            return false;
+        }
+
+        $senderid = $senderids[$data->sendToBuildSmsData->counter % $senderids->count()];
+        $data->selected_senderderid_id = $senderid->id;
+        $data->selected_senderderid_text = $senderid->text;
+
         return true;
     }
 

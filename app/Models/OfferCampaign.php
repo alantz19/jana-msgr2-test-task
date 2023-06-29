@@ -18,4 +18,9 @@ class OfferCampaign extends Model
         'sms_campaign_id',
         'is_active',
     ];
+
+    public function offer()
+    {
+        return $this->belongsTo(Offer::class);
+    }
 }

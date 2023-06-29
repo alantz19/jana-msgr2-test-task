@@ -2,6 +2,7 @@
 
 namespace App\Services\SendingProcess;
 
+use App\Exceptions\CampaignSendException;
 use App\Services\SendingProcess\Data\BuildSmsData;
 use App\Services\UrlShortenerService;
 use App\Models\SmsCampaignText;
@@ -25,18 +26,29 @@ class TextService
     private static function getSpecificAdText($campaign_id, $counter)
     {
         $adTexts = SmsCampaignText::where(['sms_campaign_id' => $campaign_id, 'is_active' => 1])->get();
+        if ($adTexts->isEmpty()) {
+            Log::debug('No ad texts found for campaign: ' . $campaign_id);
+            throw new CampaignSendException('No ad texts found for campaign: ' . $campaign_id);
+        }
         return $adTexts[($counter % $adTexts->count())];
     }
 
     private static function processTextReplacement()
     {
-        $text = self::$data->selectedCampaignText->text;
-        Log::info('text before replacement', ['text' => $text]);
         if (self::$data->selectedCampaignText->haveDomainOrOptoutTag()) {
             UrlShortenerService::setShortlink(self::$data);
 //            self::$data->sms_optout_link = UrlShortenerService::getDynamicSmsOptOut(self::$data->sms_shortlink);
         }
 
+        $text = self::prepareText();
+
+        return $text;
+    }
+
+    private static function prepareText()
+    {
+        $text = self::$data->selectedCampaignText->text;
+        Log::debug('prepareText', ['text' => $text]);
         self::setIsInitialMsgLong($text);
 
         $text = self::mandatoryTextReplacements($text);
@@ -112,7 +124,7 @@ class TextService
 //        }
 
         return $text;
-    }
+    }//end setFinalText()
 
     private static function cleanBadSymbols(string $msg)
     {
@@ -160,7 +172,7 @@ class TextService
         $message = preg_replace('/\x{00A0}/u', ' ', $message);
         // no-break space
         return $message;
-    }//end setFinalText()
+    }//end selectSpecificAdText()
 
     public static function optionalTextReplacements(string $text)
     {
@@ -188,7 +200,7 @@ class TextService
             }
         }
         return $text;
-    }//end selectSpecificAdText()
+    }//end optionalTextReplacements()
 
     private static function metaTextReplacements(mixed $text)
     {
@@ -202,7 +214,7 @@ class TextService
         }
 
         return $text;
-    }//end optionalTextReplacements()
+    }//end mandatoryTextReplacements()
 
     private static function metaTextReplacement($text, $shortcode, $metaVal)
     {
@@ -223,7 +235,7 @@ class TextService
         }
 
         return $text;
-    }//end mandatoryTextReplacements()
+    }//end getParts()
 
     private static function replaceRandomDigits($text)
     {
@@ -237,7 +249,7 @@ class TextService
         }
 
         return $text;
-    }//end getParts()
+    }
 
     private static function processSpintext(mixed $text)
     {
@@ -272,7 +284,7 @@ class TextService
     {
         $text = preg_replace('/{{{.*?}}}/', '', $text);
         return preg_replace('/{.*?}/', '', $text);
-    }
+    }//end findBadSymbols()
 
     public static function isUnicode($text)
     {
@@ -280,5 +292,5 @@ class TextService
         //$res = \SMSCounter::count($text);
         $res = (new SMSCounter())->count($text);
         return $res->per_message < 71;
-    }//end findBadSymbols()
+    }
 }

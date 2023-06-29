@@ -7,6 +7,7 @@ use App\Http\Controllers\CustomFieldsController;
 use App\Http\Controllers\DataFilesController;
 use App\Http\Controllers\MobileNetworksController;
 use App\Http\Controllers\OffersController;
+use App\Http\Controllers\SegmentsController;
 use App\Http\Controllers\SmsCampaignOffersController;
 use App\Http\Controllers\SmsCampaignsController;
 use App\Http\Controllers\SmsCampaignSenderidsController;
@@ -48,6 +49,8 @@ Route::prefix('v1')->group(function () {
         Route::post('/data-files/{id:uuid}/import', [DataFilesController::class, 'startImport']);
 
         Route::resource('custom-fields', CustomFieldsController::class)
+            ->only(['index', 'store', 'update', 'destroy']);
+        Route::resource('segments', SegmentsController::class)
             ->only(['index', 'store', 'update', 'destroy']);
 
         Route::resource('audience/contacts', ContactsController::class)

@@ -2,6 +2,8 @@
 
 namespace App\Enums;
 
+use App\Models\Clickhouse\Views\ContactTagView;
+use App\Models\Segment;
 use Spatie\Enum\Enum;
 
 /**
@@ -32,7 +34,7 @@ class JqBuilderOperatorEnum extends Enum
             'equal' => 'equals',
             'not_equal' => 'notEquals',
             'in' => 'in',
-            'not_in' => 'notIn',
+            'not_in' => 'not in',
             'less' => 'less',
             'less_or_equal' => 'lessOrEquals',
             'greater' => 'greater',
@@ -50,13 +52,24 @@ class JqBuilderOperatorEnum extends Enum
         ];
     }
 
-    public function toSql(JqBuilderFieldEnum $field, string $bindKey): string
+    public function toSql(Segment $segment, JqBuilderFieldEnum $field, string $bindKey): string
     {
         $fieldValue = $field->value;
 
-        if ($field->equals(JqBuilderFieldEnum::number_date_created())) {
+        if ($field->equals(JqBuilderFieldEnum::date_created())) {
             $fieldValue = "toDate($fieldValue)";
             $bindKey = "parseDateTime32BestEffort(:$bindKey)";
+        } else if ($field->equals(JqBuilderFieldEnum::tags())) {
+            $tagOp = match ($this->value) {
+                self::in()->value => '=',
+                self::not_in()->value => '!=',
+            };
+            $sub = ContactTagView::select('contact_id')
+                ->where('team_id', $segment->team_id)
+                ->where('is_deleted', 0)
+                ->whereRaw("tag $tagOp :$bindKey")
+                ->toSql();
+            return "id $this->value ($sub)";
         } else {
             $bindKey = ":$bindKey";
         }

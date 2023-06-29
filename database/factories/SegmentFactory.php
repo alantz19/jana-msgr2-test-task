@@ -5,8 +5,6 @@ namespace Database\Factories;
 use App\Enums\SegmentStatusEnum;
 use App\Enums\SegmentTypeEnum;
 use App\Models\Segment;
-use App\Models\Team;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class SegmentFactory extends Factory
@@ -21,15 +19,6 @@ class SegmentFactory extends Factory
         ];
     }
 
-    public function withTeam(Team $team): static
-    {
-        return $this->state(function (array $attributes) use ($team) {
-            return [
-                'team_id' => $team->id,
-            ];
-        });
-    }
-
     public function withNumbersSample1(): static
     {
         return $this->state(function (array $attributes) {
@@ -40,24 +29,24 @@ class SegmentFactory extends Factory
                         'condition' => 'AND',
                         'rules' => [
                             [
-                                'id' => 'number_clicks_count',
-                                'field' => 'number_clicks_count',
+                                'id' => 'clicked_count',
+                                'field' => 'clicked_count',
                                 'type' => 'integer',
                                 'input' => 'number',
                                 'operator' => 'greater_or_equal',
                                 'value' => 0,
                             ],
                             [
-                                'id' => 'number_country',
-                                'field' => 'number_country',
+                                'id' => 'country_id',
+                                'field' => 'country_id',
                                 'type' => 'integer',
                                 'input' => 'select',
                                 'operator' => 'equal',
                                 'value' => 225,
                             ],
                             [
-                                'id' => 'number_date_created',
-                                'field' => 'number_date_created',
+                                'id' => 'date_created',
+                                'field' => 'date_created',
                                 'type' => 'date',
                                 'input' => 'text',
                                 'operator' => 'equal',
@@ -80,35 +69,35 @@ class SegmentFactory extends Factory
                         'condition' => 'AND',
                         'rules' => [
                             [
-                                'id' => 'number_clicks_count',
-                                'field' => 'number_clicks_count',
+                                'id' => 'clicked_count',
+                                'field' => 'clicked_count',
                                 'type' => 'integer',
                                 'input' => 'number',
-                                'operator' => 'greater_or_equal',
+                                'operator' => 'greater',
                                 'value' => 0,
                             ],
                             [
-                                'id' => 'number_country',
-                                'field' => 'number_country',
+                                'id' => 'country_id',
+                                'field' => 'country_id',
                                 'type' => 'integer',
                                 'input' => 'select',
                                 'operator' => 'equal',
-                                'value' => 13,
+                                'value' => 225,
                             ],
                             [
                                 'condition' => 'OR',
                                 'rules' => [
                                     [
-                                        'id' => 'number_network_id',
-                                        'field' => 'number_network_id',
+                                        'id' => 'network_id',
+                                        'field' => 'network_id',
                                         'type' => 'integer',
                                         'input' => 'number',
                                         'operator' => 'equal',
                                         'value' => 1,
                                     ],
                                     [
-                                        'id' => 'number_network_brand',
-                                        'field' => 'number_network_brand',
+                                        'id' => 'network_brand',
+                                        'field' => 'network_brand',
                                         'type' => 'string',
                                         'input' => 'text',
                                         'operator' => 'contains',
@@ -117,12 +106,44 @@ class SegmentFactory extends Factory
                                 ],
                             ],
                             [
-                                'id' => 'number_date_created',
-                                'field' => 'number_date_created',
+                                'id' => 'date_created',
+                                'field' => 'date_created',
                                 'type' => 'date',
                                 'input' => 'text',
                                 'operator' => 'equal',
-                                'value' => '2021/06/22',
+                                'value' => now()->toDateString(),
+                            ],
+                        ],
+                    ],
+                ],
+            ];
+        });
+    }
+
+    public function withNumbersSample3(): static
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'type' => SegmentTypeEnum::numbers()->value,
+                'meta' => [
+                    'query' => [
+                        'condition' => 'AND',
+                        'rules' => [
+                            [
+                                'id' => 'clicked_count',
+                                'field' => 'clicked_count',
+                                'type' => 'integer',
+                                'input' => 'number',
+                                'operator' => 'greater',
+                                'value' => 0,
+                            ],
+                            [
+                                'id' => 'tags',
+                                'field' => 'tags',
+                                'type' => 'string',
+                                'input' => 'select',
+                                'operator' => 'in',
+                                'value' => 'user-tag-1',
                             ],
                         ],
                     ],

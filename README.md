@@ -39,6 +39,7 @@ Install dependencies, start the project and run tests
 composer install
 sail up -d
 sail artisan migrate:fresh --seed
+sail artisan jwt:secret
 sail test
 npm install
 npm run dev

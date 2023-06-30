@@ -18,6 +18,7 @@ class DomainService
             'is_active' => true,
             'id' => Uuid::uuid4()
         ]);
+        $domain->id = Uuid::uuid4();
         $domain->team_id = $msg->sendToBuildSmsData->team_id;
 //        $domain->save();
         return $domain;

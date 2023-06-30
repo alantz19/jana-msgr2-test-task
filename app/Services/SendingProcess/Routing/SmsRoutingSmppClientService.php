@@ -54,7 +54,10 @@ class SmsRoutingSmppClientService
 
         $transport = new SocketTransport(array($smppConnectionData->url),
             $smppConnectionData->port,
-            $persist = true);
+            $persist = true,
+            function ($message) {
+                Log::debug("SMPP transport debug: {$message}");
+            });
 
         $transport->setRecvTimeout(10000);
         $transport->setSendTimeout(10000);
@@ -65,7 +68,9 @@ class SmsRoutingSmppClientService
         SmppClient::$sms_registered_delivery_flag = SMPP::REG_DELIVERY_SMSC_BOTH;
         SmppClient::$system_type = '';
 
-        $smpp = new SmppClient($transport);
+        $smpp = new SmppClient($transport, function ($message) {
+            Log::debug("SMPP debug: {$message}");
+        });
         $smpp->debug = true;
         $transport->debug = true;
         try {

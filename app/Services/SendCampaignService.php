@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Exceptions\CampaignSendException;
 use App\Jobs\SendCampaignJob;
 use App\Models\SmsCampaign;
+use App\Models\SmsRoutingPlan;
 use Illuminate\Support\Facades\Log;
 
 class SendCampaignService
@@ -26,8 +27,18 @@ class SendCampaignService
     {
         $settings = $campaign->getSettings();
         if (!isset($settings['sms_routing_plan_id'])) {
-            Log::debug('No routing plan set for campaign: ' . $campaign->id);
-            throw new CampaignSendException('No routing plan set for campaign: ' . $campaign->id);
+            $plan = SmsRoutingPlan::where(['is_team_default' => true])->first();
+            if (!$plan) {
+                $plan = SmsRoutingPlan::create([
+                    'name' => 'Default',
+                    'is_team_default' => true,
+                    'team_id' => $campaign->team_id,
+                ]);
+            }
+
+            $settings['sms_routing_plan_id'] = $plan->id;
+            $campaign->setSettings($settings);
+            $campaign->save();
         }
 
         return true;

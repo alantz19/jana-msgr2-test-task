@@ -95,7 +95,7 @@ class buildSmsJob implements ShouldQueue
                 'caller_id' => $data->sendToBuildSmsData->sms_campaign_send_id,
                 'caller_type' => SmsCampaignSend::class,
                 'text' => 'failed to find route',
-                'meta' => array_merge($selected->toArray()),
+                'meta' => json_encode($selected->toArray()),
             ]);
 
             $this->fail('failed to find route');

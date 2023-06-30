@@ -24,7 +24,7 @@ class SendSmsCampaignTest extends TestCase
         SendCampaignService::send($res['campaign']);
         $this->assertDatabaseHas('sms_sendlogs', [
             'sms_campaign_id' => $res['campaign']->id,
-        ]);
+        ], 'clickhouse');
     }
 
     public function test_send_campaign_with_shortener()

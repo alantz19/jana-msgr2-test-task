@@ -8,8 +8,6 @@ use App\Models\SmsRouteSmppConnection;
 use App\Models\SmsSendlog;
 use App\Services\PricingService;
 use App\Services\SendingProcess\Routing\SmsRoutingSmppClientService;
-use App\Services\SendingProcess\Telecom\SMPP\SmppClient;
-use App\Services\SmppService;
 use DB;
 use Exception;
 use Illuminate\Bus\Queueable;

@@ -2,6 +2,7 @@
 
 namespace App\Services\SendingProcess\Telecom\SMPP;
 
+use App\Models\SmsRouteSmppConnection;
 use backend\models\GatewaysErrors;
 use App\Services\SendingProcess\Telecom\SMPP\Exception\SmppException;
 use App\Services\SendingProcess\Telecom\SMPP\Unit\SmppDeliveryReceipt;
@@ -108,6 +109,11 @@ class SmppClient
         $this->pdu_queue = array();
         $this->debugHandler = $debugHandler ? $debugHandler : 'error_log';
         $this->mode = null;
+    }
+
+    public static function testConnection(SmsRouteSmppConnection $make)
+    {
+        return true; //todo
     }
 
     /**

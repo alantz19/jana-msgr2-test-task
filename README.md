@@ -37,9 +37,27 @@ Install dependencies, start the project and run tests
 
 ```bash
 composer install
-./vendor/bin/sail
-./vendor/bin/sail up -d
-./vendor/bin/sail artisan migrate:fresh --seed
-./vendor/bin/sail artisan jwt:secret
-./vendor/bin/sail test
+sail up -d
+sail artisan migrate:fresh --seed
+sail artisan jwt:secret
+sail test
+npm install
+npm run dev
 ```
+
+# queues
+
+`sail php artisan horizon` to start
+`http://v2.local/horizon/dashboard` to view
+
+make sure queues are not retrying automatically
+
+# logs
+
+I use https://lnav.org/ for it
+run `lnav storage/logs/laravel.log`
+
+# supporting services
+
+- frontend: https://v2-frontend.vercel.app/ (https://github.com/msgr2/v2_frontend)
+- url shortener: https://github.com/msgr2/v2_shortener

@@ -69,6 +69,7 @@ return new class extends Migration {
             $table->foreignUuid('team_id')->index();
             $table->string('name');
             $table->boolean('is_platform_plan')->default(false);
+            $table->boolean('is_team_default')->default(false);
             $table->timestamps();
             $table->softDeletes();
         });

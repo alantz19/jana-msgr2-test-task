@@ -24,6 +24,7 @@ class SmsRoutingPlanRuleResource extends JsonResource
             'action' => $this->action,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'action_vars' => $this->action_vars
         ];
     }
 }

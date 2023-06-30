@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\ContactCollection;
+use App\Http\Resources\ContactSmsCollection;
 use App\Models\Clickhouse\Views\ContactSmsView;
 use Illuminate\Http\Request;
 
@@ -23,6 +23,6 @@ class ContactsController extends Controller
             ->take($perPage, $offset)
             ->getRows();
 
-        return new ContactCollection($contacts);
+        return new ContactSmsCollection($contacts);
     }
 }

@@ -88,12 +88,12 @@ class SegmentBuilderService
         return $data;
     }
 
-    private static function isGroup($value): bool
+    public static function isGroup($value): bool
     {
         return is_array($value) && array_key_exists('condition', $value);
     }
 
-    private static function isRule($value): bool
+    public static function isRule($value): bool
     {
         return is_array($value)
             && array_key_exists('operator', $value)
@@ -140,10 +140,6 @@ class SegmentBuilderService
                 continue;
             }
 
-            if (empty($rule['sql'])) {
-                continue;
-            }
-
             $rules[] = $rule['sql'];
         }
 
@@ -157,10 +153,6 @@ class SegmentBuilderService
         foreach ($group['rules'] as $rule) {
             if (self::isGroup($rule)) {
                 $binds = array_merge($binds, self::getGroupBinds($rule));
-                continue;
-            }
-
-            if (empty($rule['bind_key'])) {
                 continue;
             }
 

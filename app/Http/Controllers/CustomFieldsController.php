@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\CustomFieldEnum;
 use App\Http\Resources\CustomFieldCollection;
+use App\Http\Resources\CustomFieldResource;
 use App\Models\CustomField;
 use App\Services\AuthService;
 use Illuminate\Http\Request;
@@ -44,7 +45,9 @@ class CustomFieldsController extends Controller
             ]);
         }
 
-        return response($field, 201);
+        return response()->json([
+            'data' => new CustomFieldResource($field),
+        ], 201);
     }
 
     public function update(Request $request, $id)
@@ -63,7 +66,7 @@ class CustomFieldsController extends Controller
             'field_key' => $validated['field_key'],
         ]);
 
-        return response($field, 200);
+        return new CustomFieldResource($field);
     }
 
     public function destroy($id)
@@ -74,6 +77,6 @@ class CustomFieldsController extends Controller
 
         $field->delete();
 
-        return response(null, 204);
+        return response()->noContent();
     }
 }

@@ -8,7 +8,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 /**
  * @mixin \App\Models\Clickhouse\Contact
  */
-class ContactResource extends JsonResource
+class ContactSmsResource extends JsonResource
 {
     /**
      * Transform the resource into an array.

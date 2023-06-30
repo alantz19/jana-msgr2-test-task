@@ -23,8 +23,9 @@ class SegmentResource extends JsonResource
             'id' => $this->id,
             'type' => SegmentTypeEnum::from($this->type)->label,
             'name' => $this->name,
-            'meta' => $this->meta,
-            'status_id' => SegmentStatusEnum::from($this->status_id)->label,
+            'query' => $this->meta['query'] ?? [],
+            'sql' => $this->meta['sql'] ?? [],
+            'status' => SegmentStatusEnum::from($this->status_id)->label,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

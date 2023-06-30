@@ -10,10 +10,6 @@ class ApiContactsTest extends BaseApiTest
 {
     public function test_index_and_pagination()
     {
-        Sanctum::actingAs(
-            $this->user,
-            ['*']
-        );
         $teamId = $this->user->current_team_id;
         $countryId = CountryService::guessCountry('uk');
 

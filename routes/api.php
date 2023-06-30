@@ -50,8 +50,10 @@ Route::prefix('v1')->group(function () {
 
         Route::resource('custom-fields', CustomFieldsController::class)
             ->only(['index', 'store', 'update', 'destroy']);
+
         Route::resource('segments', SegmentsController::class)
             ->only(['index', 'store', 'update', 'destroy']);
+        Route::post('segments/preview', [SegmentsController::class, 'preview']);
 
         Route::resource('audience/contacts', ContactsController::class)
             ->only(['index']);

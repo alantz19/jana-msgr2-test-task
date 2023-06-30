@@ -42,7 +42,7 @@ class JqBuilderOperatorEnum extends Enum
             'begins_with' => 'startsWith',
             'not_begins_with' => '!startsWith',
             'contains' => 'like',
-            'not_contains' => 'notLike',
+            'not_contains' => 'not like',
             'ends_with' => 'endsWith',
             'not_ends_with' => '!endsWith',
             'is_empty' => 'empty',

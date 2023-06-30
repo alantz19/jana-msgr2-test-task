@@ -14,6 +14,7 @@ class SegmentFactory extends Factory
     public function definition(): array
     {
         return [
+            'team_id' => $this->faker->uuid,
             'name' => $this->faker->name,
             'status_id' => SegmentStatusEnum::active()->value,
         ];

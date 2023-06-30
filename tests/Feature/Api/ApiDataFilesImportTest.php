@@ -50,7 +50,7 @@ class ApiDataFilesImportTest extends TestCase
         $this->assertCount(15, $data['rows']);
     }
 
-    public function test_start_import_wrong_columns()
+    public function test_cannot_start_import_wrong_columns()
     {
         $res = $this->uploadFileAsSanctumUser();
         $data = $res->json();

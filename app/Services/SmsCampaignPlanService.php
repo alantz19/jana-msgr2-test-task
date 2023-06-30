@@ -2,18 +2,11 @@
 
 namespace App\Services;
 
-use App\Models\Contact;
-use App\Models\Offer;
 use App\Models\SmsCampaign;
 use App\Models\SmsCampaignPlan;
 use App\Models\SmsCampaignSenderid;
 use App\Models\SmsCampaignText;
-use Carbon\Carbon;
-use Database\Factories\ContactFactory;
-use Database\Factories\SmsCampaignSenderidFactory;
-use DateTimeZone;
-use Faker\Core\Uuid;
-use Illuminate\Database\Eloquent\Factories\Sequence;
+use Database\Factories\Clickhouse\ContactFactory;
 use Illuminate\Support\Collection;
 use Nnjeim\World\Models\Country;
 use Nnjeim\World\Models\Timezone;

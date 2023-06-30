@@ -2,11 +2,8 @@
 
 namespace App\Services;
 
-use App\Models\Balance;
-use App\Models\User;
-use ClickHouseDB\Client;
+use App\Models\Clickhouse\Balance;
 use Exception;
-use Illuminate\Support\Facades\DB;
 use Str;
 
 class BalanceService

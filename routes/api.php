@@ -1,8 +1,10 @@
 <?php
 
-use App\Http\Controllers\Api\V1\DataFilesController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ContactsController;
 use App\Http\Controllers\CountriesController;
+use App\Http\Controllers\CustomFieldsController;
+use App\Http\Controllers\DataFilesController;
 use App\Http\Controllers\MobileNetworksController;
 use App\Http\Controllers\OffersController;
 use App\Http\Controllers\SmsCampaignOffersController;
@@ -40,9 +42,16 @@ Route::prefix('v1')->group(function () {
     Route::middleware('auth:api')->group(function () {
         Route::get('/user', [AuthController::class, 'me']);
 
+        Route::get('/data-files', [DataFilesController::class, 'index']);
         Route::get('/data-files/{id:uuid}/sample', [DataFilesController::class, 'sample']);
-        Route::post('/data-files/contacts', [DataFilesController::class, 'uploadContacts']);
+        Route::post('/data-files/contacts/upload-file', [DataFilesController::class, 'uploadContacts']);
         Route::post('/data-files/{id:uuid}/import', [DataFilesController::class, 'startImport']);
+
+        Route::resource('custom-fields', CustomFieldsController::class)
+            ->only(['index', 'store', 'update', 'destroy']);
+
+        Route::resource('audience/contacts', ContactsController::class)
+            ->only(['index']);
 
         Route::get('countries', [CountriesController::class, 'index']);
 

@@ -1,31 +1,31 @@
 <?php
 
-namespace Database\Factories;
+namespace Database\Factories\Clickhouse;
 
-use App\Models\Contact;
+use App\Models\Clickhouse\Contact;
 use App\Models\MobileNetwork;
 use App\Services\ClickhouseService;
 use App\Services\CountryService;
 use App\Services\SmsContactMobileNetworksService;
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Collection;
 use Ramsey\Uuid\Uuid;
 
 class ContactFactory extends Factory
 {
-    public function saveAndReturn($team_id = false, $country = 'au', $withNetworks = false): Collection
+    public function saveAndReturn($teamId = false, $country = 'au', $withNetworks = false): Collection
     {
         $contacts = new Collection();
-        if (!$team_id) {
-            $team_id = Uuid::uuid4()->toString();//use same list of all contacts..
+        if (!$teamId) {
+            $teamId = Uuid::uuid4()->toString();
         }
+
         $i = 0;
         while ($i < 5) {
             $i++;
             $contact = new Contact();
             $contact->fill($this->definition());
-            $contact->team_id = $team_id;
-            $contact->list_id = Uuid::uuid4()->toString();
+//            $contact->list_id = $list_id;
+            $contact->team_id = $teamId;
             $contact->country_id = CountryService::guessCountry($country);
             $contacts->add($contact);
         }
@@ -55,12 +55,13 @@ class ContactFactory extends Factory
             'id' => $this->faker->uuid,
             'team_id' => $this->faker->uuid,
             'name' => $this->faker->name,
-            'list_id' => $this->faker->uuid,
+//            'list_id' => $this->faker->uuid,
             'phone_normalized' => str_replace('+', '', $this->faker->e164PhoneNumber()),
             'phone_is_good' => true,
             'phone_is_good_reason' => $this->faker->randomNumber(1, 5),
             'country_id' => $this->faker->uuid,
 //            'state_id' => 1,
+            'date_created' => now()->toDateTime(),
         ];
     }
 }

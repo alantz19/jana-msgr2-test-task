@@ -14,24 +14,22 @@ class DataFile extends Model
     use HasFactory, SoftDeletes, HasUuids;
 
     protected $fillable = [
-        'user_id',
-        'type',
+        'team_id',
         'name',
-        'path',
-        'size',
+        'file_name',
+        'file_size',
         'status_id',
         'meta',
     ];
 
     protected $casts = [
-        'type' => 'integer',
-        'size' => 'integer',
+        'file_size' => 'integer',
         'meta' => 'array',
     ];
 
-    public function user(): BelongsTo
+    public function team(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Team::class);
     }
 
     public function getColumns(): array
@@ -42,5 +40,10 @@ class DataFile extends Model
     public function isPending(): bool
     {
         return $this->status_id === DataFileStatusEnum::pending()->value;
+    }
+
+    public function getFilePath(): string
+    {
+        return 'teams/' . $this->team_id . '/data-files/' . $this->file_name;
     }
 }

@@ -3,7 +3,7 @@
 namespace Tests\Feature\Api;
 
 use App\Enums\SmsCampaignStatusEnum;
-use App\Models\Contact;
+use App\Models\Clickhouse\Contact;
 use App\Models\Offer;
 use App\Models\SmsCampaign;
 use App\Models\SmsRoute;

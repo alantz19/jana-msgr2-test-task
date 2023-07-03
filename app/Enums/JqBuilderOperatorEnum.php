@@ -69,7 +69,7 @@ class JqBuilderOperatorEnum extends Enum
                 ->where('is_deleted', 0)
                 ->whereRaw("tag $tagOp :$bindKey")
                 ->toSql();
-            return "id $this->value ($sub)";
+            return "contact_id $this->value ($sub)";
         } else {
             $bindKey = ":$bindKey";
         }

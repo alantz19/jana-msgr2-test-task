@@ -40,7 +40,7 @@ class ApiDataFilesImportTest extends TestCase
     public function test_data_policy()
     {
         $res = $this->uploadFileAsUser();
-        $data = $res->json();
+        $data = $res->json('data');
 
         $user2 = User::factory()->withPersonalTeam()->create();
         $this->actingAs($user2);
@@ -52,11 +52,11 @@ class ApiDataFilesImportTest extends TestCase
     public function test_api_get_sample()
     {
         $res = $this->uploadFileAsUser();
-        $data = $res->json();
+        $data = $res->json('data');
 
         $sample = $this->getJson('/api/v1/data-files/' . $data['id'] . '/sample');
         $sample->assertStatus(200);
-        $data = $sample->json();
+        $data = $sample->json('data');
 
         $this->assertEquals(11, $data['cols']);
         $this->assertCount(15, $data['rows']);
@@ -65,7 +65,7 @@ class ApiDataFilesImportTest extends TestCase
     public function test_cannot_start_import_wrong_columns()
     {
         $res = $this->uploadFileAsUser();
-        $data = $res->json();
+        $data = $res->json('data');
 
         $res = $this->postJson('/api/v1/data-files/' . $data['id'] . '/import', [
             'columns' => [
@@ -84,7 +84,7 @@ class ApiDataFilesImportTest extends TestCase
         Queue::assertNothingPushed();
 
         $res = $this->uploadFileAsUser();
-        $data = $res->json();
+        $data = $res->json('data');
 
         $res = $this->postJson('/api/v1/data-files/' . $data['id'] . '/import', [
             'columns' => [

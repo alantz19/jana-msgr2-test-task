@@ -129,7 +129,7 @@ class SegmentBuilderTest extends TestCase
             ContactTag::insertAssoc([
                 [
                     'team_id' => $contact['team_id'],
-                    'contact_id' => $contact['id'],
+                    'contact_id' => $contact['contact_id'],
                     'tag' => 'user-tag-1',
                 ]
             ]);

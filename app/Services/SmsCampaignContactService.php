@@ -28,7 +28,7 @@ class SmsCampaignContactService
         $client = DB::connection('clickhouse')->getClient();
         $res = $client->select("
         SELECT 
-            id as contact_id,
+            contact_id,
             name,
             phone_normalized,
             country_id

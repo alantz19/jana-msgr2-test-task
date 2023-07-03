@@ -19,7 +19,7 @@ class ContactsController extends Controller
         $perPage = (int) $request->get('per_page', 25);
         $offset = ($page - 1) * $perPage;
         $contacts = ContactSmsView::where('team_id', auth()->user()->current_team_id)
-            ->orderByAsc('id')
+            ->orderByAsc('contact_id')
             ->take($perPage, $offset)
             ->getRows();
 

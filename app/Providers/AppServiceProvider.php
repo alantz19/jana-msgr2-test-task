@@ -2,12 +2,9 @@
 
 namespace App\Providers;
 
-use Filament\Facades\Filament;
-use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider;
-use Filament\Notifications\Notification as BaseNotification;
 
 
 class AppServiceProvider extends ServiceProvider

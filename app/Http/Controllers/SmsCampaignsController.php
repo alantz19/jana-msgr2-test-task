@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\SmsCampaignUpdateRequest;
 use App\Http\Resources\SmsCampaignResource;
 use App\Models\SmsCampaign;
+use App\Models\SmsRoutingPlan;
 use App\Services\AuthService;
 use App\Services\SendCampaignService;
 use Illuminate\Http\Request;
@@ -40,8 +41,8 @@ class SmsCampaignsController extends Controller
         if ($request->input('name')) {
             $smsCampaign->name = $request->input('name');
         }
-        if ($request->input('meta')) {
-            $smsCampaign->addMetaArray($request->input('meta'));
+        if ($request->input('settings')) {
+            $smsCampaign->addMetaArray($request->input('settings'));
         }
 
         $smsCampaign->save();
@@ -52,10 +53,18 @@ class SmsCampaignsController extends Controller
     {
         AuthService::isModelOwner($campaign);
         $request->validate([
+            'sms_routing_plan_id' => 'sometimes|uuid|exists:sms_routing_plans,id',
+            //default is 100 sms
             'sms_amount' => 'sometimes|integer|min:1',
         ]);
         if ($request->sms_amount) {
             $campaign->setMeta('sms_amount', $request->sms_amount);
+        }
+        if ($request->sms_routing_plan_id) {
+            $plan = SmsRoutingPlan::findOrFail($request->sms_routing_plan_id);
+            AuthService::isModelOwner($plan);
+
+            $campaign->setMeta('sms_routing_plan_id', $request->sms_routing_plan_id);
         }
         $campaign->save();
         SendCampaignService::send($campaign);

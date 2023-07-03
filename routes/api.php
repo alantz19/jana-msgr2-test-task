@@ -40,7 +40,7 @@ Route::prefix('v1')->group(function () {
         Route::post('logout', [AuthController::class, 'logout']);
     });
 
-    Route::middleware('auth:sanctum')->group(function () {
+    Route::middleware('auth:api')->group(function () {
         Route::get('/user', [AuthController::class, 'me']);
 
         Route::get('/data-files', [DataFilesController::class, 'index']);
@@ -83,10 +83,16 @@ Route::prefix('v1')->group(function () {
                 Route::group(['prefix' => 'plans/{plan}', 'as' => 'plans.'], function () {
                     Route::resource('rules', SmsRoutingPlanRulesController::class)
                         ->only(['index', 'store', 'destroy', 'update', 'show']);
+                    Route::post('rules/split', [SmsRoutingPlanRulesController::class, 'storeSplitRule'])
+                        ->name('rules.split');
+                    Route::put('rules/{rule}/split', [SmsRoutingPlanRulesController::class, 'patchSplitRule'])
+                        ->name('rules.split.patch');
                 });
 
                 Route::resource('plans', SmsRoutingPlansController::class)
                     ->only(['index', 'store', 'destroy', 'update', 'show']);
+                Route::post('plans/{plan}/simulate', [SmsRoutingPlansController::class, 'simulate'])
+                    ->name('simulate');
 
                 Route::resource('rates', SmsRoutingRatesController::class)->only(['store', 'index', 'update']);
                 Route::get('rates/logs', [SmsRoutingRatesController::class, 'logs'])->name('rates.logs');

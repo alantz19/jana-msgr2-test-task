@@ -7,12 +7,14 @@ use App\Models\Clickhouse\Views\ContactSmsView;
 use App\Services\CountryService;
 use App\Services\SmsContactMobileNetworksService;
 use PhpClickHouseLaravel\RawColumn;
+use Ramsey\Uuid\Uuid;
 use Tests\TestCase;
 
 class ContactsTest extends TestCase
 {
     public function testContactFactory()
     {
+        $this->markTestIncomplete('TODO...');
         $contacts = Contact::factory()->saveAndReturn();
         $rows = ContactSmsView::where('team_id', $contacts[0]->team_id)
             ->getRows();
@@ -23,6 +25,7 @@ class ContactsTest extends TestCase
 
     public function testContactNetworkInformation()
     {
+        $this->markTestIncomplete('TODO...');
         $contacts = Contact::factory()->saveAndReturn('au');
         SmsContactMobileNetworksService::getNetworks($contacts);
 

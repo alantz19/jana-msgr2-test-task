@@ -45,15 +45,14 @@ class SmsCampaign extends Model
         return $this->hasMany(SmsCampaignSend::class, 'sms_campaign_id');
     }
 
-    public function setLists(array $list_ids)
-    {
-        $this->addMeta('lists', $list_ids);
-    }
-
-
     public function setSettings(array $array)
     {
         $this->addMeta('settings', $array);
+    }
+
+    public function getSettings()
+    {
+        return $this->getMeta()['settings'] ?? [];
     }
 
     public function offers()

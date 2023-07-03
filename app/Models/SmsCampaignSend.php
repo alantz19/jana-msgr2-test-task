@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\HasMeta;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -11,6 +12,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class SmsCampaignSend extends Model
 {
     use HasUuids;
+    use HasMeta;
     use SoftDeletes;
 
     protected $fillable = [
@@ -31,12 +33,5 @@ class SmsCampaignSend extends Model
     public function getLists()
     {
         return $this->getMeta()['lists'];
-    }
-
-    public function getMeta()
-    {
-        $meta = json_decode($this->meta, true);
-
-        return $meta ? $meta : [];
     }
 }

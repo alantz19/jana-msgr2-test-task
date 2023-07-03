@@ -3001,7 +3001,9 @@ Wanderers Móvil','Telestar Móvil S.A.','Operational','MVNO','Uses movistar'),
 	 (253,'SS','SOUTH SUDAN','South Sudan','SSD',728,211,0,1),
 	 (254,'IO','British Indian Ocean Territory','British Indian Ocean Territory',NULL,NULL,246,0,1),
 	 (258,'PS','Palestinian National Authority','Palestinian National Authority','PSE',NULL,NULL,0,1),
-	 (259,'FI','FINLAND','Finland','FIN',246,358,0,1);
+	 (259,'FI','FINLAND','Finland','FIN',246,358,0,1),
+	 (260,'GS', 'South Georgia and the South Sandwich Islands', 'SGS', '239', NULL, NULL, 0, 1)
+	 ;
         ");
     }
 

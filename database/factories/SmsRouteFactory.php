@@ -4,7 +4,9 @@ namespace Database\Factories;
 
 use App\Models\SmsRoute;
 use App\Models\SmsRouteCompany;
+use App\Models\SmsRouteRate;
 use App\Models\SmsRouteSmppConnection;
+use App\Services\CountryService;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Str;
 
@@ -24,6 +26,18 @@ class SmsRouteFactory extends Factory
 
     public function withSmppConnection()
     {
-        return $this->has(SmsRouteSmppConnection::factory(), 'smppConnection');
+        return $this->afterCreating(function (SmsRoute $smsRoute) {
+            $smsRoute->connection()->associate(SmsRouteSmppConnection::factory()->create())->save();
+        });
+    }
+
+    public function withRouteRates()
+    {
+        return $this->has(SmsRouteRate::factory()
+            ->sequence(['country_id' => CountryService::guessCountry('UK')],
+                ['country_id' => CountryService::guessCountry('US')],
+                ['country_id' => CountryService::guessCountry('AU')])
+            ->count(3),
+            'smsRouteRates');
     }
 }

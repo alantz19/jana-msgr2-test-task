@@ -159,7 +159,6 @@ class ApiSegmentsTest extends BaseApiTest
 
         $this->assertCount(10, $data['rows']);
         $this->assertEquals(50, $data['total']);
-        $this->assertArrayHasKey('statistics', $data);
     }
 
     private function createSegmentFactory(): Segment

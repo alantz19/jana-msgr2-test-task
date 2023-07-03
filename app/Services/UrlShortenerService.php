@@ -4,6 +4,9 @@ namespace App\Services;
 
 use api\v2\sms\sends\campaigns\sending_services\DomainsService;
 use api\v2\sms\sends\campaigns\sending_services\models\CampaignSmsMessage;
+use App\Enums\LogContextEnum;
+use App\Exceptions\CampaignSendException;
+use App\Models\OfferCampaign;
 use App\Services\SendingProcess\Data\BuildSmsData;
 use common\components\Shorty;
 use Exception;
@@ -12,6 +15,74 @@ use Illuminate\Support\Facades\Log;
 
 class UrlShortenerService
 {
+    /**
+     * @param  $domains
+     * @throws Exception
+     */
+    public static function setShortlink(BuildSmsData $msg)
+    {
+        Log::debug('Setting shortlink', ['sms_campaign_send_id' => $msg->sendToBuildSmsData->sms_campaign_send_id]);
+        if (env('dont_send', false)) {
+            throw new Exception('dont_send');
+        }
+
+        $offer = self::selectOffer($msg);
+        $msg->selectedOffer = $offer;
+
+        Log::debug('URL shortener - selected offer', ['offer_id' => $offer->id]);
+        $urlShortenerParams = self::buildUrlShortenerPostParams($msg);
+
+        Log::debug('URL shortener - got params', ['params' => $urlShortenerParams]);
+        $domain = DomainService::getDomainForCampaign($msg);
+
+        Log::debug('URL shortener - got domain', ['domain_id' => $domain->id, 'domain_url' => $domain->url]);
+        if (!$domain) {
+            throw new Exception('Failed to get shorty domain');
+        }
+
+        $msg->domain = $domain;
+
+        $link = self::callUrlShortener($msg, $urlShortenerParams);
+        if (empty($link)) {
+            throw new CampaignSendException('Failed to create shortlink');
+        }
+
+        Log::debug("Received shortlink: $link");
+        $msg->sms_shortlink = $link;
+        $msg->sms_optout_link = $msg->getOptOutLink();
+
+        return true;
+    }
+
+    private static function selectOffer(BuildSmsData $msg)
+    {
+        $offers = OfferCampaign::where(['sms_campaign_id' => $msg->sendToBuildSmsData->sms_campaign_id, 'is_active' =>
+            true])
+            ->get();
+        if ($offers->isEmpty()) {
+            throw new Exception('No offers found for campaign');
+        }
+
+        return $offers[$msg->sendToBuildSmsData->counter % count($offers)]->offer;
+    }//end getShortlink()
+
+    private static function buildUrlShortenerPostParams(BuildSmsData $msg)
+    {
+        $neededParams = $msg->selectedOffer->getNeededParams();
+        if (!$neededParams) {
+            return [];
+        }
+        $replacementParams = $msg->getReplacementParams();
+        foreach ($neededParams as $neededParam) {
+            if (isset($replacementParams[$neededParam])) {
+                $postParams[$neededParam] = $replacementParams[$neededParam];
+            }
+        }
+
+        Log::debug('Shorty request params:', ['params' => $postParams]);
+        return $postParams;
+    }//end buildShortyPostParams()
+
     private static function callUrlShortener(BuildSmsData $msg, $shortyParams = [])
     {
         $i = 0;
@@ -23,7 +94,7 @@ class UrlShortenerService
             $res = self::createKeyword(
                 $msg->selectedOffer->url,
                 $msg->domain->domain,
-                $msg->dto->sms_campaign_id,
+                $msg->sendToBuildSmsData->sms_campaign_id,
                 [
                     'sms_id' => $msg->sms_id,
                     ...$shortyParams,
@@ -56,91 +127,6 @@ class UrlShortenerService
         return $msg->getShortLink();
     }
 
-    /**
-     * @param  $domains
-     * @throws Exception
-     */
-    public static function setShortlink(BuildSmsData $msg)
-    {
-        if (env('dont_send', false)) {
-            throw new Exception('dont_send');
-        }
-
-        $offer = self::selectOffer($msg);
-        $msg->selectedOffer = $offer;
-
-        $urlShortenerParams = self::buildUrlShortenerPostParams($msg);
-        $listOrSegmentId = $msg->dto->list_id;
-        if (empty($listOrSegmentId) && !empty($msg->segment_id)) {
-            $listOrSegmentId = 'segment_' . $msg->segment_id;
-        }
-
-//        DomainsService::setDomainTag($msg);
-        $domain = DomainService::getDomainForCampaign($msg);
-        if (!$domain) {
-            throw new Exception('Failed to get shorty domain');
-        }
-
-        $msg->domain = $domain;
-        Log::debug('Shorty domain', ['domain_id' => $domain->id]);
-
-        $link = self::callUrlShortener($msg, $urlShortenerParams);
-        if (empty($link)) {
-            throw new Exception('Failed to create shortlink');
-        }
-
-        Log::debug("Received shortlink: $link");
-        $msg->sms_shortlink = $link;
-        $msg->sms_optout_link = $msg->getOptOutLink();
-
-        return true;
-    }//end getShortlink()
-
-    private static function buildUrlShortenerPostParams(BuildSmsData $msg)
-    {
-        $neededParams = $msg->selectedOffer->getNeededParams();
-        if (!$neededParams) {
-            return [];
-        }
-        $replacementParams = $msg->getReplacementParams();
-        foreach ($neededParams as $neededParam) {
-            if (isset($replacementParams[$neededParam])) {
-                $postParams[$neededParam] = $replacementParams[$neededParam];
-            }
-        }
-
-        Log::debug('Shorty request params:', ['params' => $postParams]);
-        return $postParams;
-    }//end buildShortyPostParams()
-
-    public static function getDynamicSmsOptOut($link)
-    {
-        return self::getDynamic($link, 'o');
-    }
-
-    private static function getDynamic($link, $prefix)
-    {
-        $parsed = parse_url($link);
-        $dynamic = '';
-
-        if (!empty($parsed['scheme']) && !empty($parsed['host']) && !empty($parsed['path'])) {
-            $keyword = ltrim($parsed['path'], '/');
-            $dynamic = $parsed['scheme'] . '://' . $parsed['host'] . '/' . trim($prefix, '/') . '/' . $keyword;
-        }
-
-        return $dynamic;
-    }
-
-    private static function selectOffer(BuildSmsData $msg)
-    {
-        $offers = $msg->dto->getCampaign()->offers()->where('is_active', true)->get();
-        if (empty($offers)) {
-            throw new \Exception('No offers found for campaign');
-        }
-
-        return $offers[$msg->dto->counter % count($offers)];
-    }
-
     private static function createKeyword($link, $domain, $campaignId, $meta)
     {
         $data = [
@@ -163,5 +149,23 @@ class UrlShortenerService
         ]);
 
         return null;
+    }
+
+    public static function getDynamicSmsOptOut($link)
+    {
+        return self::getDynamic($link, 'o');
+    }
+
+    private static function getDynamic($link, $prefix)
+    {
+        $parsed = parse_url($link);
+        $dynamic = '';
+
+        if (!empty($parsed['scheme']) && !empty($parsed['host']) && !empty($parsed['path'])) {
+            $keyword = ltrim($parsed['path'], '/');
+            $dynamic = $parsed['scheme'] . '://' . $parsed['host'] . '/' . trim($prefix, '/') . '/' . $keyword;
+        }
+
+        return $dynamic;
     }
 }

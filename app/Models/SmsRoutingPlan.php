@@ -27,4 +27,9 @@ class SmsRoutingPlan extends Model
     {
         return $this->belongsToMany(SmsRoute::class, 'sms_routing_plan_routes');
     }
+
+    public function planRules()
+    {
+        return $this->hasMany(SmsRoutingPlanRule::class, 'sms_routing_plan_rules');
+    }
 }

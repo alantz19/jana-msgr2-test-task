@@ -4,39 +4,47 @@ namespace App\Services;
 
 use App\Models\SmsCampaignSend;
 use ClickHouseDB\Client;
+use DB;
+use Log;
 
 class SmsCampaignContactService
 {
 
-    public static function getContacts(SmsCampaignSend $campaignSend) : array
+    public static function getContacts(SmsCampaignSend $campaignSend): array
     {
-        if ($campaignSend->isAutosender()) {
-            return self::getContactsForAutosender($campaignSend);
-        }
-        //todo: check if contact unsubscribed, add cache
-        $limit = $campaignSend->getLimit();
-        $lists = $campaignSend->getLists();
+//        if ($campaignSend->isAutosender()) {
+//            return self::getContactsForAutosender($campaignSend);
+//        }
+        //todo: check if contact unsubscribed. add - tags, segments, cache
+        $limit = 100;
+//        $limit = $campaignSend->getLimit();
+//        $lists = $campaignSend->getLists();
 //        $microSegments = $campaignSend->getMicroSegments();
 
 
         //add chunking mechanism
 
-
-        return \DB::connection('clickhouse')->select("
+        /** @var Client $client */
+        $client = DB::connection('clickhouse')->getClient();
+        $res = $client->select("
         SELECT 
-            phone_normalized,
+            contact_id,
             name,
-            list_id
+            phone_normalized,
+            country_id
         from contacts
-        where
-            list_id in (:lists)
+        where team_id = :team_id
         LIMIT :limit
-        ", ['lists' => $lists, 'limit' => $limit]);
-
+        ",
+            ['limit' => $limit, 'team_id' => $campaignSend->campaign->team_id]);
+        Log::debug("queried contacts: " . $res->count(), ['contacts' => array_merge($res->statistics(),
+            $res->responseInfo()
+        )]);
+        return $res->rows();
     }
 
     private static function getContactsForAutosender(SmsCampaignSend $campaignSend)
     {
-        
+
     }
 }

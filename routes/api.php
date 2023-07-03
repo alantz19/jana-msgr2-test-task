@@ -1,10 +1,13 @@
 <?php
 
-use App\Http\Controllers\Api\V1\DataFilesController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ContactsController;
 use App\Http\Controllers\CountriesController;
+use App\Http\Controllers\CustomFieldsController;
+use App\Http\Controllers\DataFilesController;
 use App\Http\Controllers\MobileNetworksController;
 use App\Http\Controllers\OffersController;
+use App\Http\Controllers\SegmentsController;
 use App\Http\Controllers\SmsCampaignOffersController;
 use App\Http\Controllers\SmsCampaignsController;
 use App\Http\Controllers\SmsCampaignSenderidsController;
@@ -40,9 +43,20 @@ Route::prefix('v1')->group(function () {
     Route::middleware('auth:api')->group(function () {
         Route::get('/user', [AuthController::class, 'me']);
 
+        Route::get('/data-files', [DataFilesController::class, 'index']);
         Route::get('/data-files/{id:uuid}/sample', [DataFilesController::class, 'sample']);
-        Route::post('/data-files/contacts', [DataFilesController::class, 'uploadContacts']);
+        Route::post('/data-files/contacts/upload-file', [DataFilesController::class, 'uploadContacts']);
         Route::post('/data-files/{id:uuid}/import', [DataFilesController::class, 'startImport']);
+
+        Route::resource('custom-fields', CustomFieldsController::class)
+            ->only(['index', 'store', 'update', 'destroy']);
+
+        Route::resource('segments', SegmentsController::class)
+            ->only(['index', 'store', 'update', 'destroy']);
+        Route::post('segments/preview', [SegmentsController::class, 'preview']);
+
+        Route::resource('audience/contacts', ContactsController::class)
+            ->only(['index']);
 
         Route::get('countries', [CountriesController::class, 'index']);
 
@@ -69,10 +83,16 @@ Route::prefix('v1')->group(function () {
                 Route::group(['prefix' => 'plans/{plan}', 'as' => 'plans.'], function () {
                     Route::resource('rules', SmsRoutingPlanRulesController::class)
                         ->only(['index', 'store', 'destroy', 'update', 'show']);
+                    Route::post('rules/split', [SmsRoutingPlanRulesController::class, 'storeSplitRule'])
+                        ->name('rules.split');
+                    Route::put('rules/{rule}/split', [SmsRoutingPlanRulesController::class, 'patchSplitRule'])
+                        ->name('rules.split.patch');
                 });
 
                 Route::resource('plans', SmsRoutingPlansController::class)
                     ->only(['index', 'store', 'destroy', 'update', 'show']);
+                Route::post('plans/{plan}/simulate', [SmsRoutingPlansController::class, 'simulate'])
+                    ->name('simulate');
 
                 Route::resource('rates', SmsRoutingRatesController::class)->only(['store', 'index', 'update']);
                 Route::get('rates/logs', [SmsRoutingRatesController::class, 'logs'])->name('rates.logs');

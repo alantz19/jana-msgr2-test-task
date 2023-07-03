@@ -10,7 +10,7 @@ class CreateRoutingCompaniesTest extends TestCase
     public function testCreateCompany()
     {
         $user = UserFactory::new()->withSanctumToken()->withPersonalTeam()->create();
-        $this->actingAs($user, 'sanctum');
+        $this->actingAs($user);
         $response = $this->postJson('/api/v1/sms/routing/companies', [
             'name' => 'test company',
         ]);

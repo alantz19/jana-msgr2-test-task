@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\UserRoutesService;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -9,12 +10,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Log;
 
 class SmsRoute extends Model
 {
     use SoftDeletes, HasFactory, HasUuids;
 
     public $priceForCountry;
+    public $setForCountry;
     protected $fillable = [
         'team_id',
         'name',
@@ -61,5 +64,19 @@ class SmsRoute extends Model
     public function smsRouteCompany(): belongsTo
     {
         return $this->belongsTo(SmsRouteCompany::class);
+    }
+
+    public function hasRateForCountry($country_id)
+    {
+        UserRoutesService::setRouteRate($this, $country_id);
+        return $this->priceForCountry !== null;
+    }
+
+    public function getRateForCountry($country_id)
+    {
+        if ($this->setForCountry !== $country_id) {
+            UserRoutesService::setRouteRate($this, $country_id);
+        }
+        return $this->priceForCountry;
     }
 }

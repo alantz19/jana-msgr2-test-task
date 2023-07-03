@@ -14,11 +14,11 @@ class SmsCampaignUpdateRequest extends FormRequest
             'name' => ['sometimes', 'min:3', 'max:255'],
 
             //H:i - 24 hour format (f.e - 13:00)
-            'meta.send_time' => ['sometimes', 'date_format:H:i'],
+            'settings.send_time' => ['sometimes', 'date_format:H:i'],
             //Y-m-d - date format (f.e - 2021-01-01)
-            'meta.send_date' => ['sometimes', 'date_format:Y-m-d'],
-            'meta.sms_amount' => ['sometimes', 'integer', 'min:1'],
-            'meta.sms_routing_plan_id' => ['sometimes', 'uuid', 'exists:sms_routing_plans,id'],
+            'settings.send_date' => ['sometimes', 'date_format:Y-m-d'],
+            'settings.sms_amount' => ['sometimes', 'integer', 'min:1'],
+            'settings.sms_routing_plan_id' => ['sometimes', 'uuid', 'exists:sms_routing_plans,id'],
         ];
     }
 

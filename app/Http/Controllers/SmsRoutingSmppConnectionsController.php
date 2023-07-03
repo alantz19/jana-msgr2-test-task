@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\SmsRouteSmppConnectionResource;
 use App\Models\SmsRouteSmppConnection;
+use App\Services\SendingProcess\Telecom\SMPP\SmppClient;
 use App\Services\SmppService;
 use Illuminate\Http\Request;
 
@@ -20,7 +21,7 @@ class SmsRoutingSmppConnectionsController extends Controller
     {
         return [
             'success' =>
-                SmppService::testConnection(
+                SmppClient::testConnection(
                     SmsRouteSmppConnection::make($request->validate(SmsRouteSmppConnection::$rules))),
         ];
     }

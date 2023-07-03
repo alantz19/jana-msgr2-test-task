@@ -30,6 +30,9 @@ class DatabaseSeeder extends Seeder
             $user->current_team_id = $user->ownedTeams->first()->id;
             $user->save();
 
+            $token = $user->createToken('test-token')->plainTextToken;
+            file_put_contents(storage_path('/app') . '/token.txt', $token);
+
             $user->ownedTeams->first()->lists()->save(\App\Models\Lists::factory()->make([
                     'team_id' => $user->current_team_id,
                 'name' => 'demo_list',

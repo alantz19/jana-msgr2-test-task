@@ -8,7 +8,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 /**
  * @mixin \App\Models\Clickhouse\Contact
  */
-class ContactResource extends JsonResource
+class ContactSmsResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -20,7 +20,7 @@ class ContactResource extends JsonResource
         return [
             'team_id' => $this->resource['team_id'],
             'phone_normalized' => $this->resource['phone_normalized'],
-            'id' => $this->resource['id'],
+            'contact_id' => $this->resource['contact_id'],
             'foreign_id' => $this->resource['foreign_id'],
             'last_sent' => $this->resource['last_sent'],
             'last_clicked' => $this->resource['last_clicked'],

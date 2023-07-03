@@ -4,6 +4,7 @@ namespace Database\Factories\Clickhouse;
 
 use App\Models\Clickhouse\Contact;
 use App\Models\MobileNetwork;
+use App\Models\Team;
 use App\Services\ClickhouseService;
 use App\Services\CountryService;
 use App\Services\SmsContactMobileNetworksService;
@@ -27,6 +28,11 @@ class ContactFactory extends Factory
 //            $contact->list_id = $list_id;
             $contact->team_id = $teamId;
             $contact->country_id = CountryService::guessCountry($country);
+
+            if (!empty(self::$team)) {
+                $contact->team_id = self::$team->id;
+            }
+
             $contacts->add($contact);
         }
         ClickhouseService::batchInsertModelCollection($contacts);
@@ -52,16 +58,28 @@ class ContactFactory extends Factory
     public function definition(): array
     {
         return [
-            'id' => $this->faker->uuid,
+            'contact_id' => $this->faker->uuid,
             'team_id' => $this->faker->uuid,
             'name' => $this->faker->name,
 //            'list_id' => $this->faker->uuid,
             'phone_normalized' => str_replace('+', '', $this->faker->e164PhoneNumber()),
             'phone_is_good' => true,
             'phone_is_good_reason' => $this->faker->randomNumber(1, 5),
-            'country_id' => $this->faker->uuid,
+            'country_id' => 225,
+//            'date_created' => now()->toDateTimeString(),
 //            'state_id' => 1,
             'date_created' => now()->toDateTime(),
         ];
+    }
+
+    public function withTeam(Team $team): static
+    {
+        self::$team = $team;
+
+        return $this->state(function (array $attributes) use ($team) {
+            return [
+                'team_id' => $team->id,
+            ];
+        });
     }
 }

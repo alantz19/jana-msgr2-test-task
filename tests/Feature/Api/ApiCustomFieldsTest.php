@@ -13,10 +13,6 @@ class ApiCustomFieldsTest extends BaseApiTest
 
     public function test_index()
     {
-        Sanctum::actingAs(
-            $this->user,
-            ['*']
-        );
         $teamId = $this->user->current_team_id;
 
         $customField = CustomField::factory()
@@ -36,10 +32,6 @@ class ApiCustomFieldsTest extends BaseApiTest
 
     public function test_store()
     {
-        Sanctum::actingAs(
-            $this->user,
-            ['*']
-        );
         $teamId = $this->user->current_team_id;
         $fieldKey = $this->faker->randomElement(CustomFieldEnum::toValues());
 
@@ -48,7 +40,7 @@ class ApiCustomFieldsTest extends BaseApiTest
             'field_key' => $fieldKey,
         ])->assertCreated();
 
-        $data = $res->json();
+        $data = $res->json('data');
 
         $this->assertEquals('test field', $data['field_name']);
         $this->assertEquals($fieldKey, $data['field_key']);
@@ -63,10 +55,6 @@ class ApiCustomFieldsTest extends BaseApiTest
 
     public function test_store_trashed()
     {
-        Sanctum::actingAs(
-            $this->user,
-            ['*']
-        );
         $teamId = $this->user->current_team_id;
 
         $customField = CustomField::factory()
@@ -83,7 +71,7 @@ class ApiCustomFieldsTest extends BaseApiTest
             'field_key' => $customField['field_key'],
         ])->assertCreated();
 
-        $data = $res->json();
+        $data = $res->json('data');
 
         $this->assertEquals('test field', $data['field_name']);
         $this->assertEquals($customField['field_key'], $data['field_key']);
@@ -101,10 +89,6 @@ class ApiCustomFieldsTest extends BaseApiTest
 
     public function test_update()
     {
-        Sanctum::actingAs(
-            $this->user,
-            ['*']
-        );
         $teamId = $this->user->current_team_id;
 
         $customField = CustomField::factory()
@@ -120,7 +104,7 @@ class ApiCustomFieldsTest extends BaseApiTest
             'field_key' => $customField['field_key'],
         ])->assertOk();
 
-        $data = $res->json();
+        $data = $res->json('data');
 
         $this->assertEquals('test field', $data['field_name']);
         $this->assertEquals($customField['field_key'], $data['field_key']);
@@ -135,10 +119,6 @@ class ApiCustomFieldsTest extends BaseApiTest
 
     public function test_destroy()
     {
-        Sanctum::actingAs(
-            $this->user,
-            ['*']
-        );
         $teamId = $this->user->current_team_id;
 
         $customField = CustomField::factory()
@@ -149,8 +129,7 @@ class ApiCustomFieldsTest extends BaseApiTest
             })
             ->create();
 
-        $res = $this->deleteJson('/api/v1/custom-fields/' . $customField->id)
+        $this->deleteJson('/api/v1/custom-fields/' . $customField->id)
             ->assertNoContent();
-        $res->assertStatus(204);
     }
 }

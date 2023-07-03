@@ -262,6 +262,10 @@ class ContactsImport
             $fields['name'] = $row[$this->columns['name']];
         }
 
+        if (!empty($row[$this->columns['foreign_id'] ?? -1])) {
+            $fields['foreign_id'] = $row[$this->columns['foreign_id']];
+        }
+
         if (!empty($this->dataFile->meta['tags'])) {
             $tags = array_unique($this->dataFile->meta['tags']);
         }
@@ -274,7 +278,7 @@ class ContactsImport
         $isNew = true;
         $number = null;
         $newContact = [
-            'id' => Uuid::uuid4()->toString(),
+            'contact_id' => Uuid::uuid4()->toString(),
             'team_id' => $this->dataFile->team_id,
             ...$fields,
             ...$customStrArray,
@@ -313,7 +317,7 @@ class ContactsImport
                 $tags = array_map(function ($tag) use ($newContact) {
                     return [
                         'team_id' => $this->dataFile->team_id,
-                        'contact_id' => $newContact['id'],
+                        'contact_id' => $newContact['contact_id'],
                         'tag' => $tag,
                         'date_created' => date('Y-m-d H:i:s'),
                     ];

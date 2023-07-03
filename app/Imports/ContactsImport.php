@@ -262,6 +262,10 @@ class ContactsImport
             $fields['name'] = $row[$this->columns['name']];
         }
 
+        if (!empty($row[$this->columns['foreign_id'] ?? -1])) {
+            $fields['foreign_id'] = $row[$this->columns['foreign_id']];
+        }
+
         if (!empty($this->dataFile->meta['tags'])) {
             $tags = array_unique($this->dataFile->meta['tags']);
         }

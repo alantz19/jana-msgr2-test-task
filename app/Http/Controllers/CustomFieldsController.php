@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Enums\CustomFieldEnum;
-use App\Http\Resources\CustomFieldCollection;
 use App\Http\Resources\CustomFieldResource;
 use App\Models\CustomField;
 use App\Services\AuthService;
@@ -16,7 +15,7 @@ class CustomFieldsController extends Controller
         $fields = CustomField::whereTeamId(auth()->user()->current_team_id)
             ->paginate(25);
 
-        return new CustomFieldCollection($fields);
+        return CustomFieldResource::collection($fields);
     }
 
     public function store(Request $request)

@@ -60,7 +60,7 @@ class ContactFactory extends Factory
     public function definition(): array
     {
         return [
-            'id' => $this->faker->uuid,
+            'contact_id' => $this->faker->uuid,
             'team_id' => $this->faker->uuid,
             'name' => $this->faker->name,
 //            'list_id' => $this->faker->uuid,
@@ -68,7 +68,7 @@ class ContactFactory extends Factory
             'phone_is_good' => true,
             'phone_is_good_reason' => $this->faker->randomNumber(1, 5),
             'country_id' => 225,
-            'date_created' => now()->toDateTimeString(),
+//            'date_created' => now()->toDateTimeString(),
 //            'state_id' => 1,
             'date_created' => now()->toDateTime(),
         ];

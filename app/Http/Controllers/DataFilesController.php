@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Enums\DataFileStatusEnum;
-use App\Http\Resources\DataFileCollection;
 use App\Http\Resources\DataFileResource;
+use App\Http\Resources\SampleRowsResource;
 use App\Imports\ContactsImport;
 use App\Jobs\DataFileImportJob;
 use App\Models\DataFile;
@@ -20,7 +20,7 @@ class DataFilesController extends Controller
             ->orderByDesc('created_at')
             ->paginate(25);
 
-        return new DataFileCollection($dataFiles);
+        return DataFileResource::collection($dataFiles);
     }
 
     public function uploadContacts(Request $request)
@@ -41,7 +41,7 @@ class DataFilesController extends Controller
             'meta' => [],
         ]);
 
-        return response(new DataFileResource($dataFile), Response::HTTP_CREATED);
+        return new DataFileResource($dataFile);
     }
 
     public function sample($id)
@@ -52,7 +52,7 @@ class DataFilesController extends Controller
 
         $contacts = new ContactsImport($dataFile);
 
-        return $contacts->getSampleRows();
+        return new SampleRowsResource($contacts->getSampleRows());
     }
 
     public function startImport($id, Request $request)
@@ -90,6 +90,7 @@ class DataFilesController extends Controller
             'columns.custom3_datetime' => 'sometimes|numeric|min:0',
             'columns.custom4_datetime' => 'sometimes|numeric|min:0',
             'columns.custom5_datetime' => 'sometimes|numeric|min:0',
+            'columns.foreign_id' => 'sometimes',
             'tags' => 'sometimes|array',
             'tags.*' => 'string',
             'fixed_country_id' => 'sometimes|numeric|exists:countries,id',
@@ -113,6 +114,6 @@ class DataFilesController extends Controller
 
         DataFileImportJob::dispatch($dataFile);
 
-        return response(new DataFileResource($dataFile), Response::HTTP_OK);
+        return new DataFileResource($dataFile);
     }
 }

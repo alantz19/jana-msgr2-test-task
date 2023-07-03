@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Enums\SegmentStatusEnum;
 use App\Enums\SegmentTypeEnum;
 use App\Http\Resources\ContactSmsResource;
-use App\Http\Resources\SegmentCollection;
 use App\Http\Resources\SegmentResource;
 use App\Models\Segment;
 use App\Rules\JqQueryGroup;
@@ -28,7 +27,7 @@ class SegmentsController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
-        return new SegmentCollection($segments);
+        return SegmentResource::collection($segments);
     }
 
     public function store(Request $request)
@@ -126,13 +125,18 @@ class SegmentsController extends Controller
         };
 
         $response = [
-            'total' => $total,
-            'statistics' => $stats,
+            'total' => (int) $total,
+            /** @var array <ContactSmsResource> */
             'rows' => $rows,
+            /** @var array<string, string> $stats only for admins (elapsed, rows_read, bytes_read) (null for users) */
+            'stats' => null,
+            /** @var string $sql only for admins (null for users) */
+            'sql' => null,
         ];
 
         // @TODO replace to user role or something
         if (app()->environment('local')) {
+            $response['stats'] = $stats;
             $response['sql'] = $builder->toSql();
         }
 

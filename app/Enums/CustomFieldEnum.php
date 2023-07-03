@@ -22,6 +22,7 @@ use Spatie\Enum\Enum;
  * @method static self custom3_datetime()
  * @method static self custom4_datetime()
  * @method static self custom5_datetime()
+ * @method static self foreign_id()
  */
 class CustomFieldEnum extends Enum
 {

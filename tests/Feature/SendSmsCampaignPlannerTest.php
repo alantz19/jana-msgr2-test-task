@@ -11,7 +11,7 @@ use Carbon\Carbon;
 use DateTimeZone;
 use Tests\TestCase;
 
-class CampaignPlannerTest extends TestCase
+class SendSmsCampaignPlannerTest extends TestCase
 {
     public function testCampaignPlannerCreate()
     {

@@ -30,6 +30,10 @@ class SendCampaignJob implements ShouldQueue
     public function handle(): void
     {
         Log::info('Sending campaign: ' . $this->campaignSend->id);
+        if ($this->campaignSend->hasMultistep()) {
+            $settings = $this->campaignSend->getMultistepSettings();
+
+        }
         //get contacts
         $contacts = SmsCampaignContactService::getContacts($this->campaignSend);
         if (empty($contacts)) {

@@ -18,6 +18,8 @@ class SmsCampaign extends Model
     use HasUuids;
     use SoftDeletes;
 
+    const CAMPAIGN_SETTINGS_KEY_MULTISTEP = 'multistep';
+
     protected $fillable = [
         'sms_campaign_plan_id',
         'name',
@@ -45,9 +47,17 @@ class SmsCampaign extends Model
         return $this->hasMany(SmsCampaignSend::class, 'sms_campaign_id');
     }
 
-    public function setSettings(array $array)
+    public function offers()
     {
-        $this->addMeta('settings', $array);
+        return $this->belongsToMany(Offer::class, 'offer_campaign', 'sms_campaign_id', 'offer_id');
+    }
+
+    public function addSettings(string $key, string $val)
+    {
+        $settings = $this->getSettings();
+        $settings[$key] = $val;
+        $this->setSettings($settings);
+        $this->save();
     }
 
     public function getSettings()
@@ -55,13 +65,8 @@ class SmsCampaign extends Model
         return $this->getMeta()['settings'] ?? [];
     }
 
-    public function offers()
+    public function setSettings(array $array)
     {
-        return $this->belongsToMany(Offer::class, 'offer_campaign', 'sms_campaign_id', 'offer_id');
-    }
-
-    public function hasAutosender()
-    {
-        return $this->getMeta()['autosender_settings'] ?? false;
+        $this->addMeta('settings', $array);
     }
 }

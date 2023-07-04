@@ -56,7 +56,7 @@ class SendSmsCampaignFactory extends Factory
         $campaign->setSettings([
             'sms_routing_plan_id' => $plan->id,
             'send_time' => null,
-            'sms_amount' => 100
+            'sms_amount' => 100,
         ]);
         $campaign->save();
 

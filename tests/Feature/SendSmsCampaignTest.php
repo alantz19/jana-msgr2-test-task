@@ -29,7 +29,6 @@ class SendSmsCampaignTest extends TestCase
 
     public function test_send_campaign_with_shortener()
     {
-        $this->markTestIncomplete('TODO...');
         $res = SendSmsCampaignFactory::new()->withBasicSetup();
         $res['texts']->each(function ($model) use ($res) {
             $model->update([

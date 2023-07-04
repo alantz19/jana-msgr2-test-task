@@ -139,7 +139,7 @@ class UrlShortenerService
         $response = Http::withBody(json_encode($data))
             ->post(rtrim(config('services.shortener.url'), '/') . '/api/short-url');
 
-        if ($response->ok()) {
+        if ($response->created()) {
             return $response->json();
         }
 

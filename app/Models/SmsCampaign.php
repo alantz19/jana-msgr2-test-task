@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Data\SmsCampaignSettingsData;
 use App\Traits\HasMeta;
+use App\Traits\HasMultistepCampaign;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -13,12 +15,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class SmsCampaign extends Model
 {
+    use HasMultistepCampaign;
     use HasMeta;
     use HasFactory;
     use HasUuids;
     use SoftDeletes;
-
-    const CAMPAIGN_SETTINGS_KEY_MULTISTEP = 'multistep';
 
     protected $fillable = [
         'sms_campaign_plan_id',
@@ -52,21 +53,18 @@ class SmsCampaign extends Model
         return $this->belongsToMany(Offer::class, 'offer_campaign', 'sms_campaign_id', 'offer_id');
     }
 
-    public function addSettings(string $key, string $val)
+    public function getSettings(): ?SmsCampaignSettingsData
     {
-        $settings = $this->getSettings();
-        $settings[$key] = $val;
-        $this->setSettings($settings);
-        $this->save();
+        $settings = $this->getMeta()['settings'] ?? false;
+        if (!$settings) {
+            return null;
+        }
+
+        return SmsCampaignSettingsData::from($settings);
     }
 
-    public function getSettings()
+    public function setSettings(SmsCampaignSettingsData $data): void
     {
-        return $this->getMeta()['settings'] ?? [];
-    }
-
-    public function setSettings(array $array)
-    {
-        $this->addMeta('settings', $array);
+        $this->addMeta('settings', $data->toArray());
     }
 }

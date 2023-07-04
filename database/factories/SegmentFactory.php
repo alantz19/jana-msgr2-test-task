@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Enums\SegmentStatusEnum;
 use App\Enums\SegmentTypeEnum;
 use App\Models\Segment;
+use App\Services\CountryService;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class SegmentFactory extends Factory
@@ -20,9 +21,10 @@ class SegmentFactory extends Factory
         ];
     }
 
-    public function withNumbersSample1(): static
+    public function withNumbersSample1($country = 'uk'): static
     {
-        return $this->state(function (array $attributes) {
+        $countryId = CountryService::guessCountry($country);
+        return $this->state(function (array $attributes) use ($countryId) {
             return [
                 'type' => SegmentTypeEnum::numbers()->value,
                 'meta' => [
@@ -43,7 +45,7 @@ class SegmentFactory extends Factory
                                 'type' => 'integer',
                                 'input' => 'select',
                                 'operator' => 'equal',
-                                'value' => 225,
+                                'value' => $countryId,
                             ],
                             [
                                 'id' => 'date_created',
@@ -151,5 +153,32 @@ class SegmentFactory extends Factory
                 ],
             ];
         });
+    }
+
+    public function withFilterNetwork(array $brandNames)
+    {
+        $rules = [];
+        foreach ($brandNames as $brand) {
+            $rules[] = [
+                'id' => 'network_brand',
+                'field' => 'network_brand',
+                'type' => 'string',
+                'input' => 'text',
+                'operator' => 'contains',
+                'value' => $brand,
+            ];
+        }
+        return $this->state(function (array $attributes) use ($rules) {
+            return [
+                'type' => SegmentTypeEnum::numbers()->value,
+                'meta' => [
+                    'query' => [
+                        'condition' => 'OR',
+                        'rules' => $rules,
+                    ],
+                ],
+            ];
+        });
+
     }
 }

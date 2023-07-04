@@ -24,12 +24,13 @@ class SendSmsCampaignMultistepTest extends TestCase
         $res = SendSmsCampaignFactory::new()->withBasicSetup();
         /** @var SmsCampaign $campaign */
         $campaign = $res['campaign'];
-        $campaign->addSettings(SmsCampaign::CAMPAIGN_SETTINGS_KEY_MULTISTEP,
+        $campaign->setSettingsMultistep(
             CampaignMultistepSettingsData::from([
                 'min_ctr' => 3,
                 'step_size' => 100,
                 'optimise_texts' => true,
-            ])->toJson());
+            ])
+        );
         SendCampaignService::send($campaign);
         $this->assertDatabaseHas('sms_sendlogs', [
             'sms_campaign_id' => $res['campaign']->id,

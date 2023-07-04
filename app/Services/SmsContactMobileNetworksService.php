@@ -34,7 +34,7 @@ class SmsContactMobileNetworksService
         }
         ClickhouseService::getClient()
             ->write("INSERT INTO v2_numbers_networks (normalized, network_id, network_brand) 
-                            VALUES (:phone, :network_id, :brand )",
+                            VALUES (:phone, :network_id, :brand)",
                 [
                     'phone' => $phone_normalized,
                     'network_id' => $network_id,

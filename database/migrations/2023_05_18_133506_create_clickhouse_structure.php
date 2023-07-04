@@ -349,14 +349,21 @@ SETTINGS index_granularity = 8192;
         ORDER BY normalized;
         ");
 
-        static::write('CREATE MATERIALIZED VIEW IF NOT EXISTS sms_contact_sms_networks_mv TO contacts_sms_materialized AS
-select csm.phone_normalized,
-       csm.team_id,
-       vnn.network_id    as network_id,
-       vnn.network_brand as network_brand
-from v2_numbers_networks vnn
-         inner join contacts_sms_materialized csm on phone_normalized = normalized
-where csm.network_id = 0;');
+        static::write('CREATE MATERIALIZED VIEW IF NOT EXISTS msgr.sms_contact_sms_networks_mv TO msgr.contacts_sms_materialized
+        (
+         `phone_normalized` UInt64,
+         `team_id` UUID,
+         `network_id` SimpleAggregateFunction(anyLast, Nullable(UInt32)),
+         `network_brand` SimpleAggregateFunction(anyLast, Nullable(String))
+            ) AS
+SELECT
+    csm.phone_normalized,
+    csm.team_id,
+    vnn.network_id AS network_id,
+    vnn.network_brand AS network_brand
+FROM msgr.v2_numbers_networks AS vnn
+         INNER JOIN msgr.contacts_sms_materialized AS csm ON phone_normalized = normalized
+WHERE csm.network_id = 0;');
 
         static::write("
 CREATE TABLE IF NOT EXISTS v2_mobile_networks

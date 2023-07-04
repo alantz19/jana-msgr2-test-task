@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Data\buildSmsData;
 use App\Data\CampaignSendToBuildSmsData;
 use App\Enums\LogContextEnum;
+use App\Enums\SmsCampaignStatusEnum;
 use App\Models\SmsCampaignSend;
 use App\Services\BalanceService;
 use App\Services\SmsCampaignContactService;
@@ -30,13 +31,29 @@ class SendCampaignJob implements ShouldQueue
     public function handle(): void
     {
         Log::info('Sending campaign: ' . $this->campaignSend->id);
-        if ($this->campaignSend->hasMultistep()) {
-            $settings = $this->campaignSend->getMultistepSettings();
+        //todo: continue after segment is integrated
+//        if ($settings = $this->campaignSend->getMultistepSettings()) {
+//            $status = $this->campaignSend->getMultistepStatus();
+//            if ($status->current_step === 0) {
+//                $limit = $settings->step_size;
+//                $allContactsNetworks = SmsCampaignContactService::getContactsNetworks($this->campaignSend);
+//                $allContactsTags = [];
+//                $domains = [];
+//                $routes = [];
+//                $countries = [];
+//                $senderids = [];
+//                $texts = [];
+//                $offers = [];
+//
+//                $sendTestPhone = [];
+//            }
+//        }
 
-        }
+
         //get contacts
         $contacts = SmsCampaignContactService::getContacts($this->campaignSend);
         if (empty($contacts)) {
+            $this->campaignSend->update(['status' => SmsCampaignStatusEnum::failed()]);
             Log::debug('No contacts found for campaign: ' . $this->campaignSend->id);
             return;
         }
@@ -53,7 +70,7 @@ class SendCampaignJob implements ShouldQueue
                 'sms_campaign_send_id' => $this->campaignSend->id,
                 'sms_campaign_id' => $this->campaignSend->sms_campaign_id,
                 'team_id' => $this->campaignSend->campaign->team_id,
-                'sms_routing_plan_id' => $this->campaignSend->campaign->getSettings()['sms_routing_plan_id'],
+                'sms_routing_plan_id' => $this->campaignSend->getSettings()->sms_routing_plan_id,
             ]);
             Log::info('Sending campaign: ' . $this->campaignSend->id . ' dto: ' . $data->toJson(),
                 LogContextEnum::sendCampaignContext());

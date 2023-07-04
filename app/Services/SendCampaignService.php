@@ -26,7 +26,7 @@ class SendCampaignService
     private static function isReadyToSend(SmsCampaign $campaign)
     {
         $settings = $campaign->getSettings();
-        if (!isset($settings['sms_routing_plan_id'])) {
+        if (!isset($settings->sms_routing_plan_id)) {
             $plan = SmsRoutingPlan::where(['is_team_default' => true])->first();
             if (!$plan) {
                 $plan = SmsRoutingPlan::create([
@@ -36,7 +36,7 @@ class SendCampaignService
                 ]);
             }
 
-            $settings['sms_routing_plan_id'] = $plan->id;
+            $settings->sms_routing_plan_id = $plan->id;
             $campaign->setSettings($settings);
             $campaign->save();
         }

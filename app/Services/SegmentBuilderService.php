@@ -93,6 +93,37 @@ class SegmentBuilderService
         return is_array($value) && array_key_exists('condition', $value);
     }
 
+    private static function getGroupSql($group): string
+    {
+        $rules = [];
+        foreach ($group['rules'] as $rule) {
+            if (self::isGroup($rule)) {
+                $rules[] = self::getGroupSql($rule);
+                continue;
+            }
+
+            $rules[] = $rule['sql'];
+        }
+
+        return '(' . implode(' ' . $group['condition'] . ' ', $rules) . ')';
+    }
+
+    private static function getGroupBinds($group): array
+    {
+        $binds = [];
+
+        foreach ($group['rules'] as $rule) {
+            if (self::isGroup($rule)) {
+                $binds = array_merge($binds, self::getGroupBinds($rule));
+                continue;
+            }
+
+            $binds[$rule['bind_key']] = $rule['value'];
+        }
+
+        return $binds;
+    }
+
     public static function isRule($value): bool
     {
         return is_array($value)
@@ -131,34 +162,22 @@ class SegmentBuilderService
         ];
     }
 
-    private static function getGroupSql($group): string
+    public static function getWhereFromSegment(Segment $segment)
     {
-        $rules = [];
-        foreach ($group['rules'] as $rule) {
-            if (self::isGroup($rule)) {
-                $rules[] = self::getGroupSql($rule);
-                continue;
-            }
+        $res = self::parse($segment);
 
-            $rules[] = $rule['sql'];
+        if (empty($res) || empty($res['sql'])) {
+            Log::warning("Can't parse segment query", [
+                'segment' => $segment->toArray(),
+            ]);
+            return null;
         }
 
-        return '(' . implode(' ' . $group['condition'] . ' ', $rules) . ')';
-    }
-
-    private static function getGroupBinds($group): array
-    {
-        $binds = [];
-
-        foreach ($group['rules'] as $rule) {
-            if (self::isGroup($rule)) {
-                $binds = array_merge($binds, self::getGroupBinds($rule));
-                continue;
-            }
-
-            $binds[$rule['bind_key']] = $rule['value'];
+        $bindings = new Bindings();
+        foreach ($res['binds'] as $col => $value) {
+            $bindings->bindParam($col, $value);
         }
 
-        return $binds;
+        return new Query($res['sql'], [$bindings]);
     }
 }

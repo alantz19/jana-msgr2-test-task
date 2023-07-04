@@ -38,4 +38,22 @@ trait HasMeta
         $meta = $this->getMeta();
         return $meta[$key] ?? null;
     }
+
+    public function addSettings(string $key, string $val)
+    {
+        $settings = $this->getSettings();
+        $settings[$key] = $val;
+        $this->setSettings($settings);
+        $this->save();
+    }
+
+    public function getSettings()
+    {
+        return $this->getMeta()['settings'] ?? [];
+    }
+
+    public function setSettings(array $array)
+    {
+        $this->addMeta('settings', $array);
+    }
 }

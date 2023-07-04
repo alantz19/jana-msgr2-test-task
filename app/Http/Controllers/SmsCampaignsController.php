@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Data\SmsCampaignSettingsData;
 use App\Http\Requests\SmsCampaignUpdateRequest;
 use App\Http\Resources\SmsCampaignResource;
 use App\Models\SmsCampaign;
@@ -52,20 +53,21 @@ class SmsCampaignsController extends Controller
     public function sendManual(SmsCampaign $campaign, Request $request)
     {
         AuthService::isModelOwner($campaign);
-        $request->validate([
-            'sms_routing_plan_id' => 'sometimes|uuid|exists:sms_routing_plans,id',
-            //default is 100 sms
-            'sms_amount' => 'sometimes|integer|min:1',
-        ]);
-        if ($request->sms_amount) {
-            $campaign->setMeta('sms_amount', $request->sms_amount);
+        $request->validate(SmsCampaignSettingsData::getValidationRules([]));
+        $params = [];
+        if ($request->send_amount) {
+            $campaign->setMeta('send_amount', $request->send_amount);
+            $params['send_amount'] = $request->send_amount;
         }
         if ($request->sms_routing_plan_id) {
             $plan = SmsRoutingPlan::findOrFail($request->sms_routing_plan_id);
             AuthService::isModelOwner($plan);
 
             $campaign->setMeta('sms_routing_plan_id', $request->sms_routing_plan_id);
+            $params['sms_routing_plan_id'] = $request->sms_routing_plan_id;
         }
+        $settings = SmsCampaignSettingsData::from($params);
+        $campaign->setSettings($settings);
         $campaign->save();
         SendCampaignService::send($campaign);
         return response()->json(new SmsCampaignResource($campaign), 200);

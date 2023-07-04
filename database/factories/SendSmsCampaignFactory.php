@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Data\SmsCampaignSettingsData;
 use App\Models\Clickhouse\Contact;
 use App\Models\Lists;
 use App\Models\Offer;
@@ -36,7 +37,7 @@ class SendSmsCampaignFactory extends Factory
         $route1 = SmsRoute::factory()->withRouteRates()->withSmppConnection()->create([
             'team_id' => $user->currentTeam->id,
         ]);
-        $contacts = Contact::factory()->saveAndReturn($user->current_team_id);
+        $contacts = Contact::factory()->saveAndReturn($user->current_team_id, 'uk', true);
         $campaign = SmsCampaign::factory()->state(['team_id' => $user->currentTeam->id])->create();
 
         $texts = SmsCampaignText::factory()->count(5)->create([
@@ -53,11 +54,11 @@ class SendSmsCampaignFactory extends Factory
             $campaign->offers()->attach($model->id);
         });
 
-        $campaign->setSettings([
+        $campaign->setSettings(SmsCampaignSettingsData::from([
             'sms_routing_plan_id' => $plan->id,
             'send_time' => null,
-            'sms_amount' => 100,
-        ]);
+            'send_amount' => 100,
+        ]));
         $campaign->save();
 
         return ['user' => $user, 'campaign' => $campaign, 'contacts' => $contacts, 'texts' => $texts,

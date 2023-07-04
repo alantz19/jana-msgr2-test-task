@@ -14,6 +14,7 @@ class DomainService
     {
         Log::debug('getDomainForCampaign');
         $domain = Domain::make([
+            'domain' => 'google.com',
             'url' => 'https://www.google.com',
             'is_active' => true,
             'id' => Uuid::uuid4()

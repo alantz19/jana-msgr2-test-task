@@ -12,6 +12,7 @@ class Domain extends Model
     use SoftDeletes, HasFactory, HasUuids;
 
     protected $fillable = [
+        'domain',
         'url',
         'is_active',
     ];

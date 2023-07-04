@@ -1,144 +1,144 @@
 # For more information: https://laravel.com/docs/sail
 version: '3'
 services:
-    laravel.test:
-        build:
-            context: ./docker/8.1
-            dockerfile: Dockerfile
-            args:
-                WWWGROUP: '${WWWGROUP}'
-        image: sail-8.1/app
-        extra_hosts:
-            - 'host.docker.internal:host-gateway'
-        ports:
-            - '${APP_PORT:-80}:80'
-            - '${VITE_PORT:-5173}:${VITE_PORT:-5173}'
-        environment:
-            WWWUSER: '${WWWUSER}'
-            LARAVEL_SAIL: 1
-            XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'
-            XDEBUG_CONFIG: '${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}'
-        volumes:
-            - '.:/var/www/html'
-        networks:
-            - sail
-        depends_on:
-            - pgsql
-            - redis
-            - memcached
-            - meilisearch
-            - mailhog
-            - selenium
-    pgsql:
-        image: 'postgres:14'
-        ports:
-            - '${FORWARD_DB_PORT:-5432}:5432'
-        environment:
-            PGPASSWORD: '${DB_PASSWORD:-secret}'
-            POSTGRES_DB: '${DB_DATABASE}'
-            POSTGRES_USER: '${DB_USERNAME}'
-            POSTGRES_PASSWORD: '${DB_PASSWORD:-secret}'
-        volumes:
-            - 'sail-pgsql:/var/lib/postgresql/data'
-            - './vendor/laravel/sail/database/pgsql/create-testing-database.sql:/docker-entrypoint-initdb.d/10-create-testing-database.sql'
-        networks:
-            - sail
-        healthcheck:
-            test: [ "CMD", "pg_isready", "-q", "-d", "${DB_DATABASE}", "-U", "${DB_USERNAME}" ]
-            retries: 3
-            timeout: 5s
-    redis:
-        image: 'redis:alpine'
-        ports:
-            - '${FORWARD_REDIS_PORT:-6379}:6379'
-        volumes:
-            - 'sail-redis:/data'
-        networks:
-            - sail
-        healthcheck:
-            test: [ "CMD", "redis-cli", "ping" ]
-            retries: 3
-            timeout: 5s
-    memcached:
-        image: 'memcached:alpine'
-        ports:
-            - '11211:11211'
-        networks:
-            - sail
-    meilisearch:
-        image: 'getmeili/meilisearch:latest'
-        ports:
-            - '${FORWARD_MEILISEARCH_PORT:-7700}:7700'
-        volumes:
-            - 'sail-meilisearch:/meili_data'
-        networks:
-            - sail
-        healthcheck:
-            test: [ "CMD", "wget", "--no-verbose", "--spider",  "http://localhost:7700/health" ]
-            retries: 3
-            timeout: 5s
-    mailhog:
-        image: 'mailhog/mailhog:latest'
-        ports:
-            - '${FORWARD_MAILHOG_PORT:-1025}:1025'
-            - '${FORWARD_MAILHOG_DASHBOARD_PORT:-8025}:8025'
-        networks:
-            - sail
-#    selenium:
-#        image: 'selenium/standalone-chrome'
-#        image: 'seleniarm/standalone-chromium'
-#        ports:
-#            - '4444:4444'
-#        volumes:
-#            - '/dev/shm:/dev/shm'
-#        networks:
-#            - sail
-    selenium:
-        image: 'seleniarm/standalone-chromium'
-        environment:
-            LARAVEL_SAIL: 1
-            LOG_LEVEL: FINE
-        ports:
-            - '${FORWARD_SELENIUM_PORT:-4444}:4444'
-            - '${FORWARD_SELENIUM_HEADFUL_PORT:-7900}:7900'
-        volumes:
-            - '/dev/shm:/dev/shm'
-        networks:
-            - sail
+  laravel.test:
+    build:
+      context: ./docker/8.2
+      dockerfile: Dockerfile
+      args:
+        WWWGROUP: '${WWWGROUP}'
+    image: sail-8.2/app
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    ports:
+      - '${APP_PORT:-80}:80'
+      - '${VITE_PORT:-5173}:${VITE_PORT:-5173}'
+    environment:
+      WWWUSER: '${WWWUSER}'
+      LARAVEL_SAIL: 1
+      XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'
+      XDEBUG_CONFIG: '${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}'
+    volumes:
+      - '.:/var/www/html'
+    networks:
+      - sail
+    depends_on:
+      - pgsql
+      - redis
+      - memcached
+      - meilisearch
+      - mailhog
+      - selenium
+  pgsql:
+    image: 'postgres:14'
+    ports:
+      - '${FORWARD_DB_PORT:-5432}:5432'
+    environment:
+      PGPASSWORD: '${DB_PASSWORD:-secret}'
+      POSTGRES_DB: '${DB_DATABASE}'
+      POSTGRES_USER: '${DB_USERNAME}'
+      POSTGRES_PASSWORD: '${DB_PASSWORD:-secret}'
+    volumes:
+      - 'sail-pgsql:/var/lib/postgresql/data'
+      - './vendor/laravel/sail/database/pgsql/create-testing-database.sql:/docker-entrypoint-initdb.d/10-create-testing-database.sql'
+    networks:
+      - sail
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-q", "-d", "${DB_DATABASE}", "-U", "${DB_USERNAME}" ]
+      retries: 3
+      timeout: 5s
+  redis:
+    image: 'redis:alpine'
+    ports:
+      - '${FORWARD_REDIS_PORT:-6379}:6379'
+    volumes:
+      - 'sail-redis:/data'
+    networks:
+      - sail
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      retries: 3
+      timeout: 5s
+  memcached:
+    image: 'memcached:alpine'
+    ports:
+      - '11211:11211'
+    networks:
+      - sail
+  meilisearch:
+    image: 'getmeili/meilisearch:latest'
+    ports:
+      - '${FORWARD_MEILISEARCH_PORT:-7700}:7700'
+    volumes:
+      - 'sail-meilisearch:/meili_data'
+    networks:
+      - sail
+    healthcheck:
+      test: [ "CMD", "wget", "--no-verbose", "--spider",  "http://localhost:7700/health" ]
+      retries: 3
+      timeout: 5s
+  mailhog:
+    image: 'mailhog/mailhog:latest'
+    ports:
+      - '${FORWARD_MAILHOG_PORT:-1025}:1025'
+      - '${FORWARD_MAILHOG_DASHBOARD_PORT:-8025}:8025'
+    networks:
+      - sail
+  #    selenium:
+  #        image: 'selenium/standalone-chrome'
+  #        image: 'seleniarm/standalone-chromium'
+  #        ports:
+  #            - '4444:4444'
+  #        volumes:
+  #            - '/dev/shm:/dev/shm'
+  #        networks:
+  #            - sail
+  selenium:
+    image: 'seleniarm/standalone-chromium'
+    environment:
+      LARAVEL_SAIL: 1
+      LOG_LEVEL: FINE
+    ports:
+      - '${FORWARD_SELENIUM_PORT:-4444}:4444'
+      - '${FORWARD_SELENIUM_HEADFUL_PORT:-7900}:7900'
+    volumes:
+      - '/dev/shm:/dev/shm'
+    networks:
+      - sail
 
-    clickhouse:
-        container_name: "${COMPOSE_PROJECT_NAME}_clickhouse"
-        image: yandex/clickhouse-server
-        build:
-            context: ./docker/clickhouse
-            dockerfile: Dockerfile
-        restart: always
-        environment:
-            - CLICKHOUSE_DB=${CLICKHOUSE_DATABASE}
-            - CLICKHOUSE_USER=${CLICKHOUSE_USERNAME}
-            - CLICKHOUSE_PASSWORD=${CLICKHOUSE_PASSWORD}
-            - CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT=${CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT}
-        volumes:
-            #             - ${DATA_DIR}/clickhouse/db:/var/lib/clickhouse
-            #             - ${DATA_DIR}/clickhouse/logs:/var/log/clickhouse-server
-            - 'sail-clickhouse:/var/lib/clickhouse/data'
-            - ./docker/clickhouse/config.xml:/etc/clickhouse-server/config.xml
-            - ./docker/clickhouse/users.xml:/etc/clickhouse-server/users.xml
-        ports:
-            - "8123:8123"
-            - "9000:9000"
-        networks:
-            - sail
+  clickhouse:
+    container_name: "${COMPOSE_PROJECT_NAME}_clickhouse"
+    image: yandex/clickhouse-server
+    build:
+      context: ./docker/clickhouse
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      - CLICKHOUSE_DB=${CLICKHOUSE_DATABASE}
+      - CLICKHOUSE_USER=${CLICKHOUSE_USERNAME}
+      - CLICKHOUSE_PASSWORD=${CLICKHOUSE_PASSWORD}
+      - CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT=${CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT}
+    volumes:
+      #             - ${DATA_DIR}/clickhouse/db:/var/lib/clickhouse
+      #             - ${DATA_DIR}/clickhouse/logs:/var/log/clickhouse-server
+      - 'sail-clickhouse:/var/lib/clickhouse/data'
+      - ./docker/clickhouse/config.xml:/etc/clickhouse-server/config.xml
+      - ./docker/clickhouse/users.xml:/etc/clickhouse-server/users.xml
+    ports:
+      - "8123:8123"
+      - "9000:9000"
+    networks:
+      - sail
 
 networks:
-    sail:
-        driver: bridge
+  sail:
+    driver: bridge
 volumes:
-    sail-pgsql:
-        driver: local
-    sail-redis:
-        driver: local
-    sail-meilisearch:
-        driver: local
-    sail-clickhouse:
-        driver: local
+  sail-pgsql:
+    driver: local
+  sail-redis:
+    driver: local
+  sail-meilisearch:
+    driver: local
+  sail-clickhouse:
+    driver: local

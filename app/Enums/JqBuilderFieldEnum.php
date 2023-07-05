@@ -9,7 +9,7 @@ use Spatie\Enum\Enum;
  * @method static self sent_count()
  * @method static self country_id()
  * @method static self state_id()
- * @method static self network_id()
+// * @method static self network_id()
  * @method static self network_brand()
  * @method static self date_created()
  * @method static self last_sent()

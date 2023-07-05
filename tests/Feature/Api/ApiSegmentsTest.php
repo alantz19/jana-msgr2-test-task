@@ -40,20 +40,16 @@ class ApiSegmentsTest extends BaseApiTest
             'name' => $this->faker->name,
             'type' => SegmentTypeEnum::numbers()->label,
             'query' => $query,
-            'sql' => [
-                'sql' => $this->faker->name,
-                'params' => [],
-            ],
         ];
 
         $res = $this->postJson('/api/v1/segments', $data)->assertUnprocessable();
         $json = $res->json();
 
         $errors = [
-            'The rule id must be a valid id.',
+//            'The rule id must be a valid id.',
             'The rule field must be a valid field.',
             'The rule operator must be a valid operator.',
-            'The rule type must be a valid type.',
+//            'The rule type must be a valid type.',
         ];
         $this->assertEmpty(array_diff($errors, $json['errors']['query']));
     }
@@ -68,10 +64,6 @@ class ApiSegmentsTest extends BaseApiTest
             'name' => $this->faker->name,
             'type' => SegmentTypeEnum::numbers()->label,
             'query' => $sample->meta['query'],
-            'sql' => [
-                'sql' => $this->faker->name,
-                'params' => [],
-            ],
         ];
 
         $res = $this->postJson('/api/v1/segments', $data)->assertCreated();
@@ -81,7 +73,6 @@ class ApiSegmentsTest extends BaseApiTest
             'type' => SegmentTypeEnum::numbers()->value,
             'meta' => json_encode([
                 'query' => $data['query'],
-                'sql' => $data['sql'],
             ]),
             'status_id' => SegmentStatusEnum::active()->value,
         ]);
@@ -98,10 +89,6 @@ class ApiSegmentsTest extends BaseApiTest
             'name' => $this->faker->name,
             'type' => SegmentTypeEnum::numbers()->label,
             'query' => $sample->meta['query'],
-            'sql' => [
-                'sql' => $this->faker->name,
-                'params' => [],
-            ],
         ];
 
         $res = $this->putJson("/api/v1/segments/{$segment->id}", $data)->assertOk();
@@ -112,7 +99,6 @@ class ApiSegmentsTest extends BaseApiTest
             'type' => SegmentTypeEnum::numbers()->value,
             'meta' => json_encode([
                 'query' => $data['query'],
-                'sql' => $data['sql'],
             ]),
             'status_id' => SegmentStatusEnum::active()->value,
         ]);

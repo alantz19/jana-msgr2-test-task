@@ -18,6 +18,7 @@ class JqFieldResource extends JsonResource
             'field' => $this->resource['field'],
             'label' => $this->resource['label'],
             'type' => $this->resource['type'],
+            /** @var array $operators */
             'operators' => $this->resource['operators'],
         ];
     }

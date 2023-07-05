@@ -40,6 +40,12 @@ class JqQueryRule implements ValidationRule
         if ($field = JqBuilderFieldEnum::tryFrom($value['field'])) {
             $jqRule = $field->toJqRule();
 
+            if ($op = JqBuilderOperatorEnum::tryFrom($value['operator'] ?? '')) {
+                if (!in_array($op->label, $jqRule['operators'], true)) {
+                    $fail('The rule operator must be a valid operator.');
+                }
+            }
+
             if ($type = JqBuilderTypeEnum::tryFrom($jqRule['type'] ?? '')) {
                 match ($type->label) {
                     JqBuilderTypeEnum::integer()->label,

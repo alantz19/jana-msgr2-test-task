@@ -33,12 +33,8 @@ class JqQueryRule implements ValidationRule
             $fail('The rule operator must be a valid operator.');
         }
 
-        if (empty($value['type']) || !in_array($value['type'], JqBuilderTypeEnum::toLabels())) {
-            $fail('The rule type must be a valid type.');
-        }
-
         if (!isset($value['value'])) {
-            $fail('The rule type must be a valid type.');
+            $fail('The rule value must be a valid value.');
         }
 
         if ($field = JqBuilderFieldEnum::tryFrom($value['field'])) {

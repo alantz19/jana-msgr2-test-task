@@ -2,9 +2,11 @@
 
 namespace App\Services;
 
+use App\Enums\SmsCampaignStatusEnum;
 use App\Models\Segment;
 use App\Models\SmsCampaignSend;
 use ClickHouseDB\Client;
+use ClickHouseDB\Query\Query;
 use DB;
 use Log;
 use Tinderbox\ClickhouseBuilder\Query\TwoElementsLogicExpression;
@@ -14,27 +16,72 @@ class SmsCampaignContactService
 
     public static function getContacts(SmsCampaignSend $campaignSend): array
     {
-//        if ($campaignSend->isAutosender()) {
-//            return self::getContactsForAutosender($campaignSend);
-//        }
         Log::debug('getContacts', ['campaignSend_id' => $campaignSend->id]);
-        //todo: check if contact unsubscribed. add - tags, segments, cache
         $settings = $campaignSend->getSettings();
         $limit = '';
-        if ($settings->send_amount > 0) {
-            $limit = 'LIMIT ' . $settings->send_amount;
-        }
 
         if ($settings->multistep_settings) {
-            $limit = $settings->send_amount > $settings->multistep_settings->step_size
-                ? 'LIMIT ' . $settings->multistep_settings->step_size
-                : 'LIMIT ' . $settings->send_amount;
+            return self::getContactsForMultistepCampaign($campaignSend);
         }
-        Log::debug('limit', ['limit' => $limit]);
 
+        return self::getContactsForSimpleCampaign($campaignSend);
+    }
+
+    private static function getContactsForMultistepCampaign(SmsCampaignSend $campaignSend): array
+    {
+        $settings = $campaignSend->getMultistepSettings();
+        $limit = $settings->step_size;
+        $status = $campaignSend->getMultistepStatus();
+        Log::debug('getContactsForMultistepCampaign', ['status' => $status]);
+        $baseQuery = self::getBaseQuery($campaignSend);
+
+        if ($status->current_step === 0) {
+            $total_available_contacts = ClickhouseService::query("select count(*) as count from ({$baseQuery})");
+            $total_available_contacts = $total_available_contacts[0]['count'];
+            $status->total_available_contacts = $total_available_contacts;
+            if ($total_available_contacts == 0) {
+                $status->status = SmsCampaignStatusEnum::sent()->value;
+                $campaignSend->setMultistepStatus($status);
+                return [];
+            }
+            Log::debug("total_available_contacts: {$total_available_contacts}");
+            if ($total_available_contacts < $limit) {
+                Log::debug("last step {$total_available_contacts} < {$limit}");
+                $status->status = SmsCampaignStatusEnum::sent()->value;
+                $campaignSend->setMultistepStatus($status);
+            }
+
+
+            //get brands and count from baseQuery
+            $query =
+                "select count(*) as count, network_brand from ({$baseQuery}) group by network_brand order by count asc";
+            $brands = ClickhouseService::query($query, 'network_brand');
+            $brands = collect($brands)->map(function ($item) {
+                return $item['count'];
+            })->toArray();
+            $status->initial_brands = $brands;
+
+            Log::debug("segment network brands", ['brands' => $brands]);
+        }
+
+        if ($status->current_step > 0) {
+            //todo - check performance of network brands and disable underperforming brands
+        }
+
+        $baseQuery = self::getBaseQuery($campaignSend);
+        $query = "select * from ({$baseQuery})";
+        Log::debug('CH query', ['query' => $query]);
+
+        $status->total_sent += $limit;
+        $status->last_sent_timestamp = time();
+        return self::queryContacts($campaignSend, $query, $limit);
+    }
+
+    private static function getBaseQuery(SmsCampaignSend $campaignSend)
+    {
+        $settings = $campaignSend->getSettings();
         $segmentQueryStr = '1=1';
         $segmentQueries = collect([]);
-        $sql = '';
         if (count($settings->segment_ids) > 0) {
             Log::debug('segment_ids', ['segment_ids' => $settings->segment_ids]);
             foreach ($settings->segment_ids as $segmentId) {
@@ -48,9 +95,7 @@ class SmsCampaignContactService
             $segmentQueryStr = $segmentQueries->implode(' OR ');
         }
 
-        /** @var Client $client */
-        $client = DB::connection('clickhouse')->getClient();
-        $query = "
+        return "
         SELECT 
             team_id,
 phone_normalized,
@@ -94,21 +139,31 @@ state_id_reason,
  date_updated,
  is_deleted
         from contacts_sms_view
-        where team_id = :team_id
-        AND ({$segmentQueryStr})
-             and is_deleted = 0
-        $limit";
-        Log::debug('CH query', ['query' => $query]);
+        where team_id = '{$campaignSend->campaign->team_id}'
+          AND ({$segmentQueryStr})
+        and is_deleted = 0";
+    }
+
+    private static function queryContacts(SmsCampaignSend $campaignSend, string $query, int $limit): array
+    {
+        if ($limit == 0) {
+            $limit = 9999999999;
+        }
+        /** @var Client $client */
+        $client = DB::connection('clickhouse')->getClient();
         $res = $client->select($query,
             ['limit' => $limit, 'team_id' => $campaignSend->campaign->team_id]);
         Log::debug("queried contacts: " . $res->count(), ['contacts' => array_merge($res->statistics(),
             $res->responseInfo()
         )]);
+
         return $res->rows();
     }
 
-    private static function getContactsForAutosender(SmsCampaignSend $campaignSend)
+    private static function getContactsForSimpleCampaign(SmsCampaignSend $campaignSend)
     {
+        $settings = $campaignSend->getSettings();
 
+        return self::queryContacts($campaignSend, self::getBaseQuery($campaignSend), $settings->send_amount);
     }
 }

@@ -363,7 +363,7 @@ SELECT
     vnn.network_brand AS network_brand
 FROM msgr.v2_numbers_networks AS vnn
          INNER JOIN msgr.contacts_sms_materialized AS csm ON phone_normalized = normalized
-WHERE csm.network_id = 0;');
+WHERE csm.network_id IS NULL;');
 
         static::write("
 CREATE TABLE IF NOT EXISTS v2_mobile_networks

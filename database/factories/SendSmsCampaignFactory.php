@@ -25,7 +25,7 @@ class SendSmsCampaignFactory extends Factory
         ];
     }
 
-    public function withBasicSetup()
+    public function withBasicSetup($contactsCount = 10)
     {
         $user = User::factory()->withPersonalTeam()->create();
 
@@ -37,7 +37,7 @@ class SendSmsCampaignFactory extends Factory
         $route1 = SmsRoute::factory()->withRouteRates()->withSmppConnection()->create([
             'team_id' => $user->currentTeam->id,
         ]);
-        $contacts = Contact::factory()->saveAndReturn($user->current_team_id, 'uk', true);
+        $contacts = Contact::factory()->saveAndReturn($user->current_team_id, 'uk', true, $contactsCount);
         $campaign = SmsCampaign::factory()->state(['team_id' => $user->currentTeam->id])->create();
 
         $texts = SmsCampaignText::factory()->count(5)->create([

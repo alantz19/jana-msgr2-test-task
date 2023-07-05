@@ -9,14 +9,9 @@ trait HasMultistepCampaign
 {
     const SETTINGS_KEY_MULTISTEP = 'multistep';
 
-    public function getMultistepSettings(): CampaignMultistepSettingsData|false
+    public function getMultistepSettings(): ?CampaignMultistepSettingsData
     {
-        $settings = $this->getSettings()[self::SETTINGS_KEY_MULTISTEP] ?? false;
-        if (!$settings) {
-            return false;
-        }
-
-        return CampaignMultistepSettingsData::from($settings);
+        return $this->getSettings()->multistep_settings;
     }
 
     public function hasMultistep()
@@ -33,6 +28,11 @@ trait HasMultistepCampaign
         }
 
         return CampaignMultistepStatusData::from($status);
+    }
+
+    public function setMultistepStatus(CampaignMultistepStatusData $data): void
+    {
+        $this->addMeta('multistep_status', $data->toJson());
     }
 
     public function setSettingsMultistep(CampaignMultistepSettingsData $multistepSettingsData)

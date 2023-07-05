@@ -45,4 +45,15 @@ class ClickhouseService
         $db = self::getClient();
         $db->insertAssocBulk($model->getTable(), $insert, $columns);
     }
+
+    public static function query(string $query, $treeValue = false)
+    {
+        $db = self::getClient();
+        $res = $db->select($query);
+        if ($treeValue) {
+            return $res->rowsAsTree($treeValue);
+        } else {
+            return $res->rows();
+        }
+    }
 }

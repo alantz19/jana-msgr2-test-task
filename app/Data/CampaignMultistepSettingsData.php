@@ -21,6 +21,7 @@ class CampaignMultistepSettingsData extends Data
         public int   $step_size = 200,
         //for example - 3% ctr is 3
         public float $min_ctr = 3,
+        public bool  $split_networks = true,
         public bool  $optimise_texts = true,
 //        public bool $is_auto_expand_texts,
         public bool  $optimise_sender_ids = true,

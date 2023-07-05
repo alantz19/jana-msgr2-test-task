@@ -136,8 +136,11 @@ class UrlShortenerService
             'meta' => $meta,
         ];
 
+        $url = rtrim(config('services.shortener.url'), '/') . '/api/short-url';
+        Log::debug("Shorty url: $url");
         $response = Http::withBody(json_encode($data))
-            ->post(rtrim(config('services.shortener.url'), '/') . '/api/short-url');
+            ->post($url);
+        Log::debug("Shorty response: {$response->body()}");
 
         if ($response->created()) {
             return $response->json();

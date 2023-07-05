@@ -4,6 +4,7 @@ namespace App\Enums;
 
 use App\Models\Clickhouse\Views\ContactTagView;
 use App\Models\Segment;
+use Illuminate\Support\Arr;
 use Spatie\Enum\Enum;
 
 /**
@@ -23,8 +24,8 @@ use Spatie\Enum\Enum;
  * @method static self not_ends_with()
  * @method static self is_empty()
  * @method static self is_not_empty()
- * @method static self is_null()
- * @method static self is_not_null()
+ * //method static self is_null()
+ * //method static self is_not_null()
  */
 class JqBuilderOperatorEnum extends Enum
 {
@@ -40,11 +41,11 @@ class JqBuilderOperatorEnum extends Enum
             'greater' => 'greater',
             'greater_or_equal' => 'greaterOrEquals',
             'begins_with' => 'startsWith',
-            'not_begins_with' => '!startsWith',
+            'not_begins_with' => 'not startsWith',
             'contains' => 'like',
             'not_contains' => 'not like',
             'ends_with' => 'endsWith',
-            'not_ends_with' => '!endsWith',
+            'not_ends_with' => 'not endsWith',
             'is_empty' => 'empty',
             'is_not_empty' => 'notEmpty',
             'is_null' => 'isNull',
@@ -52,21 +53,35 @@ class JqBuilderOperatorEnum extends Enum
         ];
     }
 
-    public function toSql(Segment $segment, JqBuilderFieldEnum $field, string $bindKey): string
+    public function toSql(Segment $segment, JqBuilderFieldEnum $field, array|string $binds): string
     {
-        $fieldValue = $field->value;
+        $fieldName = $field->value;
+
+        if (is_array($binds)) {
+            $bindKey = implode(', ', Arr::map($binds, fn($key) => ":$key"));
+        } else {
+            $bindKey = ":$binds";
+        }
 
         if ($field->equals(JqBuilderFieldEnum::tags())) {
-            $tagOp = match ($this->value) {
-                self::in()->value => '=',
-                self::not_in()->value => '!=',
+            $whereRaw = match ($this->value) {
+                self::begins_with()->value,
+                self::not_begins_with()->value,
+                self::ends_with()->value,
+                self::not_ends_with()->value => "$this->value(tag, $bindKey)",
+
+                self::in()->value,
+                self::not_in()->value => "tag $this->value ($bindKey)",
+
+                self::contains()->value,
+                self::not_contains()->value => "tag $this->value $bindKey",
             };
             $sub = ContactTagView::select('contact_id')
                 ->where('team_id', $segment->team_id)
                 ->where('is_deleted', 0)
-                ->whereRaw("tag $tagOp :$bindKey")
+                ->whereRaw($whereRaw)
                 ->toSql();
-            return "contact_id $this->value ($sub)";
+            return "contact_id in ($sub)";
         }
 
         if ($field->equals(
@@ -74,8 +89,8 @@ class JqBuilderOperatorEnum extends Enum
             JqBuilderFieldEnum::last_sent(),
             JqBuilderFieldEnum::last_clicked(),
         )) {
-            $fieldValue = "toDate($fieldValue)";
-            $bindKey = "parseDateTime32BestEffort(:$bindKey)";
+            $fieldName = "toDate($fieldName)";
+            $bindKey = "parseDateTime32BestEffort($bindKey)";
         } else if ($field->equals(
             JqBuilderFieldEnum::custom1_datetime(),
             JqBuilderFieldEnum::custom2_datetime(),
@@ -83,10 +98,8 @@ class JqBuilderOperatorEnum extends Enum
             JqBuilderFieldEnum::custom4_datetime(),
             JqBuilderFieldEnum::custom5_datetime(),
         )) {
-            $fieldValue = "toDateTime($fieldValue)";
-            $bindKey = "parseDateTime32BestEffort(:$bindKey)";
-        } else {
-            $bindKey = ":$bindKey";
+            $fieldName = "toDateTime($fieldName)";
+            $bindKey = "parseDateTime32BestEffort($bindKey)";
         }
 
         return match ($this->value) {
@@ -99,18 +112,16 @@ class JqBuilderOperatorEnum extends Enum
             self::begins_with()->value,
             self::not_begins_with()->value,
             self::ends_with()->value,
-            self::not_ends_with()->value => "$this->value($fieldValue, $bindKey)",
+            self::not_ends_with()->value => "$this->value($fieldName, $bindKey)",
 
             self::contains()->value,
-            self::not_contains()->value => "$fieldValue $this->value $bindKey",
+            self::not_contains()->value => "$fieldName $this->value $bindKey",
 
             self::in()->value,
-            self::not_in()->value => "$fieldValue $this->value($bindKey)",
+            self::not_in()->value => "$fieldName $this->value ($bindKey)",
 
-            self::is_empty()->value,
-            self::is_not_empty()->value,
-            self::is_null()->value,
-            self::is_not_null()->value => "$this->value($fieldValue)",
+            self::is_empty()->value => "($this->value($fieldName) or isNull($fieldName))",
+            self::is_not_empty()->value => "($this->value($fieldName) and isNotNull($fieldName))",
         };
     }
 }

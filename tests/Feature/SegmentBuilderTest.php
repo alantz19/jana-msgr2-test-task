@@ -103,7 +103,9 @@ class SegmentBuilderTest extends TestCase
         $this->assertStringStartsWith('SELECT * FROM', $sql);
         $this->assertStringContainsString('greater(clicked_count, 0)', $sql);
         $this->assertStringContainsString('SELECT `contact_id` FROM `contact_tags_view`', $sql);
-        $this->assertStringContainsString("tag = 'user-tag-1'", $sql);
+        $this->assertStringContainsString("'user-tag-1'", $sql);
+        $this->assertStringContainsString("'user-tag-2'", $sql);
+        $this->assertStringContainsString("startsWith(tag, 'user')", $sql);
 
         $teamId = $segment->team_id;
         $contacts = Contact::factory()

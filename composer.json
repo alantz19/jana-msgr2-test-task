@@ -12,6 +12,7 @@
     "acidjazz/metapi": "^2.2",
     "acpmasquerade/sms-counter-php": "^1.0",
     "dedoc/scramble": "^0.7.2",
+    "doctrine/dbal": "^3.6",
     "giggsey/libphonenumber-for-php": "^8.13",
     "glushkovds/phpclickhouse-laravel": "^1.17",
     "guzzlehttp/guzzle": "^7.2",

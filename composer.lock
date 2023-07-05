@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fbec61dd56251d572108a3c318e4f4d7",
+    "content-hash": "5deea6836fe21f179b6299323d17a6b8",
     "packages": [
         {
             "name": "acidjazz/metapi",
@@ -5634,16 +5634,16 @@
         },
         {
             "name": "spatie/laravel-data",
-            "version": "3.6.0",
+            "version": "3.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-data.git",
-                "reference": "ec8135711ef1dcba8650eb28d02c2a771b11349d"
+                "reference": "a975123d86e0133a361ac225d17acb3d11aa351f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-data/zipball/ec8135711ef1dcba8650eb28d02c2a771b11349d",
-                "reference": "ec8135711ef1dcba8650eb28d02c2a771b11349d",
+                "url": "https://api.github.com/repos/spatie/laravel-data/zipball/a975123d86e0133a361ac225d17acb3d11aa351f",
+                "reference": "a975123d86e0133a361ac225d17acb3d11aa351f",
                 "shasum": ""
             },
             "require": {
@@ -5705,7 +5705,7 @@
             ],
             "support": {
                 "issues": "https://github.com/spatie/laravel-data/issues",
-                "source": "https://github.com/spatie/laravel-data/tree/3.6.0"
+                "source": "https://github.com/spatie/laravel-data/tree/3.7.0"
             },
             "funding": [
                 {
@@ -5713,7 +5713,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-06-02T12:17:38+00:00"
+            "time": "2023-07-05T11:45:14+00:00"
         },
         {
             "name": "spatie/laravel-package-tools",
@@ -5859,16 +5859,16 @@
         },
         {
             "name": "spatie/typescript-transformer",
-            "version": "2.2.0",
+            "version": "2.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/typescript-transformer.git",
-                "reference": "84c5e564a825809445b5dd5ae5f45873851c51c2"
+                "reference": "baf1686675583ce265cef80134c73e1ba8422cfd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/typescript-transformer/zipball/84c5e564a825809445b5dd5ae5f45873851c51c2",
-                "reference": "84c5e564a825809445b5dd5ae5f45873851c51c2",
+                "url": "https://api.github.com/repos/spatie/typescript-transformer/zipball/baf1686675583ce265cef80134c73e1ba8422cfd",
+                "reference": "baf1686675583ce265cef80134c73e1ba8422cfd",
                 "shasum": ""
             },
             "require": {
@@ -5915,7 +5915,7 @@
             ],
             "support": {
                 "issues": "https://github.com/spatie/typescript-transformer/issues",
-                "source": "https://github.com/spatie/typescript-transformer/tree/2.2.0"
+                "source": "https://github.com/spatie/typescript-transformer/tree/2.2.1"
             },
             "funding": [
                 {
@@ -5927,7 +5927,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-06-02T12:10:10+00:00"
+            "time": "2023-07-05T12:34:27+00:00"
         },
         {
             "name": "symfony/console",
@@ -10556,16 +10556,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.10.22",
+            "version": "1.10.24",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "97d694dfd4ceb57bcce4e3b38548f13ea62e4287"
+                "reference": "360ecc90569e9a60c2954ee209ec04fa0d958e14"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/97d694dfd4ceb57bcce4e3b38548f13ea62e4287",
-                "reference": "97d694dfd4ceb57bcce4e3b38548f13ea62e4287",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/360ecc90569e9a60c2954ee209ec04fa0d958e14",
+                "reference": "360ecc90569e9a60c2954ee209ec04fa0d958e14",
                 "shasum": ""
             },
             "require": {
@@ -10614,7 +10614,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-06-30T20:04:11+00:00"
+            "time": "2023-07-05T12:32:13+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",

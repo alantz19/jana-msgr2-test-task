@@ -42,6 +42,7 @@ Route::prefix('v1')->group(function () {
 
     Route::middleware('auth:api')->group(function () {
         Route::get('/user', [AuthController::class, 'me']);
+        Route::get('/user/teams', [AuthController::class, 'teams']);
 
         Route::get('/data-files', [DataFilesController::class, 'index']);
         Route::get('/data-files/{id:uuid}/sample', [DataFilesController::class, 'sample']);

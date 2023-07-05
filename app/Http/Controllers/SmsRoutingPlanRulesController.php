@@ -14,6 +14,9 @@ use Illuminate\Http\Request;
 
 class SmsRoutingPlanRulesController extends Controller
 {
+    /**
+     * @param string $plan
+     */
     public function index(SmsRoutingPlan $plan)
     {
         AuthService::isModelOwner($plan);

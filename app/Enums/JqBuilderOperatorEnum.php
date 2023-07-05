@@ -56,10 +56,7 @@ class JqBuilderOperatorEnum extends Enum
     {
         $fieldValue = $field->value;
 
-        if ($field->equals(JqBuilderFieldEnum::date_created())) {
-            $fieldValue = "toDate($fieldValue)";
-            $bindKey = "parseDateTime32BestEffort(:$bindKey)";
-        } else if ($field->equals(JqBuilderFieldEnum::tags())) {
+        if ($field->equals(JqBuilderFieldEnum::tags())) {
             $tagOp = match ($this->value) {
                 self::in()->value => '=',
                 self::not_in()->value => '!=',
@@ -70,6 +67,24 @@ class JqBuilderOperatorEnum extends Enum
                 ->whereRaw("tag $tagOp :$bindKey")
                 ->toSql();
             return "contact_id $this->value ($sub)";
+        }
+
+        if ($field->equals(
+            JqBuilderFieldEnum::date_created(),
+            JqBuilderFieldEnum::last_sent(),
+            JqBuilderFieldEnum::last_clicked(),
+        )) {
+            $fieldValue = "toDate($fieldValue)";
+            $bindKey = "parseDateTime32BestEffort(:$bindKey)";
+        } else if ($field->equals(
+            JqBuilderFieldEnum::custom1_datetime(),
+            JqBuilderFieldEnum::custom2_datetime(),
+            JqBuilderFieldEnum::custom3_datetime(),
+            JqBuilderFieldEnum::custom4_datetime(),
+            JqBuilderFieldEnum::custom5_datetime(),
+        )) {
+            $fieldValue = "toDateTime($fieldValue)";
+            $bindKey = "parseDateTime32BestEffort(:$bindKey)";
         } else {
             $bindKey = ":$bindKey";
         }

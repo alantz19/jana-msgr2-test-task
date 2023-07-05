@@ -53,6 +53,7 @@ Route::prefix('v1')->group(function () {
 
         Route::resource('segments', SegmentsController::class)
             ->only(['index', 'store', 'update', 'destroy']);
+        Route::get('segments/fields', [SegmentsController::class, 'fields']);
         Route::post('segments/preview', [SegmentsController::class, 'preview']);
 
         Route::resource('audience/contacts', ContactsController::class)

@@ -20,11 +20,11 @@ class JqQueryRule implements ValidationRule
             $fail('The rules item must be a valid rule.');
         }
 
-        if (empty($value['id']) || !in_array($value['id'], JqBuilderFieldEnum::toValues())) {
-            $fail('The rule id must be a valid id.');
-        }
+//        if (empty($value['id']) || !in_array($value['id'], JqBuilderFieldEnum::toLabels())) {
+//            $fail('The rule id must be a valid id.');
+//        }
 
-        if (empty($value['field']) || !in_array($value['field'], JqBuilderFieldEnum::toValues())) {
+        if (empty($value['field']) || !in_array($value['field'], JqBuilderFieldEnum::toLabels())) {
             $fail('The rule field must be a valid field.');
         }
 
@@ -32,29 +32,29 @@ class JqQueryRule implements ValidationRule
             $fail('The rule operator must be a valid operator.');
         }
 
-        $jqBuilderTypes = [
-            'string',
-            'integer',
-            'double',
-            'date',
-            'time',
-            'datetime',
-            'boolean',
-        ];
-        if (empty($value['type']) || !in_array($value['type'], $jqBuilderTypes)) {
-            $fail('The rule type must be a valid type.');
-        }
+//        $jqBuilderTypes = [
+//            'string',
+//            'integer',
+//            'double',
+//            'date',
+//            'time',
+//            'datetime',
+//            'boolean',
+//        ];
+//        if (empty($value['type']) || !in_array($value['type'], $jqBuilderTypes)) {
+//            $fail('The rule type must be a valid type.');
+//        }
 
-        $jqBuilderInputs = [
-            'text',
-            'number',
-            'textarea',
-            'radio',
-            'checkbox',
-            'select',
-        ];
-        if (empty($value['input']) || !in_array($value['input'], $jqBuilderInputs, true)) {
-            $fail('The rule input must be a valid input.');
-        }
+//        $jqBuilderInputs = [
+//            'text',
+//            'number',
+//            'textarea',
+//            'radio',
+//            'checkbox',
+//            'select',
+//        ];
+//        if (empty($value['input']) || !in_array($value['input'], $jqBuilderInputs, true)) {
+//            $fail('The rule input must be a valid input.');
+//        }
     }
 }

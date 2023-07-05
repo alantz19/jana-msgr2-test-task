@@ -32,5 +32,105 @@ use Spatie\Enum\Enum;
  */
 class JqBuilderFieldEnum extends Enum
 {
-
+    public function toJqRule(array $customFields = []): array
+    {
+        return match ($this->label) {
+            self::clicked_count()->label => [
+                'field' => $this->label,
+                'label' => 'Clicked Count',
+            ],
+            self::sent_count()->label => [
+                'field' => $this->label,
+                'label' => 'Sent Count',
+            ],
+            self::country_id()->label => [
+                'field' => $this->label,
+                'label' => 'Country',
+            ],
+            self::state_id()->label => [
+                'field' => $this->label,
+                'label' => 'State',
+            ],
+//            self::network_id()->label => [
+//                'field' => $this->label,
+//                'label' => 'Network',
+//            ],
+            self::network_brand()->label => [
+                'field' => $this->label,
+                'label' => 'Network Brand',
+            ],
+            self::date_created()->label => [
+                'field' => $this->label,
+                'label' => 'Date Created',
+            ],
+            self::last_sent()->label => [
+                'field' => $this->label,
+                'label' => 'Last Sent',
+            ],
+            self::last_clicked()->label => [
+                'field' => $this->label,
+                'label' => 'Last Clicked',
+            ],
+            self::leads_count()->label => [
+                'field' => $this->label,
+                'label' => 'Leads Count',
+            ],
+            self::sales_count()->label => [
+                'field' => $this->label,
+                'label' => 'Sales Count',
+            ],
+            self::custom1_str()->label => [
+                'field' => $this->label,
+                'label' => $customFields[$this->label] ?? 'Custom 1 String',
+            ],
+            self::custom2_str()->label => [
+                'field' => $this->label,
+                'label' => $customFields[$this->label] ?? 'Custom 2 String',
+            ],
+            self::custom3_str()->label => [
+                'field' => $this->label,
+                'label' => $customFields[$this->label] ?? 'Custom 3 String',
+            ],
+            self::custom4_str()->label => [
+                'field' => $this->label,
+                'label' => $customFields[$this->label] ?? 'Custom 4 String',
+            ],
+            self::custom5_str()->label => [
+                'field' => $this->label,
+                'label' => $customFields[$this->label] ?? 'Custom 5 String',
+            ],
+            self::custom1_dec()->label => [
+                'field' => $this->label,
+                'label' => $customFields[$this->label] ?? 'Custom 1 Decimal',
+            ],
+            self::custom2_dec()->label => [
+                'field' => $this->label,
+                'label' => $customFields[$this->label] ?? 'Custom 2 Decimal',
+            ],
+            self::custom1_datetime()->label => [
+                'field' => $this->label,
+                'label' => $customFields[$this->label] ?? 'Custom 1 Datetime',
+            ],
+            self::custom2_datetime()->label => [
+                'field' => $this->label,
+                'label' => $customFields[$this->label] ?? 'Custom 2 Datetime',
+            ],
+            self::custom3_datetime()->label => [
+                'field' => $this->label,
+                'label' => $customFields[$this->label] ?? 'Custom 3 Datetime',
+            ],
+            self::custom4_datetime()->label => [
+                'field' => $this->label,
+                'label' => $customFields[$this->label] ?? 'Custom 4 Datetime',
+            ],
+            self::custom5_datetime()->label => [
+                'field' => $this->label,
+                'label' => $customFields[$this->label] ?? 'Custom 5 Datetime',
+            ],
+            self::tags()->label => [
+                'field' => $this->label,
+                'label' => 'Tags',
+            ],
+        };
+    }
 }

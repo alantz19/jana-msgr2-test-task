@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\JqBuilderFieldEnum;
+use App\Enums\JqBuilderOperatorEnum;
 use App\Enums\SegmentStatusEnum;
 use App\Enums\SegmentTypeEnum;
 use App\Http\Resources\ContactSmsResource;
+use App\Http\Resources\JqFieldResource;
 use App\Http\Resources\SegmentResource;
+use App\Models\CustomField;
 use App\Models\Segment;
 use App\Rules\JqQueryGroup;
 use App\Services\AuthService;
@@ -35,10 +39,11 @@ class SegmentsController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'type' => 'required|in:' . implode(',', SegmentTypeEnum::toLabels()),
+            /**
+             * @var array<string, string> $query
+             * @example {"condition":"AND","rules":[{"id":"clicked_count","field":"clicked_count","type":"integer","input":"number","operator":"greater","value":0},{"id":"country_id","field":"country_id","type":"integer","input":"select","operator":"equal","value":225},{"condition":"OR","rules":[{"id":"network_id","field":"network_id","type":"integer","input":"number","operator":"equal","value":1},{"id":"network_brand","field":"network_brand","type":"string","input":"text","operator":"contains","value":"AT&T"}]},{"id":"date_created","field":"date_created","type":"date","input":"text","operator":"equal","value":"2023-07-05"}]}
+             */
             'query' => ['required', 'array', new JqQueryGroup],
-            'sql' => 'sometimes|array',
-            'sql.sql' => 'sometimes|string',
-            'sql.params' => 'sometimes|array',
         ]);
 
         $segment = Segment::create([
@@ -47,7 +52,6 @@ class SegmentsController extends Controller
             'name' => $request->get('name'),
             'meta' => [
                 'query' => $request->get('query'),
-                'sql' => $request->get('sql'),
             ],
             'status_id' => SegmentStatusEnum::active()->value,
         ]);
@@ -63,17 +67,17 @@ class SegmentsController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:255',
+            /**
+             * @var array<string, string> $query
+             * @example {"condition":"AND","rules":[{"id":"clicked_count","field":"clicked_count","type":"integer","input":"number","operator":"greater","value":0},{"id":"country_id","field":"country_id","type":"integer","input":"select","operator":"equal","value":225},{"condition":"OR","rules":[{"id":"network_id","field":"network_id","type":"integer","input":"number","operator":"equal","value":1},{"id":"network_brand","field":"network_brand","type":"string","input":"text","operator":"contains","value":"AT&T"}]},{"id":"date_created","field":"date_created","type":"date","input":"text","operator":"equal","value":"2023-07-05"}]}
+             */
             'query' => ['required', 'array', new JqQueryGroup],
-            'sql' => 'sometimes|array',
-            'sql.sql' => 'sometimes|string',
-            'sql.params' => 'sometimes|array',
         ]);
 
         $segment->update([
             'name' => $request->get('name'),
             'meta' => [
                 'query' => $request->get('query'),
-                'sql' => $request->get('sql'),
             ],
         ]);
 
@@ -95,6 +99,10 @@ class SegmentsController extends Controller
     {
         $request->validate([
             'type' => 'required|in:' . implode(',', SegmentTypeEnum::toLabels()),
+            /**
+             * @var array<string, string> $query
+             * @example {"condition":"AND","rules":[{"id":"clicked_count","field":"clicked_count","type":"integer","input":"number","operator":"greater","value":0},{"id":"country_id","field":"country_id","type":"integer","input":"select","operator":"equal","value":225},{"condition":"OR","rules":[{"id":"network_id","field":"network_id","type":"integer","input":"number","operator":"equal","value":1},{"id":"network_brand","field":"network_brand","type":"string","input":"text","operator":"contains","value":"AT&T"}]},{"id":"date_created","field":"date_created","type":"date","input":"text","operator":"equal","value":"2023-07-05"}]}
+             */
             'query' => ['required', 'array', new JqQueryGroup],
             'page' => 'sometimes|integer|min:1',
             'per_page' => 'sometimes|integer|min:1|max:100',
@@ -106,7 +114,6 @@ class SegmentsController extends Controller
             'name' => 'Preview',
             'meta' => [
                 'query' => $request->get('query'),
-                'sql' => $request->get('sql'),
             ],
             'status_id' => SegmentStatusEnum::active()->value,
         ]);
@@ -126,7 +133,7 @@ class SegmentsController extends Controller
 
         $response = [
             'total' => (int) $total,
-            /** @var array <ContactSmsResource> */
+            /** @var array<ContactSmsResource> $rows */
             'rows' => $rows,
             /** @var array<string, string> $stats only for admins (elapsed, rows_read, bytes_read) (null for users) */
             'stats' => null,
@@ -134,12 +141,39 @@ class SegmentsController extends Controller
             'sql' => null,
         ];
 
-        // @TODO replace to user role or something
-        if (app()->environment('local')) {
+        if (AuthService::isAdmin()) {
             $response['stats'] = $stats;
             $response['sql'] = $builder->toSql();
         }
 
         return response()->json($response);
+    }
+
+    public function fields()
+    {
+        $customFields = CustomField::whereTeamId(auth()->user()->current_team_id)
+            ->get()
+            ->map(function ($field) {
+                $arr = [];
+                $arr[$field->field_key] = $field->field_name;
+                return $arr;
+            })
+            ->flatMap(fn ($item) => $item)
+            ->toArray();
+
+        $fields = collect(JqBuilderFieldEnum::toLabels())
+            ->map(function ($fieldName) use ($customFields) {
+                $field = JqBuilderFieldEnum::from($fieldName);
+
+                return $field->toJqRule($customFields);
+            });
+        $operators = JqBuilderOperatorEnum::toLabels();
+
+        return response()->json([
+            /** @var array<JqFieldResource> $fields */
+            'fields' => JqFieldResource::collection($fields),
+            /** @var array<string> $operators */
+            'operators' => $operators,
+        ]);
     }
 }

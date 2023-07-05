@@ -8,7 +8,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('domains', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('domain');
             $table->boolean('is_active')->default(true);
             $table->uuid('team_id')->nullable();

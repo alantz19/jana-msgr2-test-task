@@ -31,6 +31,8 @@ class buildSmsJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    public $tries = 1;
+
     public function __construct(public CampaignSendToBuildSmsData $dto)
     {
     }
@@ -61,7 +63,13 @@ class buildSmsJob implements ShouldQueue
         }
         Log::debug('finished setting route, processing text', ['sms_id' => $data->sms_id]);
 
-        TextService::processMsg($data);
+        try {
+            TextService::processMsg($data);
+        } catch (Exception $e) {
+            Log::error('Error processing text', ['sms_id' => $data->sms_id, 'error' => $e->getMessage()]);
+            $this->fail($e);
+            return;
+        }
 
         $this->setSenderids($data);
 

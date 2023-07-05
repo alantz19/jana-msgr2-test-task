@@ -32,7 +32,7 @@ trait HasMultistepCampaign
 
     public function setMultistepStatus(CampaignMultistepStatusData $data): void
     {
-        $this->addMeta('multistep_status', $data->toJson());
+        $this->addMeta('multistep_status', $data->toArray());
     }
 
     public function setSettingsMultistep(CampaignMultistepSettingsData $multistepSettingsData)

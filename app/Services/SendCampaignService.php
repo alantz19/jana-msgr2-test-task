@@ -2,9 +2,11 @@
 
 namespace App\Services;
 
+use App\Enums\SmsCampaignStatusEnum;
 use App\Exceptions\CampaignSendException;
 use App\Jobs\SendCampaignJob;
 use App\Models\SmsCampaign;
+use App\Models\SmsCampaignSend;
 use App\Models\SmsRoutingPlan;
 use Illuminate\Support\Facades\Log;
 
@@ -15,7 +17,7 @@ class SendCampaignService
         $campaign->getSettings();
         self::isReadyToSend($campaign);
         $campaignSend = $campaign->sends()->create([
-            'status' => 'sending',
+            'status' => SmsCampaignStatusEnum::in_progress(),
             'meta' => $campaign->meta,
         ]);
 
@@ -42,5 +44,12 @@ class SendCampaignService
         }
 
         return true;
+    }
+
+    public static function continueSend(SmsCampaignSend $campaignSend)
+    {
+        Log::debug("Continue sending campaign: {$campaignSend->id}");
+
+        SendCampaignJob::dispatch($campaignSend);
     }
 }

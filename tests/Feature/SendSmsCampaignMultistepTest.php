@@ -11,11 +11,14 @@ use App\Models\SmsCampaign;
 use App\Models\SmsCampaignSend;
 use App\Models\SmsCampaignSenderid;
 use App\Models\SmsCampaignText;
+use App\Models\SmsSendlog;
 use App\Models\User;
+use App\Services\ClickhouseService;
 use App\Services\CountryService;
 use App\Services\SendCampaignService;
 use Database\Factories\SendSmsCampaignFactory;
 use Illuminate\Support\Facades\Http;
+use Tests\Feature\Helpers\SmsTestHelper;
 use Tests\TestCase;
 
 class SendSmsCampaignMultistepTest extends TestCase
@@ -42,19 +45,51 @@ class SendSmsCampaignMultistepTest extends TestCase
         $this->assertEquals($campaignSend->getMultistepStatus()->status, SmsCampaignStatusEnum::sent()->value);
     }
 
-    public function test_send_campaign_with_shortener()
+    public function test_send_campaign_with_shortener_with_step_size()
     {
-        $res = Http::get('http://shorty_php:8081');
-        dd($res);
-        $res = SendSmsCampaignFactory::new()->withBasicSetup();
+        $res = SendSmsCampaignFactory::new()->withBasicSetup(10);
         $res['texts']->each(function ($model) use ($res) {
             $model->update([
                 'text' => 'Test text {domain}',
             ]);
         });
+        $campaign = $res['campaign'];
+        $campaign->setSettingsMultistep(
+            CampaignMultistepSettingsData::from([
+                'min_ctr' => 3,
+                'step_size' => 5,
+            ])
+        );
         SendCampaignService::send($res['campaign']);
+
+        //generate clicks
+        $campaignSend = SmsCampaignSend::where(['sms_campaign_id' => $campaign->id])->first();
+
+        SmsTestHelper::generateClicks("sms_campaign_send_id = '{$campaignSend->id}'", 30);
+
+        $sentC =
+            count(ClickhouseService::query("select * from sms_sendlogs_v where sms_campaign_id = '{$res['campaign']->id}'"));
+        $this->assertEquals(5, $sentC, 'Step limit is not considered');
+
+        //call next step cron
+        $this->travel(5)->minutes();
+
+        $this->artisan('sms:campaigns-mutistep-send');
+
+        //validate results of next step
+
+        $sentC =
+            count(ClickhouseService::query("select * from sms_sendlogs_v where sms_campaign_id = '{$res['campaign']->id}'"));
+        $this->assertEquals(10, $sentC, 'Step limit is not considered');
+        //generate clicks for new sent
+
+        //call next step cron
+
+        //validate finished status
+
+
         $this->assertDatabaseHas('sms_sendlogs', [
             'sms_campaign_id' => $res['campaign']->id,
-        ]);
+        ], 'clickhouse');
     }
 }

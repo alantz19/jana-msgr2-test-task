@@ -10,10 +10,16 @@
       <user-name>v2_msgr</user-name>
       <schema-mapping>
         <introspection-scope>
-          <node kind="database">
-            <name qname="testing" />
-            <name qname="v2_msgr" />
-            <node kind="schema" qname="public" />
+          <node negative="1">
+            <node kind="database">
+              <name qname="@" />
+              <name qname="postgres" />
+            </node>
+            <node kind="database">
+              <name qname="testing" />
+              <name qname="v2_msgr" />
+              <node kind="schema" qname="public" />
+            </node>
           </node>
         </introspection-scope>
       </schema-mapping>

@@ -41,7 +41,7 @@ class SegmentsController extends Controller
             'type' => 'required|in:' . implode(',', SegmentTypeEnum::toLabels()),
             /**
              * @var array<string, string> $query
-             * @example {"condition":"AND","rules":[{"id":"clicked_count","field":"clicked_count","type":"integer","input":"number","operator":"greater","value":0},{"id":"country_id","field":"country_id","type":"integer","input":"select","operator":"equal","value":225},{"condition":"OR","rules":[{"id":"leads_count","field":"leads_count","type":"integer","input":"number","operator":"equal","value":1},{"id":"sales_count","field":"sales_count","type":"integer","input":"number","operator":"equal","value":1}]},{"id":"date_created","field":"date_created","type":"date","input":"text","operator":"equal","value":"2023-07-05"}]}
+             * @example {"condition":"AND","rules":[{"field":"clicked_count","operator":"greater","value":0},{"field":"country_id","operator":"equal","value":225},{"condition":"OR","rules":[{"field":"leads_count","operator":"equal","value":1},{"field":"sales_count","operator":"equal","value":1}]},{"field":"date_created","operator":"equal","value":"2023-07-05"}]}
              */
             'query' => ['required', 'array', new JqQueryGroup],
         ]);
@@ -69,7 +69,7 @@ class SegmentsController extends Controller
             'name' => 'required|string|max:255',
             /**
              * @var array<string, string> $query
-             * @example {"condition":"AND","rules":[{"id":"clicked_count","field":"clicked_count","type":"integer","input":"number","operator":"greater","value":0},{"id":"country_id","field":"country_id","type":"integer","input":"select","operator":"equal","value":225},{"condition":"OR","rules":[{"id":"leads_count","field":"leads_count","type":"integer","input":"number","operator":"equal","value":1},{"id":"sales_count","field":"sales_count","type":"integer","input":"number","operator":"equal","value":1}]},{"id":"date_created","field":"date_created","type":"date","input":"text","operator":"equal","value":"2023-07-05"}]}
+             * @example {"condition":"AND","rules":[{"field":"clicked_count","operator":"greater","value":0},{"field":"country_id","operator":"equal","value":225},{"condition":"OR","rules":[{"field":"leads_count","operator":"equal","value":1},{"field":"sales_count","operator":"equal","value":1}]},{"field":"date_created","operator":"equal","value":"2023-07-05"}]}
              */
             'query' => ['required', 'array', new JqQueryGroup],
         ]);
@@ -101,7 +101,7 @@ class SegmentsController extends Controller
             'type' => 'required|in:' . implode(',', SegmentTypeEnum::toLabels()),
             /**
              * @var array<string, string> $query
-             * @example {"condition":"AND","rules":[{"id":"clicked_count","field":"clicked_count","type":"integer","input":"number","operator":"greater","value":0},{"id":"country_id","field":"country_id","type":"integer","input":"select","operator":"equal","value":225},{"condition":"OR","rules":[{"id":"leads_count","field":"leads_count","type":"integer","input":"number","operator":"equal","value":1},{"id":"sales_count","field":"sales_count","type":"integer","input":"number","operator":"equal","value":1}]},{"id":"date_created","field":"date_created","type":"date","input":"text","operator":"equal","value":"2023-07-05"}]}
+             * @example {"condition":"AND","rules":[{"field":"clicked_count","operator":"greater","value":0},{"field":"country_id","operator":"equal","value":225},{"condition":"OR","rules":[{"field":"leads_count","operator":"equal","value":1},{"field":"sales_count","operator":"equal","value":1}]},{"field":"date_created","operator":"equal","value":"2023-07-05"}]}
              */
             'query' => ['required', 'array', new JqQueryGroup],
             'page' => 'sometimes|integer|min:1',

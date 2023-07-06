@@ -38,12 +38,18 @@ Install dependencies, start the project and run tests
 ```bash
 composer install
 sail up -d
+sail -f docker-compose.clickhouse.yml up -d
 sail artisan migrate:fresh --seed
 sail artisan jwt:secret
 sail test
-npm install
-npm run dev
 ```
+
+- if composer is not installed run `docker run --rm \
+  -u "$(id -u):$(id -g)" \
+  -v "$(pwd):/var/www/html" \
+  -w /var/www/html \
+  laravelsail/php82-composer:latest \
+  composer install --ignore-platform-reqs`
 
 If `clickhouse` container doesn't exist, run this command:
 

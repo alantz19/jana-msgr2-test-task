@@ -109,8 +109,12 @@ class SmsCampaignContactMultistepService extends SmsCampaignContactService
         //todo: based on performance disable routes
 
         $baseQuery = self::getBaseQuery($campaignSend);
+
+        //change to last step
         $firstSent = Carbon::createFromTimestamp($status->start_timestamp)->toDateTimeString();
-        $query = "select * from ({$baseQuery}) where last_sent < '{$firstSent}' limit {$limit}";
+        $query = "select * from ({$baseQuery}) where (last_sent < '{$firstSent}' OR last_sent IS NULL) limit {$limit}";
+
+
         Log::debug('CH query', ['query' => $query]);
 
         $status->total_sent += $limit;

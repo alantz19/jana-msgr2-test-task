@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends \PhpClickHouseLaravel\Migration
-{
+return new class extends \PhpClickHouseLaravel\Migration {
     /**
      * Run the migrations.
      */
@@ -72,11 +71,11 @@ SETTINGS index_granularity = 8192");
     `foreign_id` SimpleAggregateFunction(anyLast, Nullable(UUID)),
     `last_sent` SimpleAggregateFunction(max, Nullable(DateTime)),
     `last_clicked` SimpleAggregateFunction(max, Nullable(DateTime)),
-    `sent_count` SimpleAggregateFunction(sum, UInt64),
-    `clicked_count` SimpleAggregateFunction(sum, UInt64),
-    `leads_count` SimpleAggregateFunction(sum, UInt64),
-    `sales_count` SimpleAggregateFunction(sum, UInt64),
-    `profit_sum` SimpleAggregateFunction(sum, UInt64),
+    `sent_count` SimpleAggregateFunction(sum, Nullable(UInt64)),
+    `clicked_count` SimpleAggregateFunction(sum, Nullable(UInt64)),
+    `leads_count` SimpleAggregateFunction(sum, Nullable(UInt64)),
+    `sales_count` SimpleAggregateFunction(sum, Nullable(UInt64)),
+    `profit_sum` SimpleAggregateFunction(sum, Nullable(UInt64)),
     `network_brand` SimpleAggregateFunction(anyLast, Nullable(String)),
     `network_id` SimpleAggregateFunction(anyLast, Nullable(UInt32)),
     `network_reason` SimpleAggregateFunction(anyLast, Nullable(UInt8)),
@@ -84,6 +83,7 @@ SETTINGS index_granularity = 8192");
     `phone_is_good_reason` SimpleAggregateFunction(anyLast, Nullable(UInt8)),
     `name` SimpleAggregateFunction(anyLast, Nullable(String)),
     `country_id` SimpleAggregateFunction(anyLast, Nullable(UInt32)),
+    `is_unsubscribed` SimpleAggregateFunction(anyLast, Nullable(UInt8)),
     `state_id` SimpleAggregateFunction(anyLast, Nullable(UInt32)),
     `state_id_reason` SimpleAggregateFunction(anyLast, Nullable(UInt8)),
     `custom1_str` SimpleAggregateFunction(anyLast, Nullable(String)),
@@ -325,6 +325,23 @@ FROM msgr.contact_tags");
         FROM `contact_tags_materialized`
         GROUP BY `team_id`, `contact_id`, `tag`
         ");
+        static::write("DROP TABLE IF EXISTS sms_sendlogs_to_contacts_sms_materialized");
+        static::write("CREATE MATERIALIZED VIEW sms_sendlogs_to_contacts_sms_materialized
+TO contacts_sms_materialized
+AS
+SELECT
+    team_id,
+    phone_normalized,
+    max(sent_at) AS last_sent,
+    max(time_clicked) AS last_clicked,
+    sum(is_sent) AS sent_count,
+    sum(is_clicked) AS clicked_count,
+    sum(is_lead) AS leads_count,
+    sum(is_sale) AS sales_count,
+    sum(conversion_profit) AS profit_sum,
+    anyLast(is_unsubscribed) AS is_unsubscribed
+FROM sms_sendlogs
+GROUP BY team_id, phone_normalized");
     }
 
     /**

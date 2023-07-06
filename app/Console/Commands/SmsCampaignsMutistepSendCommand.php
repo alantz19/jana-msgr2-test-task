@@ -6,6 +6,7 @@ use App\Enums\SmsCampaignStatusEnum;
 use App\Models\SmsCampaignSend;
 use App\Services\SendCampaignService;
 use Illuminate\Console\Command;
+use Log;
 
 class SmsCampaignsMutistepSendCommand extends Command
 {
@@ -15,9 +16,11 @@ class SmsCampaignsMutistepSendCommand extends Command
 
     public function handle(): void
     {
-        SmsCampaignSend::where(['status' => SmsCampaignStatusEnum::in_progress()->value])
+        $campaignSends = SmsCampaignSend::where(['status' => SmsCampaignStatusEnum::in_progress()->value])
             ->where('next_step_timestamp', '<=', now())
-            ->get()
-            ->each(fn(SmsCampaignSend $smsCampaignSend) => SendCampaignService::continueSend($smsCampaignSend));
+            ->get();
+        Log::debug("SmsCampaignsMutistepSendCommand, found: " . $campaignSends->count());
+
+        $campaignSends->each(fn(SmsCampaignSend $smsCampaignSend) => SendCampaignService::continueSend($smsCampaignSend));
     }
 }

@@ -45,9 +45,9 @@ class SendSmsCampaignMultistepTest extends TestCase
         $this->assertEquals($campaignSend->getMultistepStatus()->status, SmsCampaignStatusEnum::sent()->value);
     }
 
-    public function test_send_campaign_with_shortener_with_step_size()
+    public function test_send_campaign_with_shortener_with_step_size_multistep()
     {
-        $res = SendSmsCampaignFactory::new()->withBasicSetup(10);
+        $res = SendSmsCampaignFactory::new()->withBasicSetup(50);
         $res['texts']->each(function ($model) use ($res) {
             $model->update([
                 'text' => 'Test text {domain}',
@@ -65,7 +65,7 @@ class SendSmsCampaignMultistepTest extends TestCase
         //generate clicks
         $campaignSend = SmsCampaignSend::where(['sms_campaign_id' => $campaign->id])->first();
 
-        SmsTestHelper::generateClicks("sms_campaign_send_id = '{$campaignSend->id}'", 30);
+        SmsTestHelper::generateClicks("sms_campaign_send_id = '{$campaignSend->id}'", 100);
 
         $sentC =
             count(ClickhouseService::query("select * from sms_sendlogs_v where sms_campaign_id = '{$res['campaign']->id}'"));
@@ -73,23 +73,23 @@ class SendSmsCampaignMultistepTest extends TestCase
 
         //call next step cron
         $this->travel(5)->minutes();
-
+        SmsTestHelper::generateClicks("sms_campaign_send_id = '{$campaignSend->id}'", 100);
         $this->artisan('sms:campaigns-mutistep-send');
-
-        //validate results of next step
 
         $sentC =
             count(ClickhouseService::query("select * from sms_sendlogs_v where sms_campaign_id = '{$res['campaign']->id}'"));
         $this->assertEquals(10, $sentC, 'Step limit is not considered');
-        //generate clicks for new sent
 
-        //call next step cron
+        //validate enough time passed it's not running
+        $this->travel(1)->minutes();
+        $this->artisan('sms:campaigns-mutistep-send');
+        $this->assertEquals(10, $sentC, 'step time is not considered');
 
-        //validate finished status
-
-
-        $this->assertDatabaseHas('sms_sendlogs', [
-            'sms_campaign_id' => $res['campaign']->id,
-        ], 'clickhouse');
+        $this->travel(4)->minutes();
+        SmsTestHelper::generateClicks("sms_campaign_send_id = '{$campaignSend->id}'", 100);
+        $this->artisan('sms:campaigns-mutistep-send');
+        $sentC =
+            count(ClickhouseService::query("select * from sms_sendlogs_v where sms_campaign_id = '{$res['campaign']->id}'"));
+        $this->assertEquals(15, $sentC, 'step didnt send');
     }
 }

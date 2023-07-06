@@ -1,4 +1,4 @@
-FROM php:8.1-cli
+FROM php:8.2-cli
 
 RUN apt update && apt install -y libfreetype-dev libjpeg62-turbo-dev libpng-dev libzip-dev sudo
 RUN docker-php-ext-install gd zip pcntl

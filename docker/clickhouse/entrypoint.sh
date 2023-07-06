@@ -137,6 +137,7 @@ if [ -n "$(ls /docker-entrypoint-initdb.d/)" ] || [ -n "$CLICKHOUSE_DB" ]; then
     if [ -n "$CLICKHOUSE_DB" ]; then
         echo "$0: create database '$CLICKHOUSE_DB'"
         "${clickhouseclient[@]}" -q "CREATE DATABASE IF NOT EXISTS $CLICKHOUSE_DB";
+        "${clickhouseclient[@]}" -q "CREATE DATABASE IF NOT EXISTS shortener";
     fi
 
     for f in /docker-entrypoint-initdb.d/*; do

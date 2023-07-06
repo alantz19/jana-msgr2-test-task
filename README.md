@@ -45,6 +45,12 @@ npm install
 npm run dev
 ```
 
+If `clickhouse` container doesn't exist, run this command:
+
+```bash
+sail -f docker-compose.clickhouse.yml up -d
+```
+
 # queues
 
 `sail php artisan horizon` to start

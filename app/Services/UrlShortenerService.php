@@ -35,7 +35,7 @@ class UrlShortenerService
         Log::debug('URL shortener - got params', ['params' => $urlShortenerParams]);
         $domain = DomainService::getDomainForCampaign($msg);
 
-        Log::debug('URL shortener - got domain', ['domain_id' => $domain->id, 'domain_url' => $domain->url]);
+        Log::debug('URL shortener - got domain', ['domain_id' => $domain->id, 'domain_url' => $domain->domain]);
         if (!$domain) {
             throw new Exception('Failed to get shorty domain');
         }
@@ -108,13 +108,14 @@ class UrlShortenerService
 //            echo '.';
             usleep(rand(200000, 700000));
 
-            if ($i == 50) {
+            if ($i == 20) {
                 throw new Exception("Failed to short link");
             }
 
             $i++;
         } while (!$res);
 
+        Log::debug("Shorty response: ", ['response' => $res]);
         $msg->keyword_data = $res['data'];
         $msg->scheme = 'http';
 
@@ -136,10 +137,12 @@ class UrlShortenerService
             'meta' => $meta,
         ];
 
+        $url = rtrim(config('services.shortener.url'), '/') . '/api/short-url';
+        Log::debug('calling url shortener', ['url' => $url, 'data' => $data]);
         $response = Http::withBody(json_encode($data))
-            ->post(rtrim(config('services.shortener.url'), '/') . '/api/short-url');
+            ->post($url);
 
-        if ($response->ok()) {
+        if ($response->created()) {
             return $response->json();
         }
 

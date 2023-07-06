@@ -101,7 +101,7 @@ class SegmentBuilderService
             && array_key_exists('value', $value);
     }
 
-    private static function parseRule(Segment $segment, array $rule, int $ruleIdx): ?array
+    private static function parseRule(Segment $segment, array $rule, int &$ruleIdx): ?array
     {
         $op = JqBuilderOperatorEnum::tryFrom($rule['operator']);
         $field = JqBuilderFieldEnum::tryFrom($rule['field']);
@@ -116,8 +116,13 @@ class SegmentBuilderService
         $bindKey = 'rule_' . $ruleIdx;
         $value = $rule['value'];
 
-        if ($op->equals(JqBuilderOperatorEnum::contains(), JqBuilderOperatorEnum::not_contains())) {
-            $value = "%$value%";
+        if (is_array($value)) {
+            $bindKey = [];
+
+            foreach ($value as $k => $v) {
+                $bindKey[] = 'rule_' . $ruleIdx;
+                $ruleIdx += 1;
+            }
         }
 
         $sql = $op->toSql($segment, $field, $bindKey);
@@ -156,7 +161,13 @@ class SegmentBuilderService
                 continue;
             }
 
-            $binds[$rule['bind_key']] = $rule['value'];
+            if (is_array($rule['bind_key'])) {
+                foreach ($rule['bind_key'] as $k => $v) {
+                    $binds[$v] = $rule['value'][$k];
+                }
+            } else {
+                $binds[$rule['bind_key']] = $rule['value'];
+            }
         }
 
         return $binds;

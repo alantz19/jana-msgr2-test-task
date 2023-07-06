@@ -55,7 +55,7 @@ class SegmentBuilderTest extends TestCase
         $this->assertStringStartsWith('SELECT * FROM', $sql);
         $this->assertStringContainsString('greater(clicked_count, 0)', $sql);
         $this->assertStringContainsString('equals(country_id, 225)', $sql);
-        $this->assertStringContainsString("(equals(network_id, 1) OR network_brand like '%AT&T%')", $sql);
+        $this->assertStringContainsString("(equals(leads_count, 1) OR equals(sales_count, 1))", $sql);
         $this->assertStringContainsString(
             "equals(toDate(date_created), parseDateTime32BestEffort('" . now()->toDateString() . "'))",
             $sql
@@ -79,7 +79,7 @@ class SegmentBuilderTest extends TestCase
                 [
                     'team_id' => $contact['team_id'],
                     'phone_normalized' => $contact['phone_normalized'],
-                    'network_brand' => 'AT&T',
+                    'leads_count' => 1,
                     'clicked_count' => $this->faker->numberBetween(1, 10),
                 ]
             ]);
@@ -103,7 +103,9 @@ class SegmentBuilderTest extends TestCase
         $this->assertStringStartsWith('SELECT * FROM', $sql);
         $this->assertStringContainsString('greater(clicked_count, 0)', $sql);
         $this->assertStringContainsString('SELECT `contact_id` FROM `contact_tags_view`', $sql);
-        $this->assertStringContainsString("tag = 'user-tag-1'", $sql);
+        $this->assertStringContainsString("'user-tag-1'", $sql);
+        $this->assertStringContainsString("'user-tag-2'", $sql);
+        $this->assertStringContainsString("startsWith(tag, 'user')", $sql);
 
         $teamId = $segment->team_id;
         $contacts = Contact::factory()

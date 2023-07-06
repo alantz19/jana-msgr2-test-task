@@ -13,7 +13,8 @@ use Ramsey\Uuid\Uuid;
 
 class ContactFactory extends Factory
 {
-    public function saveAndReturn($teamId = false, $country = 'au', $withNetworks = false): Collection
+    public function saveAndReturn($teamId = false, $country = 'au', $withNetworks = false, $contactsCount = 10):
+    Collection
     {
         $contacts = new Collection();
         if (!$teamId) {
@@ -21,7 +22,7 @@ class ContactFactory extends Factory
         }
 
         $i = 0;
-        while ($i < 5) {
+        while ($i < $contactsCount) {
             $i++;
             $contact = new Contact();
             $contact->fill($this->definition());
@@ -40,15 +41,16 @@ class ContactFactory extends Factory
         if ($withNetworks) {
             foreach ($contacts as $contact) {
                 //todo:add test
-                $network_id = SmsContactMobileNetworksService::getNetworkCacheForNumber($contact->phone_normalized);
-                if (!$network_id) { //random network
-                    $network_id = MobileNetwork::where(['country_id' => $contact->country_id])
-                        ->whereNotNull('brand')
-                        ->whereNot('brand', '')
-                        ->inRandomOrder()->first()->id;
-                    SmsContactMobileNetworksService::saveNumberNetwork($contact->phone_normalized, $network_id);
-                }
-                $contact->network_id = $network_id;
+//                $network_id = SmsContactMobileNetworksService::getNetworkCacheForNumber($contact->phone_normalized);
+//                if (!$network_id) { //random network
+                $network = MobileNetwork::where(['country_id' => $contact->country_id])
+                    ->whereNotNull('brand')
+                    ->whereNot('brand', '')
+                    ->inRandomOrder()->first();
+                SmsContactMobileNetworksService::saveNumberNetwork($contact->phone_normalized, $network->id);
+//                }
+                $contact->network_id = $network->id;
+                $contact->network_brand = $network->brand;
             }
         }
 

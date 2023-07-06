@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\UserRoleEnum;
 use Illuminate\Auth\Access\AuthorizationException;
 
 class AuthService
@@ -20,5 +21,20 @@ class AuthService
         }
 
         return true;
+    }
+
+    public static function isAdmin($user = null)
+    {
+        if (!$user) {
+            $user = auth()->user();
+        }
+
+        if (!$user) {
+            throw new AuthorizationException('User must be authenticated to access this resource.');
+        }
+
+        $role = UserRoleEnum::tryFrom($user->role) ?? UserRoleEnum::user();
+
+        return $role->equals(UserRoleEnum::admin());
     }
 }

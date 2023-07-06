@@ -32,7 +32,6 @@ class SendSmsCampaignTest extends TestCase
 
     public function test_send_campaign_with_shortener()
     {
-        $this->markTestIncomplete('Shortener is not implemented yet');
         $res = SendSmsCampaignFactory::new()->withBasicSetup();
         $res['texts']->each(function ($model) use ($res) {
             $model->update([
@@ -42,7 +41,7 @@ class SendSmsCampaignTest extends TestCase
         SendCampaignService::send($res['campaign']);
         $this->assertDatabaseHas('sms_sendlogs', [
             'sms_campaign_id' => $res['campaign']->id,
-        ]);
+        ], 'clickhouse');
     }
 
     public function test_send_campaign_with_brand_segments()

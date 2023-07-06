@@ -13,7 +13,6 @@ class Domain extends Model
 
     protected $fillable = [
         'domain',
-        'url',
         'is_active',
     ];
 }

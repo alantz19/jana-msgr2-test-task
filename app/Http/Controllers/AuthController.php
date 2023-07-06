@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\TeamUserResource;
+use App\Http\Resources\UserResource;
+use App\Models\TeamUser;
 use Illuminate\Http\JsonResponse;
 
 class AuthController extends Controller
@@ -55,7 +58,7 @@ class AuthController extends Controller
      */
     public function me()
     {
-        return response()->json(auth()->user());
+        return new UserResource(auth()->user());
     }
 
     /**
@@ -78,5 +81,10 @@ class AuthController extends Controller
     public function refresh()
     {
         return $this->respondWithToken(auth()->refresh());
+    }
+
+    public function teams()
+    {
+        return TeamUserResource::collection(TeamUser::where('user_id', auth()->id())->get());
     }
 }

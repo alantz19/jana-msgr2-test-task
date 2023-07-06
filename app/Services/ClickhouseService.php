@@ -15,7 +15,7 @@ class ClickhouseService
         $db = DB::connection('clickhouse')->getClient();
         $tables = $db->showTables();
         foreach ($tables as $table) {
-            $db->write('DROP TABLE `' . $table['name'] . '`');
+            $db->write('DROP TABLE IF EXISTS `' . $table['name'] . '`');
         }
     }
 

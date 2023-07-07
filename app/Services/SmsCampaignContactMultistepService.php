@@ -27,58 +27,40 @@ class SmsCampaignContactMultistepService extends SmsCampaignContactService
 
 
         if ($status->current_step === 0) {
-            return self::handleFirstStep($campaignSend);
-        } else {
-            return self::handleSubsequentSteps($campaignSend);
+            self::handleFirstStep($campaignSend);
         }
+
+        return self::handleStep($campaignSend);
     }
 
-    private static function handleFirstStep(SmsCampaignSend $campaignSend): array
+    private static function handleFirstStep(SmsCampaignSend $campaignSend): bool
     {
         $settings = $campaignSend->getMultistepSettings();
         $status = $campaignSend->getMultistepStatus();
-        $limit = $settings->step_size;
         $baseQuery = self::getBaseQuery($campaignSend);
 
         $total_available_contacts = self::getTotalAvailableContacts($campaignSend);
         $status->total_available_contacts = $total_available_contacts;
+        $status->start_timestamp = microtime(true);
 
-        if ($total_available_contacts == 0) {
-            Log::debug("No contacts found for campaign {$campaignSend->id}");
-            //todo: add user notification
-            $status->status = SmsCampaignStatusEnum::sent()->value;
-            $campaignSend->setMultistepStatus($status);
-            return [];
-        }
+
+        //todo check also in manual send
+//        if ($total_available_contacts == 0) {
+//            Log::debug("No contacts found for campaign {$campaignSend->id}");
+//            todo: add user notification
+//            $status->status = SmsCampaignStatusEnum::sent()->value;
+//            $campaignSend->setMultistepStatus($status);
+//            return false;
+//        }
 
         Log::debug("total_available_contacts: {$total_available_contacts}");
-        if ($total_available_contacts < $limit) {
-            Log::debug("last step {$total_available_contacts} < {$limit}");
-            $status->status = SmsCampaignStatusEnum::sent()->value;
-            $campaignSend->status = SmsCampaignStatusEnum::sent()->value;
-            $limit = $total_available_contacts;
-        }
 
         $brands = self::getBrandsFromBaseQuery($baseQuery);
         $status->initial_brands = $brands;
-
-        $campaignSend->next_step_timestamp =
-            now()->addMinutes($campaignSend->getMultistepSettings()->step_delay)->toDateTime();
         Log::debug("segment network brands", ['brands' => $brands]);
-        $status->current_step++;
-        $status->last_sent_timestamp = microtime(true);
         $campaignSend->setMultistepStatus($status);
 
-        $baseQuery = self::getBaseQuery($campaignSend);
-        $query = "select * from ({$baseQuery}) limit {$limit}";
-        Log::debug('CH query', ['query' => $query]);
-
-        $status->total_sent += $limit;
-        $status->start_timestamp = microtime(true);
-        $status->last_sent_timestamp = microtime(true);
-        $campaignSend->setMultistepStatus($status);
-
-        return self::queryContacts($campaignSend, $query, $limit);
+        return true;
     }
 
     private static function getTotalAvailableContacts(SmsCampaignSend $campaignSend): int
@@ -99,31 +81,54 @@ class SmsCampaignContactMultistepService extends SmsCampaignContactService
         })->toArray();
     }
 
-    private static function handleSubsequentSteps(SmsCampaignSend $campaignSend): array
+    private static function handleStep(SmsCampaignSend $campaignSend): array
     {
         $settings = $campaignSend->getMultistepSettings();
         $status = $campaignSend->getMultistepStatus();
         $limit = $settings->step_size;
 
+
+        //todo: only if step > 0 check stats and take actions like stopping, disabling routes etc'
         $status = self::createLastStepStats($campaignSend, $status);
-        //todo: based on performance disable routes
 
         $baseQuery = self::getBaseQuery($campaignSend);
+        $campaignSend->next_step_timestamp =
+            now()->addMinutes($campaignSend->getMultistepSettings()->step_delay)->toDateTime();
+        $status->current_step++;
+        $status->last_sent_timestamp = microtime(true);
 
-        //change to last step
         $firstSent = Carbon::createFromTimestamp($status->start_timestamp)->toDateTimeString();
         $query = "select * from ({$baseQuery}) where (last_sent < '{$firstSent}' OR last_sent IS NULL) limit {$limit}";
 
 
         Log::debug('CH query', ['query' => $query]);
 
+        //----
+
+        $campaignSend->setMultistepStatus($status);
+
+        $baseQuery = self::getBaseQuery($campaignSend);
+        $query = "select * from ({$baseQuery}) limit {$limit}";
+        Log::debug('CH query', ['query' => $query]);
+
+        //check if we have available routes after disabling campaign
+        $status->current_step++;
         $status->total_sent += $limit;
         $status->last_sent_timestamp = microtime(true);
         $campaignSend->next_step_timestamp =
             now()->addMinutes($campaignSend->getMultistepSettings()->step_delay)->toDateTime();
 
         $campaignSend->setMultistepStatus($status);
-        return self::queryContacts($campaignSend, $query, $limit);
+        $contacts = self::queryContacts($campaignSend, $query, $limit);
+        if (count($contacts) < $limit) {
+            Log::debug("No more contacts found for campaign {$campaignSend->id}");
+            $campaignSend->status = SmsCampaignStatusEnum::sent()->value;
+            $status->status = SmsCampaignStatusEnum::sent()->value;
+        }
+        $campaignSend->setMultistepStatus($status);
+        $campaignSend->save();
+
+        return $contacts;
     }
 
     private static function createLastStepStats(SmsCampaignSend $campaignSend, CampaignMultistepStatusData $status)

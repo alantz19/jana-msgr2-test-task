@@ -11,7 +11,7 @@ abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
 
-    use DatabaseMigrations;
+//    use DatabaseMigrations;
 
 
 //    if adding refresh database in other tables add this clickhouse drop all tables..

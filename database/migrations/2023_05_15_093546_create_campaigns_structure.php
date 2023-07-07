@@ -25,6 +25,7 @@ return new class extends Migration {
         Schema::create('sms_campaign_sends', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('sms_campaign_id');
+            $table->timestamp('next_step_timestamp')->nullable();
             $table->string('status')->default(SmsCampaignStatusEnum::draft());
             $table->json('meta')->nullable();
             $table->timestamps();

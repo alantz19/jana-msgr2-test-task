@@ -90,13 +90,11 @@ class SendSmsCampaignTest extends BaseApiTest
 
         $this->putJson("/api/v1/sms/campaigns/{$campaign->id}", [
             'name' => 'Test campaign 2',
-            'settings.send_time' => '00:00',
-            'settings.send_date' => '2021-01-01',
-            'settings.send_amount' => '100',
         ])->assertOk();
 
         $this->postJson("/api/v1/sms/campaigns/{$campaign->id}/send-manual", [
             'sms_routing_plan_id' => $plan->id,
+            'send_amount' => 100,
         ])->assertOk();
     }
 
@@ -138,11 +136,11 @@ class SendSmsCampaignTest extends BaseApiTest
             'name' => 'Test campaign 2',
             'settings.send_time' => '00:00',
             'settings.send_date' => '2021-01-01',
-            'settings.send_amount' => '100',
         ])->assertOk();
 
         $this->postJson("/api/v1/sms/campaigns/{$campaign->id}/send-manual", [
             'sms_routing_plan_id' => $plan->id,
+            'send_amount' => 100,
         ])->assertOk();
     }
 
@@ -184,11 +182,11 @@ class SendSmsCampaignTest extends BaseApiTest
             'name' => 'Test campaign 2',
             'settings.send_time' => '00:00',
             'settings.send_date' => '2021-01-01',
-            'settings.send_amount' => '100',
         ])->assertOk();
 
         $this->postJson("/api/v1/sms/campaigns/{$campaign->id}/send-manual", [
             'sms_routing_plan_id' => $plan->id,
+            'send_amount' => '100',
         ])->assertOk();
         //logs - testing.ERROR: Error creating smpp client {"sms_id":"32de9f10-5004-41c4-84ec-d049226f982c","error":"No valid hosts was found"}
     }
@@ -228,11 +226,11 @@ class SendSmsCampaignTest extends BaseApiTest
             'name' => 'Test campaign 2',
             'settings.send_time' => '00:00',
             'settings.send_date' => '2021-01-01',
-            'settings.send_amount' => '100',
         ])->assertOk();
 
         $this->postJson("/api/v1/sms/campaigns/{$campaign->id}/send-manual", [
             'sms_routing_plan_id' => $plan->id,
+            'send_amount' => 100,
         ])->assertOk();
 
         $this->assertEquals(1000 - count($contacts) *

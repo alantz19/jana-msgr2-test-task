@@ -36,4 +36,9 @@ class Segment extends Model
     {
         return SegmentBuilderService::create($this);
     }
+
+    public function getWhereFromSegment(): ?Query
+    {
+        return SegmentBuilderService::getWhereFromSegment($this);
+    }
 }

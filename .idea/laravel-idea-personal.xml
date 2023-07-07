@@ -3,6 +3,7 @@
   <component name="LaravelIdeaPersonalSettings">
     <option name="generationStringOptionValues">
       <map>
+        <entry key="createConsoleCommand.register" value="1" />
         <entry key="createFormRequest.generateAuthorize" value="" />
         <entry key="createNotification.type" value="database" />
         <entry key="createResourceController.apiOnly" value="1" />

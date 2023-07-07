@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Data\SmsCampaignSettingsData;
 use App\Traits\HasMeta;
+use App\Traits\HasMultistepCampaign;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -13,6 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class SmsCampaign extends Model
 {
+    use HasMultistepCampaign;
     use HasMeta;
     use HasFactory;
     use HasUuids;
@@ -45,23 +48,23 @@ class SmsCampaign extends Model
         return $this->hasMany(SmsCampaignSend::class, 'sms_campaign_id');
     }
 
-    public function setSettings(array $array)
-    {
-        $this->addMeta('settings', $array);
-    }
-
-    public function getSettings()
-    {
-        return $this->getMeta()['settings'] ?? [];
-    }
-
     public function offers()
     {
         return $this->belongsToMany(Offer::class, 'offer_campaign', 'sms_campaign_id', 'offer_id');
     }
 
-    public function hasAutosender()
+    public function getSettings(): ?SmsCampaignSettingsData
     {
-        return $this->getMeta()['autosender_settings'] ?? false;
+        $settings = $this->getMeta()['settings'] ?? false;
+        if (!$settings) {
+            return null;
+        }
+
+        return SmsCampaignSettingsData::from($settings);
+    }
+
+    public function setSettings(SmsCampaignSettingsData $data): void
+    {
+        $this->addMeta('settings', $data->toArray());
     }
 }

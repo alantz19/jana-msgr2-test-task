@@ -2,9 +2,11 @@
 
 namespace App\Services;
 
+use App\Enums\SmsCampaignStatusEnum;
 use App\Exceptions\CampaignSendException;
 use App\Jobs\SendCampaignJob;
 use App\Models\SmsCampaign;
+use App\Models\SmsCampaignSend;
 use App\Models\SmsRoutingPlan;
 use Illuminate\Support\Facades\Log;
 
@@ -15,7 +17,7 @@ class SendCampaignService
         $campaign->getSettings();
         self::isReadyToSend($campaign);
         $campaignSend = $campaign->sends()->create([
-            'status' => 'sending',
+            'status' => SmsCampaignStatusEnum::in_progress(),
             'meta' => $campaign->meta,
         ]);
 
@@ -26,7 +28,7 @@ class SendCampaignService
     private static function isReadyToSend(SmsCampaign $campaign)
     {
         $settings = $campaign->getSettings();
-        if (!isset($settings['sms_routing_plan_id'])) {
+        if (!isset($settings->sms_routing_plan_id)) {
             $plan = SmsRoutingPlan::where(['is_team_default' => true])->first();
             if (!$plan) {
                 $plan = SmsRoutingPlan::create([
@@ -36,11 +38,18 @@ class SendCampaignService
                 ]);
             }
 
-            $settings['sms_routing_plan_id'] = $plan->id;
+            $settings->sms_routing_plan_id = $plan->id;
             $campaign->setSettings($settings);
             $campaign->save();
         }
 
         return true;
+    }
+
+    public static function continueSend(SmsCampaignSend $campaignSend)
+    {
+        Log::debug("Continue sending campaign: {$campaignSend->id}");
+
+        SendCampaignJob::dispatch($campaignSend);
     }
 }

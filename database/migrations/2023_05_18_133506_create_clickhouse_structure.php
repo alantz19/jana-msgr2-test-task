@@ -12,18 +12,18 @@ return new class extends \PhpClickHouseLaravel\Migration {
             "CREATE TABLE IF NOT EXISTS msgr.sms_sendlogs
     (
         `sms_id` UUID,
-        `team_id` UUID,
+        `team_id` Nullable(UUID),
         `updated_datetime` DateTime64,
-        `sms_campaign_id` UUID,
-        `sms_campaign_send_id` UUID,
+        `sms_campaign_id` Nullable(UUID),
+        `sms_campaign_send_id` Nullable(UUID),
         `segment_id` Nullable(UUID),
-        `contact_id` UUID,
-        `phone_normalized` UInt64,
+        `contact_id` Nullable(UUID),
+        `phone_normalized` Nullable(UInt64),
         `network_id` Nullable(UInt32),
-        `country_id` UInt16,
+        `country_id` Nullable(UInt16),
         `foreign_id` Nullable(String),
         `fail_reason` Nullable(String),
-        `is_sent` Int8,
+        `is_sent` Nullable(Int8),
         `is_clicked` Nullable(Int8),
         `is_lead` Nullable(Int8),
         `is_sale` Nullable(Int8),
@@ -34,11 +34,11 @@ return new class extends \PhpClickHouseLaravel\Migration {
         `shortened_url` Nullable(String),
         `offer_id` Nullable(UUID),
         `campaign_text_id` Nullable(UUID),
-        `final_text` String,
-        `text_parts` UInt8,
-        `sms_routing_plan_id` UUID,
-        `sms_routing_plan_rule_id` UUID,
-        `sms_routing_route_id` UUID,
+        `final_text` Nullable(String),
+        `text_parts` Nullable(UInt8),
+        `sms_routing_plan_id` Nullable(UUID),
+        `sms_routing_plan_rule_id` Nullable(UUID),
+        `sms_routing_route_id` Nullable(UUID),
         `sms_rule_selected_data` Nullable(String),
         `sender_id` Nullable(String),
         `sender_id_id` Nullable(UUID),
@@ -52,12 +52,59 @@ return new class extends \PhpClickHouseLaravel\Migration {
         `sent_at` Nullable(DateTime),
         `time_clicked` Nullable(DateTime),
         `meta` Nullable(String)
-)
+    )
 ENGINE = MergeTree
-PRIMARY KEY (sms_id)
-ORDER BY (sms_id)
+ORDER BY (updated_datetime, sms_id)
 SETTINGS index_granularity = 8192"
         );
+
+        static::write(
+            "CREATE VIEW IF NOT EXISTS sms_sendlogs_v AS
+SELECT 
+    sms_id,
+    anyLast(team_id) as team_id,
+    max(updated_datetime) as updated_datetime,
+    anyLast(sms_campaign_id) as sms_campaign_id,
+    anyLast(sms_campaign_send_id) as sms_campaign_send_id,
+    anyLast(segment_id) as segment_id,
+    anyLast(contact_id) as contact_id,
+    anyLast(phone_normalized) as phone_normalized,
+    anyLast(network_id) as network_id,
+    anyLast(country_id) as country_id,
+    anyLast(foreign_id) as foreign_id,
+    anyLast(fail_reason) as fail_reason,
+    anyLast(is_sent) as is_sent,
+    anyLast(is_clicked) as is_clicked,
+    anyLast(is_lead) as is_lead,
+    anyLast(is_sale) as is_sale,
+    anyLast(conversion_profit) as conversion_profit,
+    anyLast(is_unsubscribed) as is_unsubscribed,
+    anyLast(unsubscribed_method) as unsubscribed_method,
+    anyLast(domain_id) as domain_id,
+    anyLast(shortened_url) as shortened_url,
+    anyLast(offer_id) as offer_id,
+    anyLast(campaign_text_id) as campaign_text_id,
+    anyLast(final_text) as final_text,
+    anyLast(text_parts) as text_parts,
+    anyLast(sms_routing_plan_id) as sms_routing_plan_id,
+    anyLast(sms_routing_plan_rule_id) as sms_routing_plan_rule_id,
+    anyLast(sms_routing_route_id) as sms_routing_route_id,
+    anyLast(sms_rule_selected_data) as sms_rule_selected_data,
+    anyLast(sender_id) as sender_id,
+    anyLast(sender_id_id) as sender_id_id,
+    anyLast(sms_parts) as sms_parts,
+    anyLast(dlr_code) as dlr_code,
+    anyLast(dlr_str) as dlr_str,
+    anyLast(cost_platform_profit) as cost_platform_profit,
+    anyLast(cost_platform_cost) as cost_platform_cost,
+    anyLast(cost_user_vendor_cost) as cost_user_vendor_cost,
+    anyLast(click_meta) as click_meta,
+    anyLast(sent_at) as sent_at,
+    anyLast(time_clicked) as time_clicked,
+    anyLast(meta) as meta
+FROM msgr.sms_sendlogs
+GROUP BY sms_id;
+");
 
 //        `list_id` SimpleAggregateFunction(anyLast, UUID),
 //        static::write("
@@ -349,14 +396,21 @@ SETTINGS index_granularity = 8192;
         ORDER BY normalized;
         ");
 
-        static::write('CREATE MATERIALIZED VIEW IF NOT EXISTS sms_contact_sms_networks_mv TO contacts_sms_materialized AS
-select csm.phone_normalized,
-       csm.team_id,
-       vnn.network_id    as network_id,
-       vnn.network_brand as network_brand
-from v2_numbers_networks vnn
-         inner join contacts_sms_materialized csm on phone_normalized = normalized
-where csm.network_id = 0;');
+        static::write('CREATE MATERIALIZED VIEW IF NOT EXISTS msgr.sms_contact_sms_networks_mv TO msgr.contacts_sms_materialized
+        (
+         `phone_normalized` UInt64,
+         `team_id` UUID,
+         `network_id` SimpleAggregateFunction(anyLast, Nullable(UInt32)),
+         `network_brand` SimpleAggregateFunction(anyLast, Nullable(String))
+            ) AS
+SELECT
+    csm.phone_normalized,
+    csm.team_id,
+    vnn.network_id AS network_id,
+    vnn.network_brand AS network_brand
+FROM msgr.v2_numbers_networks AS vnn
+         INNER JOIN msgr.contacts_sms_materialized AS csm ON phone_normalized = normalized
+WHERE csm.network_id IS NULL;');
 
         static::write("
 CREATE TABLE IF NOT EXISTS v2_mobile_networks

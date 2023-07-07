@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Domain extends Model
 {
-    use SoftDeletes, HasFactory, HasUuids;
+    use HasFactory, HasUuids;
 
     protected $fillable = [
         'domain',

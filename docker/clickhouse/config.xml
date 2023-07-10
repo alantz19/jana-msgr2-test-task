@@ -73,7 +73,7 @@
     <!-- Configuration of clusters that could be used in Distributed tables.
          https://clickhouse.yandex/reference_en.html#Distributed
       -->
-    <remote_servers incl="clickhouse_remote_servers" />
+    <remote_servers incl="clickhouse_remote_servers"/>
 
 
     <!-- If element has 'incl' attribute, then for it's value will be used corresponding substitution from another file.
@@ -85,13 +85,13 @@
          Optional. If you don't use replicated tables, you could omit that.
          See https://clickhouse.yandex/reference_en.html#Data%20replication
       -->
-    <zookeeper incl="zookeeper-servers" optional="true" />
+    <zookeeper incl="zookeeper-servers" optional="true"/>
 
     <!-- Substitutions for parameters of replicated tables.
           Optional. If you don't use replicated tables, you could omit that.
          See https://clickhouse.yandex/reference_en.html#Creating%20replicated%20tables
       -->
-    <macros incl="macros" optional="true" />
+    <macros incl="macros" optional="true"/>
 
 
     <!-- Reloading interval for embedded dictionaries, in seconds. Default: 3600. -->

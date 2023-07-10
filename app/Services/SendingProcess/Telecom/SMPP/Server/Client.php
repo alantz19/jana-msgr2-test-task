@@ -111,8 +111,8 @@ class Net_SMPP_Client
     /**
      * Constructor
      *
-     * @param   string  $host  SMPP host to connect to
-     * @param   int     $port  TCP port on $host to connect to
+     * @param string $host SMPP host to connect to
+     * @param int $port TCP port on $host to connect to
      * @return  void
      */
     function __construct($host, $port)
@@ -164,8 +164,8 @@ class Net_SMPP_Client
      * This sends the bind_transmitter SMPP command to the SMSC, and reads back
      * the bind_transmitter_resp PDU.
      *
-     * @see     Net_SMPP_Command_bind_transmitter
      * @return  mixed
+     * @see     Net_SMPP_Command_bind_transmitter
      */
     function bind($args = array())
     {
@@ -183,8 +183,8 @@ class Net_SMPP_Client
      *
      * This sends the unbind SMPP command to the SMSC
      *
-     * @see     Net_SMPP_Command_unbind
      * @return  mixed
+     * @see     Net_SMPP_Command_unbind
      */
     function unbind()
     {
@@ -200,7 +200,7 @@ class Net_SMPP_Client
     /**
      * Send a PDU to the SMSC
      *
-     * @param   object  $pdu  PDU to send
+     * @param object $pdu PDU to send
      * @return  mixed   Net_Socket::write()'s return value
      * @see     Net_Socket::write()
      */
@@ -210,7 +210,8 @@ class Net_SMPP_Client
 
         // Check state
         if (!in_array($this->state, $map[$pdu->command])) {
-            $this->es->push(NET_SMPP_ESME_RINVBNDSTS, 'error',
+            $this->es->push(NET_SMPP_ESME_RINVBNDSTS,
+                'error',
                 array('command' => $pdu->command),
                 Net_SMPP_PDU::statusDesc(NET_SMPP_ESME_RINVBNDSTS));
             return false;
@@ -290,9 +291,9 @@ class Net_SMPP_Client
             $this->log('Response PDU was an error: ' . $pdu->statusDesc());
             $this->es->push($pdu->status, 'error', array(), $pdu->statusDesc());
         } else if (array_key_exists($pdu->command,
-                                    $map)) {
+            $map)) {
             $this->state = $map[$pdu->command];
-            $this->log('Command ' . $pdu->command . ' changes state to ' .  $map[$pdu->command]);
+            $this->log('Command ' . $pdu->command . ' changes state to ' . $map[$pdu->command]);
         }
         return $pdu;
     }
@@ -300,7 +301,7 @@ class Net_SMPP_Client
     /**
      * Accept an object
      *
-     * @param   object  $object
+     * @param object $object
      * @return  boolean  true if accepted, false otherwise
      */
     function accept($object)
@@ -315,8 +316,8 @@ class Net_SMPP_Client
     /**
      * Log a message
      *
-     * @param   string  $msg    Log message
-     * @param   int     $level  Log level
+     * @param string $msg Log message
+     * @param int $level Log level
      * @access  private
      * @return  void
      */
@@ -330,7 +331,7 @@ class Net_SMPP_Client
     /**
      * Push a PDU onto the stack
      *
-     * @param   object  $pdu  PDU to push
+     * @param object $pdu PDU to push
      * @return  void
      * @access  private
      */
@@ -348,20 +349,22 @@ class Net_SMPP_Client
     /**
      * Repackage a PEAR_Error as an ErrorStack error
      *
-     * @param   object  $err  PEAR_Error
+     * @param object $err PEAR_Error
      * @return  void
      * @access  private
      */
     function _errThunk($err)
     {
-        $this->es->push($err->code, 'error', array('userinfo' => $err->userinfo),
+        $this->es->push($err->code,
+            'error',
+            array('userinfo' => $err->userinfo),
             $err->message);
     }
 
     /**
      * Dump PDU data
      *
-     * @param   object   $pdu  PDU instance
+     * @param object $pdu PDU instance
      * @return  void
      * @access  private
      */
@@ -386,58 +389,58 @@ class Net_SMPP_Client
     function _commandStates()
     {
         static $states = array(
-            'bind_transmitter'      => array(Net_SMPP_Client::STATE_OPEN),
+            'bind_transmitter' => array(Net_SMPP_Client::STATE_OPEN),
             'bind_transmitter_resp' => array(Net_SMPP_Client::STATE_OPEN),
-            'bind_receiver'         => array(Net_SMPP_Client::STATE_OPEN),
-            'bind_receiver_resp'    => array(Net_SMPP_Client::STATE_OPEN),
-            'bind_transceiver'      => array(Net_SMPP_Client::STATE_OPEN),
+            'bind_receiver' => array(Net_SMPP_Client::STATE_OPEN),
+            'bind_receiver_resp' => array(Net_SMPP_Client::STATE_OPEN),
+            'bind_transceiver' => array(Net_SMPP_Client::STATE_OPEN),
             'bind_transceiver_resp' => array(Net_SMPP_Client::STATE_OPEN),
-            'outbind'               => array(Net_SMPP_Client::STATE_OPEN),
-            'unbind'                => array(Net_SMPP_Client::STATE_BOUND_TX,
-                                             Net_SMPP_Client::STATE_BOUND_RX,
-                                             Net_SMPP_Client::STATE_BOUND_TRX),
-            'unbind_resp'           => array(Net_SMPP_Client::STATE_BOUND_TX,
-                                             Net_SMPP_Client::STATE_BOUND_RX,
-                                             Net_SMPP_Client::STATE_BOUND_TRX),
-            'submit_sm'             => array(Net_SMPP_Client::STATE_BOUND_TX,
-                                             Net_SMPP_Client::STATE_BOUND_TRX),
-            'submit_sm_resp'        => array(Net_SMPP_Client::STATE_BOUND_TX,
-                                             Net_SMPP_Client::STATE_BOUND_TRX),
-            'submit_sm_multi'       => array(Net_SMPP_Client::STATE_BOUND_TX,
-                                             Net_SMPP_Client::STATE_BOUND_TRX),
-            'submit_sm_multi_resp'  => array(Net_SMPP_Client::STATE_BOUND_TX,
-                                             Net_SMPP_Client::STATE_BOUND_TRX),
-            'data_sm'               => array(Net_SMPP_Client::STATE_BOUND_TX,
-                                             Net_SMPP_Client::STATE_BOUND_RX,
-                                             Net_SMPP_Client::STATE_BOUND_TRX),
-            'data_sm_resp'          => array(Net_SMPP_Client::STATE_BOUND_TX,
-                                             Net_SMPP_Client::STATE_BOUND_RX,
-                                             Net_SMPP_Client::STATE_BOUND_TRX),
-            'deliver_sm'            => array(Net_SMPP_Client::STATE_BOUND_RX,
-                                             Net_SMPP_Client::STATE_BOUND_TRX),
-            'deliver_sm_resp'       => array(Net_SMPP_Client::STATE_BOUND_RX,
-                                             Net_SMPP_Client::STATE_BOUND_TRX),
-            'query_sm'              => array(Net_SMPP_Client::STATE_BOUND_RX,
-                                             Net_SMPP_Client::STATE_BOUND_TRX),
-            'query_sm_resp'         => array(Net_SMPP_Client::STATE_BOUND_RX,
-                                             Net_SMPP_Client::STATE_BOUND_TRX),
-            'cancel_sm'             => array(Net_SMPP_Client::STATE_BOUND_RX,
-                                             Net_SMPP_Client::STATE_BOUND_TRX),
-            'cancel_sm_resp'        => array(Net_SMPP_Client::STATE_BOUND_RX,
-                                             Net_SMPP_Client::STATE_BOUND_TRX),
-            'replace_sm'            => array(Net_SMPP_Client::STATE_BOUND_TX),
-            'replace_sm_resp'       => array(Net_SMPP_Client::STATE_BOUND_TX),
-            'enquire_link'          => array(Net_SMPP_Client::STATE_BOUND_TX,
-                                             Net_SMPP_Client::STATE_BOUND_RX,
-                                             Net_SMPP_Client::STATE_BOUND_TRX),
-            'enquire_link_resp'     => array(Net_SMPP_Client::STATE_BOUND_TX,
-                                             Net_SMPP_Client::STATE_BOUND_RX,
-                                             Net_SMPP_Client::STATE_BOUND_TRX),
-            'alert_notification'    => array(Net_SMPP_Client::STATE_BOUND_RX,
-                                             Net_SMPP_Client::STATE_BOUND_TRX),
-            'generic_nack'          => array(Net_SMPP_Client::STATE_BOUND_TX,
-                                             Net_SMPP_Client::STATE_BOUND_RX,
-                                             Net_SMPP_Client::STATE_BOUND_TRX)
+            'outbind' => array(Net_SMPP_Client::STATE_OPEN),
+            'unbind' => array(Net_SMPP_Client::STATE_BOUND_TX,
+                Net_SMPP_Client::STATE_BOUND_RX,
+                Net_SMPP_Client::STATE_BOUND_TRX),
+            'unbind_resp' => array(Net_SMPP_Client::STATE_BOUND_TX,
+                Net_SMPP_Client::STATE_BOUND_RX,
+                Net_SMPP_Client::STATE_BOUND_TRX),
+            'submit_sm' => array(Net_SMPP_Client::STATE_BOUND_TX,
+                Net_SMPP_Client::STATE_BOUND_TRX),
+            'submit_sm_resp' => array(Net_SMPP_Client::STATE_BOUND_TX,
+                Net_SMPP_Client::STATE_BOUND_TRX),
+            'submit_sm_multi' => array(Net_SMPP_Client::STATE_BOUND_TX,
+                Net_SMPP_Client::STATE_BOUND_TRX),
+            'submit_sm_multi_resp' => array(Net_SMPP_Client::STATE_BOUND_TX,
+                Net_SMPP_Client::STATE_BOUND_TRX),
+            'data_sm' => array(Net_SMPP_Client::STATE_BOUND_TX,
+                Net_SMPP_Client::STATE_BOUND_RX,
+                Net_SMPP_Client::STATE_BOUND_TRX),
+            'data_sm_resp' => array(Net_SMPP_Client::STATE_BOUND_TX,
+                Net_SMPP_Client::STATE_BOUND_RX,
+                Net_SMPP_Client::STATE_BOUND_TRX),
+            'deliver_sm' => array(Net_SMPP_Client::STATE_BOUND_RX,
+                Net_SMPP_Client::STATE_BOUND_TRX),
+            'deliver_sm_resp' => array(Net_SMPP_Client::STATE_BOUND_RX,
+                Net_SMPP_Client::STATE_BOUND_TRX),
+            'query_sm' => array(Net_SMPP_Client::STATE_BOUND_RX,
+                Net_SMPP_Client::STATE_BOUND_TRX),
+            'query_sm_resp' => array(Net_SMPP_Client::STATE_BOUND_RX,
+                Net_SMPP_Client::STATE_BOUND_TRX),
+            'cancel_sm' => array(Net_SMPP_Client::STATE_BOUND_RX,
+                Net_SMPP_Client::STATE_BOUND_TRX),
+            'cancel_sm_resp' => array(Net_SMPP_Client::STATE_BOUND_RX,
+                Net_SMPP_Client::STATE_BOUND_TRX),
+            'replace_sm' => array(Net_SMPP_Client::STATE_BOUND_TX),
+            'replace_sm_resp' => array(Net_SMPP_Client::STATE_BOUND_TX),
+            'enquire_link' => array(Net_SMPP_Client::STATE_BOUND_TX,
+                Net_SMPP_Client::STATE_BOUND_RX,
+                Net_SMPP_Client::STATE_BOUND_TRX),
+            'enquire_link_resp' => array(Net_SMPP_Client::STATE_BOUND_TX,
+                Net_SMPP_Client::STATE_BOUND_RX,
+                Net_SMPP_Client::STATE_BOUND_TRX),
+            'alert_notification' => array(Net_SMPP_Client::STATE_BOUND_RX,
+                Net_SMPP_Client::STATE_BOUND_TRX),
+            'generic_nack' => array(Net_SMPP_Client::STATE_BOUND_TX,
+                Net_SMPP_Client::STATE_BOUND_RX,
+                Net_SMPP_Client::STATE_BOUND_TRX)
         );
 
         return $states;
@@ -458,9 +461,9 @@ class Net_SMPP_Client
     {
         static $setters = array(
             'bind_transmitter_resp' => Net_SMPP_Client::STATE_BOUND_TX,
-            'bind_receiver_resp'    => Net_SMPP_Client::STATE_BOUND_RX,
+            'bind_receiver_resp' => Net_SMPP_Client::STATE_BOUND_RX,
             'bind_transceiver_resp' => Net_SMPP_Client::STATE_BOUND_TRX,
-            'unbind_resp'           => Net_SMPP_Client::STATE_OPEN
+            'unbind_resp' => Net_SMPP_Client::STATE_OPEN
         );
 
         return $setters;

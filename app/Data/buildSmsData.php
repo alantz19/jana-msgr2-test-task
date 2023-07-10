@@ -14,7 +14,7 @@ class buildSmsData extends Data
         public string $sms_campaign_send_id,
         public string $sms_campaign_id,
         public string $team_id,
-        public int $counter,
+        public int    $counter,
     )
     {
     }

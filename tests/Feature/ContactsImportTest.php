@@ -72,9 +72,10 @@ class ContactsImportTest extends BaseApiTest
             ->getRows();
 
         $this->assertCount(40, $tags);
-        $this->assertCount(20, array_filter($tags, function ($tag) use ($tag1) {
-            return $tag['tag'] === $tag1;
-        }));
+        $this->assertCount(20,
+            array_filter($tags, function ($tag) use ($tag1) {
+                return $tag['tag'] === $tag1;
+            }));
     }
 
     public function test_numbers_import_custom_fields()

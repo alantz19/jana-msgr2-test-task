@@ -228,7 +228,7 @@ class RoutingTest extends TestCase
     public function testRouteFactory()
     {
         $this->markTestSkipped('Platform routes support is not implemented yet');
-        
+
         $customer = User::factory()->withPersonalTeam()->create();
         $seller = User::factory()->asUkRouteSeller($customer->currentTeam)->create();
         $routes = UserRoutesService::getAvailableRoutes($customer);

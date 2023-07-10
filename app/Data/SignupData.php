@@ -20,7 +20,7 @@ class SignupData extends Data
         #[Password(min: 6)]
         public string $password,
         public string $company_name,
-        public bool $tc_confirm,
+        public bool   $tc_confirm,
     )
     {
     }

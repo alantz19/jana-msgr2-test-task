@@ -20,9 +20,9 @@ class ContactSmsCollection extends ResourceCollection
         return [
             'data' => $this->collection,
             'meta' => [
-                'page' => (int) $request->get('page', 1),
-                'per_page' => (int) $request->get('per_page', 25),
-                'total' => (int) $query->count(),
+                'page' => (int)$request->get('page', 1),
+                'per_page' => (int)$request->get('per_page', 25),
+                'total' => (int)$query->count(),
             ],
         ];
     }

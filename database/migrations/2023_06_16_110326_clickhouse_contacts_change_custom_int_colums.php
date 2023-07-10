@@ -1,7 +1,6 @@
 <?php
 
-return new class extends \PhpClickHouseLaravel\Migration
-{
+return new class extends \PhpClickHouseLaravel\Migration {
     /**
      * Run the migrations.
      */

@@ -44,7 +44,7 @@ class ApiDataFilesImportTest extends TestCase
 
         $user2 = User::factory()->withPersonalTeam()->create();
         $this->actingAs($user2);
-        
+
         $res = $this->getJson('/api/v1/data-files/' . $data['id'] . '/sample');
         $res->assertStatus(403);
     }

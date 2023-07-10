@@ -21,7 +21,16 @@ class SendSmsCampaignTest extends TestCase
 {
     public $user;
 
-    public function test_send_campaign()
+    public function test_send_campaign_simple()
+    {
+        $res = SendSmsCampaignFactory::new()->withBasicSetup();
+        SendCampaignService::send($res['campaign']);
+        $this->assertDatabaseHas('sms_sendlogs', [
+            'sms_campaign_id' => $res['campaign']->id,
+        ], 'clickhouse');
+    }
+
+    public function test_send_campaign_with_split_rule()
     {
         $res = SendSmsCampaignFactory::new()->withBasicSetup();
         SendCampaignService::send($res['campaign']);

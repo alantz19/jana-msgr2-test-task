@@ -1,4 +1,7 @@
-# MSGR - SMS and Email marketing platform.
+# MSGR 2.0 SMS management platform.
+
+This repo is a clone of a point in time of the original repo. It is used for the purpose of a test like the one you're
+doing now.
 
 API docs are automatically generated at
 

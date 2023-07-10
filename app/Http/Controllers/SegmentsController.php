@@ -132,7 +132,7 @@ class SegmentsController extends Controller
         };
 
         $response = [
-            'total' => (int) $total,
+            'total' => (int)$total,
             /** @var array<ContactSmsResource> $rows */
             'rows' => $rows,
             /** @var array<string, string> $stats only for admins (elapsed, rows_read, bytes_read) (null for users) */
@@ -149,6 +149,342 @@ class SegmentsController extends Controller
         return response()->json($response);
     }
 
+    /**
+     * /v1/segments/fields
+     *
+     * Example response:
+     * ```json
+     * {
+     * "fields": [
+     * {
+     * "field": "clicked_count",
+     * "label": "Clicked Count",
+     * "type": "integer",
+     * "operators": [
+     * "equal",
+     * "not_equal",
+     * "less",
+     * "less_or_equal",
+     * "greater",
+     * "greater_or_equal"
+     * ]
+     * },
+     * {
+     * "field": "sent_count",
+     * "label": "Sent Count",
+     * "type": "integer",
+     * "operators": [
+     * "equal",
+     * "not_equal",
+     * "less",
+     * "less_or_equal",
+     * "greater",
+     * "greater_or_equal"
+     * ]
+     * },
+     * {
+     * "field": "country_id",
+     * "label": "Country",
+     * "type": "integer",
+     * "operators": [
+     * "equal",
+     * "not_equal",
+     * "in",
+     * "not_in"
+     * ]
+     * },
+     * {
+     * "field": "state_id",
+     * "label": "State",
+     * "type": "integer",
+     * "operators": [
+     * "equal",
+     * "not_equal",
+     * "in",
+     * "not_in"
+     * ]
+     * },
+     * {
+     * "field": "network_brand",
+     * "label": "Network Brand",
+     * "type": "string",
+     * "operators": [
+     * "contains",
+     * "not_contains",
+     * "begins_with",
+     * "not_ends_with",
+     * "ends_with",
+     * "not_ends_with",
+     * "is_empty",
+     * "is_not_empty"
+     * ]
+     * },
+     * {
+     * "field": "date_created",
+     * "label": "Date Created",
+     * "type": "date",
+     * "operators": [
+     * "equal",
+     * "not_equal",
+     * "less",
+     * "less_or_equal",
+     * "greater",
+     * "greater_or_equal"
+     * ]
+     * },
+     * {
+     * "field": "last_sent",
+     * "label": "Last Sent",
+     * "type": "date",
+     * "operators": [
+     * "equal",
+     * "not_equal",
+     * "less",
+     * "less_or_equal",
+     * "greater",
+     * "greater_or_equal"
+     * ]
+     * },
+     * {
+     * "field": "last_clicked",
+     * "label": "Last Clicked",
+     * "type": "date",
+     * "operators": [
+     * "equal",
+     * "not_equal",
+     * "less",
+     * "less_or_equal",
+     * "greater",
+     * "greater_or_equal"
+     * ]
+     * },
+     * {
+     * "field": "leads_count",
+     * "label": "Leads Count",
+     * "type": "integer",
+     * "operators": [
+     * "equal",
+     * "not_equal",
+     * "less",
+     * "less_or_equal",
+     * "greater",
+     * "greater_or_equal"
+     * ]
+     * },
+     * {
+     * "field": "sales_count",
+     * "label": "Sales Count",
+     * "type": "integer",
+     * "operators": [
+     * "equal",
+     * "not_equal",
+     * "less",
+     * "less_or_equal",
+     * "greater",
+     * "greater_or_equal"
+     * ]
+     * },
+     * {
+     * "field": "custom1_str",
+     * "label": "Qwerty",
+     * "type": "string",
+     * "operators": [
+     * "contains",
+     * "not_contains",
+     * "begins_with",
+     * "not_ends_with",
+     * "ends_with",
+     * "not_ends_with",
+     * "is_empty",
+     * "is_not_empty"
+     * ]
+     * },
+     * {
+     * "field": "custom2_str",
+     * "label": "Custom 2 String",
+     * "type": "string",
+     * "operators": [
+     * "contains",
+     * "not_contains",
+     * "begins_with",
+     * "not_ends_with",
+     * "ends_with",
+     * "not_ends_with",
+     * "is_empty",
+     * "is_not_empty"
+     * ]
+     * },
+     * {
+     * "field": "custom3_str",
+     * "label": "Custom 3 String",
+     * "type": "string",
+     * "operators": [
+     * "contains",
+     * "not_contains",
+     * "begins_with",
+     * "not_ends_with",
+     * "ends_with",
+     * "not_ends_with",
+     * "is_empty",
+     * "is_not_empty"
+     * ]
+     * },
+     * {
+     * "field": "custom4_str",
+     * "label": "Custom 4 String",
+     * "type": "string",
+     * "operators": [
+     * "contains",
+     * "not_contains",
+     * "begins_with",
+     * "not_ends_with",
+     * "ends_with",
+     * "not_ends_with",
+     * "is_empty",
+     * "is_not_empty"
+     * ]
+     * },
+     * {
+     * "field": "custom5_str",
+     * "label": "Custom 5 String",
+     * "type": "string",
+     * "operators": [
+     * "contains",
+     * "not_contains",
+     * "begins_with",
+     * "not_ends_with",
+     * "ends_with",
+     * "not_ends_with",
+     * "is_empty",
+     * "is_not_empty"
+     * ]
+     * },
+     * {
+     * "field": "custom1_dec",
+     * "label": "Custom 1 Decimal",
+     * "type": "double",
+     * "operators": [
+     * "equal",
+     * "not_equal",
+     * "less",
+     * "less_or_equal",
+     * "greater",
+     * "greater_or_equal"
+     * ]
+     * },
+     * {
+     * "field": "custom2_dec",
+     * "label": "Custom 2 Decimal",
+     * "type": "double",
+     * "operators": [
+     * "equal",
+     * "not_equal",
+     * "less",
+     * "less_or_equal",
+     * "greater",
+     * "greater_or_equal"
+     * ]
+     * },
+     * {
+     * "field": "custom1_datetime",
+     * "label": "Dt",
+     * "type": "datetime",
+     * "operators": [
+     * "equal",
+     * "not_equal",
+     * "less",
+     * "less_or_equal",
+     * "greater",
+     * "greater_or_equal"
+     * ]
+     * },
+     * {
+     * "field": "custom2_datetime",
+     * "label": "Custom 2 Datetime",
+     * "type": "datetime",
+     * "operators": [
+     * "equal",
+     * "not_equal",
+     * "less",
+     * "less_or_equal",
+     * "greater",
+     * "greater_or_equal"
+     * ]
+     * },
+     * {
+     * "field": "custom3_datetime",
+     * "label": "Custom 3 Datetime",
+     * "type": "datetime",
+     * "operators": [
+     * "equal",
+     * "not_equal",
+     * "less",
+     * "less_or_equal",
+     * "greater",
+     * "greater_or_equal"
+     * ]
+     * },
+     * {
+     * "field": "custom4_datetime",
+     * "label": "Custom 4 Datetime",
+     * "type": "datetime",
+     * "operators": [
+     * "equal",
+     * "not_equal",
+     * "less",
+     * "less_or_equal",
+     * "greater",
+     * "greater_or_equal"
+     * ]
+     * },
+     * {
+     * "field": "custom5_datetime",
+     * "label": "Custom 5 Datetime",
+     * "type": "datetime",
+     * "operators": [
+     * "equal",
+     * "not_equal",
+     * "less",
+     * "less_or_equal",
+     * "greater",
+     * "greater_or_equal"
+     * ]
+     * },
+     * {
+     * "field": "tags",
+     * "label": "Tag",
+     * "type": "string",
+     * "operators": [
+     * "contains",
+     * "not_contains",
+     * "begins_with",
+     * "not_ends_with",
+     * "ends_with",
+     * "not_ends_with"
+     * ]
+     * }
+     * ],
+     * "operators": [
+     * "equal",
+     * "not_equal",
+     * "in",
+     * "not_in",
+     * "less",
+     * "less_or_equal",
+     * "greater",
+     * "greater_or_equal",
+     * "begins_with",
+     * "not_begins_with",
+     * "contains",
+     * "not_contains",
+     * "ends_with",
+     * "not_ends_with",
+     * "is_empty",
+     * "is_not_empty"
+     * ]
+     * }
+     * ```
+     */
     public function fields()
     {
         $customFields = CustomField::whereTeamId(auth()->user()->current_team_id)
@@ -158,7 +494,7 @@ class SegmentsController extends Controller
                 $arr[$field->field_key] = $field->field_name;
                 return $arr;
             })
-            ->flatMap(fn ($item) => $item)
+            ->flatMap(fn($item) => $item)
             ->toArray();
 
         $fields = collect(JqBuilderFieldEnum::toLabels())

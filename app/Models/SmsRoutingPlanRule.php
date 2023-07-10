@@ -65,4 +65,14 @@ class SmsRoutingPlanRule extends Model
     {
         return $this->hasOne(SmsRoute::class, 'id', 'sms_route_id');
     }
+
+    public function network()
+    {
+        return $this->hasOne(MobileNetwork::class, 'id', 'network_id');
+    }
+
+    public function country()
+    {
+        return $this->hasOne(Country::class, 'id', 'country_id');
+    }
 }

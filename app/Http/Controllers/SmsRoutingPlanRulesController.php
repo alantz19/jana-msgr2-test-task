@@ -17,28 +17,42 @@ class SmsRoutingPlanRulesController extends Controller
     /**
      * @param string $plan
      */
-    public function index(SmsRoutingPlan $plan)
+    public function index(SmsRoutingPlan $plan, Request $request)
     {
+        $request->validate([
+            'with' => 'sometimes|array|in:country,network,smsRoute',
+        ]);
         AuthService::isModelOwner($plan);
-        $rules = SmsRoutingPlanRule::where(['sms_routing_plan_id' => $plan->id])->get();
+        $rules = SmsRoutingPlanRule::where(['sms_routing_plan_id' => $plan->id]);
+        if ($request->has('with')) {
+            $rules->with($request->get('with'));
+        }
+        $rules = $rules->get();
 
         return SmsRoutingPlanRuleResource::collection($rules);
     }
 
     /**
+     * /v1/sms-routing-plans/{plan}/rules/{rule}
+     *
+     * To store a rule for a plan you need to specify the following fields.
+     * To store a split rule you need to call the `/api/v1/sms/routing/plans/{plan}/rules/split` endpoint.
+     *
+     *
+     *
      * @param string $plan
      */
     public function store(Request $request, SmsRoutingPlan $plan)
     {
         AuthService::isModelOwner($plan);
         $validated = $request->validate([
-            'sms_route_id' => 'sometimes|uuid|exists:sms_routes,id',
-            'country_id' => 'sometimes|integer|exists:countries,id',
-            'network_id' => 'sometimes|integer|exists:networks,id',
+            'country_id' => 'required|integer|exists:countries,id',
+            'network_id' => 'sometimes|integer|exists:mobile_networks,id',
             'is_active' => 'sometimes|boolean',
             'priority' => 'sometimes|integer',
             // To create a split rule please check POST ./rules/split endpoint.
             'action' => ['required', 'in:send,drop,filter'],
+            'sms_route_id' => 'sometimes|uuid|exists:sms_routes,id',
         ]);
 
         $rule = SmsRoutingPlanRule::make($validated);

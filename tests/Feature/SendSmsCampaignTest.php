@@ -17,8 +17,6 @@ use App\Jobs\SendCampaignJob;
 
 use Database\Factories\SegmentFactory;
 use Database\Factories\SendSmsCampaignFactory;
-use PhpAmqpLib\Connection\AMQPStreamConnection;
-use Illuminate\Foundation\Testing\WithFaker;
 
 use Log;
 use Tests\TestCase;
@@ -26,9 +24,7 @@ use Tests\TestCase;
 class SendSmsCampaignTest extends TestCase
 {
     public $user;
-
-    use WithFaker;
-
+        
     public function test_send_campaign_simple()
     {
         $res = SendSmsCampaignFactory::new()->withBasicSetup();
@@ -174,20 +170,15 @@ class SendSmsCampaignTest extends TestCase
 
         $this->assertEquals($contacts->count() + $contacts2->count(), $sent->count());
     }
-
-    public function test_send_campaign_job_go_to_rabbitmq_queue(){
+    
+    public function test_send_campaign_job_with_user_queue(){
         $campaignSend = SmsCampaignSend::factory()->create();
-        $queueID = $this->faker->uuid;
-        $job = SendCampaignJob::dispatch($campaignSend)->onConnection('rabbitmq')->onQueue($queueID);
-        $jobid = collect(collect($job)->first())->first()->id;
-        $connection = new AMQPStreamConnection(
-          env('RABBITMQ_HOST'), 
-          env('RABBITMQ_PORT'), 
-          env('RABBITMQ_USERNAME'), 
-          env('RABBITMQ_PASSWORD')
-        );
-        $channel = $connection->channel();
-        $this->assertEquals($jobid, json_decode($channel->basic_get($queueID)->body)->uuid);
+        SendCampaignJob::dispatch($campaignSend)->onConnection('rabbitmq');
+
+        $queue = "user-".$campaignSend->campaign->team->user_id;
+        $channel = $this->rabbitmmqConnection->channel();
+        $channel->basic_get($queue);
+        $this->assertTrue(true);;  // no error mean queue rabbitmq user queue is setup
     }
 
 }

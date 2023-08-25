@@ -8,18 +8,26 @@ use App\Models\Offer;
 use App\Models\SmsCampaign;
 use App\Models\SmsCampaignSenderid;
 use App\Models\SmsCampaignText;
+use App\Models\SmsCampaignSend;
 use App\Models\SmsSendlog;
 use App\Models\User;
 use App\Services\CountryService;
 use App\Services\SendCampaignService;
+use App\Jobs\SendCampaignJob;
+
 use Database\Factories\SegmentFactory;
 use Database\Factories\SendSmsCampaignFactory;
+use PhpAmqpLib\Connection\AMQPStreamConnection;
+use Illuminate\Foundation\Testing\WithFaker;
+
 use Log;
 use Tests\TestCase;
 
 class SendSmsCampaignTest extends TestCase
 {
     public $user;
+
+    use WithFaker;
 
     public function test_send_campaign_simple()
     {
@@ -166,4 +174,20 @@ class SendSmsCampaignTest extends TestCase
 
         $this->assertEquals($contacts->count() + $contacts2->count(), $sent->count());
     }
+
+    public function test_send_campaign_job_go_to_rabbitmq_queue(){
+        $campaignSend = SmsCampaignSend::factory()->create();
+        $queueID = $this->faker->uuid;
+        $job = SendCampaignJob::dispatch($campaignSend)->onConnection('rabbitmq')->onQueue($queueID);
+        $jobid = collect(collect($job)->first())->first()->id;
+        $connection = new AMQPStreamConnection(
+          env('RABBITMQ_HOST'), 
+          env('RABBITMQ_PORT'), 
+          env('RABBITMQ_USERNAME'), 
+          env('RABBITMQ_PASSWORD')
+        );
+        $channel = $connection->channel();
+        $this->assertEquals($jobid, json_decode($channel->basic_get($queueID)->body)->uuid);
+    }
+
 }

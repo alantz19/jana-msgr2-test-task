@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "60814ded3ad41a576ef23108ae9313dd",
+    "content-hash": "ab9de52bf8b78be03345d019530594ac",
     "packages": [
         {
             "name": "acidjazz/metapi",
@@ -115,6 +115,85 @@
             },
             "abandoned": true,
             "time": "2015-05-20T02:18:02+00:00"
+        },
+        {
+            "name": "aloware/horizon-wildcard-consumer",
+            "version": "dev-test-20230825-rabbitmq-and-materialized-view",
+            "dist": {
+                "type": "path",
+                "url": "./vendor/horizon-wildcard-consumer",
+                "reference": "a91ca0b75060fae732c2b18cf5b3efb9cf6198d6"
+            },
+            "require": {
+                "ext-json": "*",
+                "ext-pcntl": "*",
+                "illuminate/console": "*",
+                "illuminate/database": "*",
+                "illuminate/queue": "*",
+                "illuminate/support": "*",
+                "laravel/horizon": "*",
+                "php": "^8.2",
+                "vladimir-yuldashev/laravel-queue-rabbitmq": "*"
+            },
+            "require-dev": {
+                "aloware/shift-php-cs": "dev-master",
+                "mockery/mockery": "^1.0",
+                "orchestra/testbench": "3.7.*|^4.3",
+                "phpunit/phpunit": "^7.5|^8.4"
+            },
+            "suggest": {
+                "ext-pcntl": "Required by Laravel Horizon."
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Aloware\\HorizonWildcardConsumer\\HorizonWildcardConsumerServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Aloware\\HorizonWildcardConsumer\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Aloware\\HorizonWildcardConsumer\\Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "@test:style",
+                    "@test:unit"
+                ],
+                "test:style": [
+                    "@php vendor/bin/php-cs-fixer fix --config=.php_cs.dist --allow-risky=yes --dry-run --diff --verbose"
+                ],
+                "test:unit": [
+                    "@php vendor/bin/phpunit"
+                ],
+                "fix:style": [
+                    "@php vendor/bin/php-cs-fixer fix --config=.php_cs.dist --allow-risky=yes --diff --verbose"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Bayram A",
+                    "email": "bayram@aloware.com"
+                },
+                {
+                    "name": "Mohsen A",
+                    "email": "mohsen@aloware.com"
+                }
+            ],
+            "description": "Extended Laravel Horizon providing listening dynamically added queues matched by wildcard.",
+            "transport-options": {
+                "relative": true
+            }
         },
         {
             "name": "bacon/bacon-qr-code",
@@ -12758,7 +12837,7 @@
         }
     ],
     "aliases": [],
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "stability-flags": [],
     "prefer-stable": true,
     "prefer-lowest": false,

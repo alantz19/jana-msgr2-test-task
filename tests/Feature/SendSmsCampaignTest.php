@@ -20,11 +20,12 @@ use Database\Factories\SendSmsCampaignFactory;
 
 use Log;
 use Tests\TestCase;
+use Carbon\Carbon;
 
 class SendSmsCampaignTest extends TestCase
 {
     public $user;
-        
+
     public function test_send_campaign_simple()
     {
         $res = SendSmsCampaignFactory::new()->withBasicSetup();
@@ -180,5 +181,51 @@ class SendSmsCampaignTest extends TestCase
         $channel->basic_get($queue);
         $this->assertTrue(true);;  // no error mean queue rabbitmq user queue is setup
     }
+
+    
+    public function test_campaign_summary_materialized()
+    {
+        $today = Carbon::now('UTC')->format('Y-m-d');
+        $tomorrow = Carbon::now('UTC')->addDay()->format('Y-m-d');
+
+        $res = SendSmsCampaignFactory::new()->withBasicSetup(1);
+        SendCampaignService::send($res['campaign']);
+        $this->assertDatabaseHas('campaign_summary_materialized', [
+            'sms_routing_route_id' => $res['route1']->id,
+        ], 'clickhouse');
+
+        $this->assertDatabaseHas('campaign_summary_mv', [
+            'sms_routing_route_id' => $res['route1']->id,
+        ], 'clickhouse');
+    
+
+        $res = SendSmsCampaignFactory::new()->withBasicSetup(2);
+        SendCampaignService::send($res['campaign']);
+        $route_id = $res['route1']->id;
+        $statement = $this->clickhouse->select("select * from campaign_summary_materialized final where sms_routing_route_id='$route_id'");
+        $this->assertEquals((int)$statement->fetchOne()['sent_count'], 2);                 
+        $statement = $this->clickhouse->select("select * from campaign_summary_mv final where sms_routing_route_id='$route_id'");
+        $this->assertEquals((int)$statement->fetchOne()['sent_count'], 2);                 
+        
+        $res = SendSmsCampaignFactory::new()->withBasicSetup(1);
+        SendCampaignService::send($res['campaign']);
+        Carbon::setTestNow(Carbon::now('UTC')->addDay());
+        SendCampaignService::send($res['campaign']);        
+        $route_id = $res['route1']->id;
+        $statement = $this->clickhouse->select("select * from campaign_summary_materialized final where sms_routing_route_id='$route_id'");
+        $this->assertEquals($statement->count(), 2);                 
+        $statement = $this->clickhouse->select("select * from campaign_summary_mv final where sms_routing_route_id='$route_id'");
+        $this->assertEquals($statement->count(), 2);          
+        $statement = $this->clickhouse->select("select * from campaign_summary_materialized final where sms_routing_route_id='$route_id' and date='$today'");
+        $this->assertEquals($statement->count(), 1);                 
+        $statement = $this->clickhouse->select("select * from campaign_summary_mv final where sms_routing_route_id='$route_id' and date='$today'");
+        $this->assertEquals($statement->count(), 1);                 
+        $statement = $this->clickhouse->select("select * from campaign_summary_materialized final where sms_routing_route_id='$route_id'  and date='$tomorrow'");
+        $this->assertEquals($statement->count(), 1);                 
+        $statement = $this->clickhouse->select("select * from campaign_summary_mv final where sms_routing_route_id='$route_id'  and date='$tomorrow'");
+        $this->assertEquals($statement->count(), 1);         
+
+    }
+
 
 }

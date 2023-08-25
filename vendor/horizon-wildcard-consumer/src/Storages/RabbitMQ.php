@@ -19,8 +19,8 @@ class RabbitMQ implements StorageContract
             'base_uri' => config('horizon-wildcard-consumer.rabbitmq_api_url', 'http://localhost:15672')
         ]);
 
-        $login = config('queue.connections.rabbitmq.login');
-        $password = config('queue.connections.rabbitmq.password');
+        $login =  config('queue.connections.rabbitmq.hosts')[0]["user"];
+        $password = config('queue.connections.rabbitmq.hosts')[0]["password"];
 
         $params = [
             'auth' => [$login, $password],

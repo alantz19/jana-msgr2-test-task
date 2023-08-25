@@ -181,8 +181,8 @@ return [
 
     'defaults' => [
         'supervisor-1' => [
-            'connection' => 'redis',
-            'queue' => ['default'],
+            'connection' => env('QUEUE_CONNECTION', 'sync'),
+            'queue' => ['default',  '*'],
             'balance' => 'auto',
             'autoScalingStrategy' => 'time',
             'maxProcesses' => 1,
@@ -198,6 +198,8 @@ return [
     'environments' => [
         'production' => [
             'supervisor-1' => [
+                'connection' => env('QUEUE_CONNECTION', 'sync'),
+                'queue' => ['default',  '*'],
                 'maxProcesses' => 10,
                 'balanceMaxShift' => 1,
                 'balanceCooldown' => 3,
@@ -206,6 +208,8 @@ return [
 
         'local' => [
             'supervisor-1' => [
+                'connection' => env('QUEUE_CONNECTION', 'sync'),
+                'queue' => ['default',  '*'],
                 'maxProcesses' => 3,
             ],
         ],

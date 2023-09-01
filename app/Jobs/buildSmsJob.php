@@ -35,6 +35,7 @@ class buildSmsJob implements ShouldQueue
 
     public function __construct(public CampaignSendToBuildSmsData $dto)
     {
+        $this->onQueue('user-'.$dto->user_id);
     }
 
     public function handle(): void

@@ -26,6 +26,7 @@ class SendCampaignJob implements ShouldQueue
     public function __construct(SmsCampaignSend $campaignSend)
     {
         $this->campaignSend = $campaignSend;
+        $this->onQueue('user-'.$campaignSend->campaign->team->user_id);
     }
 
     public function handle(): void
@@ -71,6 +72,7 @@ class SendCampaignJob implements ShouldQueue
                 'sms_campaign_id' => $this->campaignSend->sms_campaign_id,
                 'team_id' => $this->campaignSend->campaign->team_id,
                 'sms_routing_plan_id' => $this->campaignSend->getSettings()->sms_routing_plan_id,
+                'user_id' => $this->campaignSend->campaign->team->user_id,
             ]);
             Log::info('Sending campaign: ' . $this->campaignSend->id . ' dto: ' . $data->toJson(),
                 LogContextEnum::sendCampaignContext());

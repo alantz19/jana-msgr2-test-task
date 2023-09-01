@@ -16,6 +16,7 @@ class CampaignSendToBuildSmsData extends Data
         public string  $sms_campaign_send_id,
         public string  $sms_campaign_id,
         public string  $team_id,
+        public string  $user_id,
         public int     $counter,
         public ?string $segment_id,
         public ?string $network_id, //todo

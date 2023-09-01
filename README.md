@@ -62,7 +62,7 @@ sail -f docker-compose.clickhouse.yml up -d
 
 # queues
 
-`sail php artisan horizon` to start
+`sail php artisan horizon:wildcard-consume` to start
 `http://v2.local/horizon/dashboard` to view
 
 make sure queues are not retrying automatically

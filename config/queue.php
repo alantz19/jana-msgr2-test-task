@@ -70,6 +70,17 @@ return [
             'block_for' => null,
             'after_commit' => false,
         ],
+        'rabbitmq' => [
+           'driver' => 'rabbitmq',
+           'hosts' => [
+               [
+                   'host' => env('RABBITMQ_HOST'),
+                   'port' => env('RABBITMQ_PORT', 5672),
+                   'user' => env('RABBITMQ_USERNAME'),
+                   'password' => env('RABBITMQ_PASSWORD')
+               ],
+           ]
+        ]
 
     ],
 

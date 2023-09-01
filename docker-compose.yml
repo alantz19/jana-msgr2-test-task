@@ -88,7 +88,19 @@ services:
             - '${FORWARD_MAILHOG_DASHBOARD_PORT:-8025}:8025'
         networks:
             - sail
-
+    
+    rabbitmq_queue:
+        image: 'bitnami/rabbitmq:latest'
+        networks:
+            - sail
+        environment:
+            RABBITMQ_USERNAME: '${RABBITMQ_USERNAME:-msgr_v2}'
+            RABBITMQ_PASSWORD: '${RABBITMQ_PASSWORD:-password}'            
+        ports:
+            - '${RABBITMQ_PORT:-5672}:5672'
+        volumes:
+            - 'sail-rabitmq-queue:/bitnami/rabbitmq/mnesia'    
+    
 networks:
     sail:
         driver: bridge
@@ -98,4 +110,6 @@ volumes:
     sail-redis:
         driver: local
     sail-meilisearch:
+        driver: local
+    sail-rabitmq-queue:
         driver: local
